@@ -84,6 +84,8 @@ class ModuleConfigurationPresenter implements PresenterInterface
                 'CAPTURE_DELAY_MAX' => PaymentSettings::CAPTURE_DELAY_MAX,
                 'RETENTION_DELAY_MIN' => PaymentSettings::RETENTION_DELAY_MIN,
                 'RETENTION_DELAY_MAX' => PaymentSettings::RETENTION_DELAY_MAX,
+                'SAFETY_DELAY_MIN' => PaymentSettings::SAFETY_DELAY_MIN,
+                'SAFETY_DELAY_MAX' => PaymentSettings::SAFETY_DELAY_MAX,
             ],
             'statuses' => OrderState::getOrderStates(\Context::getContext()->employee->id_lang),
             'defaultStatuses' => \Configuration::getMultiple([

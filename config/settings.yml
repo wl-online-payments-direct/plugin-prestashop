@@ -90,3 +90,11 @@ services:
       - '@worldlineop.settings'
       - '@worldlineop.settings.payment_methods.validation'
       - '@worldlineop.module'
+
+  worldlineop.settings.get_products:
+    class: 'WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest'
+    public: true
+    arguments:
+      - '@worldlineop.sdk.client'
+      - '@worldlineop.settings'
+      - '@worldlineop.logger.factory'

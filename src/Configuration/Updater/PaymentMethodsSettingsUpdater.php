@@ -24,9 +24,6 @@ use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
  */
 class PaymentMethodsSettingsUpdater extends SettingsUpdater
 {
-    /** @var array $authorizedLogoExtensions */
-    private $authorizedLogoExtensions = ['png' => IMAGETYPE_PNG, 'gif' => IMAGETYPE_GIF, 'jpg' => IMAGETYPE_JPEG];
-
     /**
      *
      */

@@ -15,17 +15,17 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use Ingenico\Direct\Sdk\Domain\CaptureOutput;
-use Ingenico\Direct\Sdk\Domain\CardPaymentMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\MobilePaymentMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\PaymentOutput;
-use Ingenico\Direct\Sdk\Domain\RedirectPaymentMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\RefundCardMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\RefundEWalletMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\RefundMobileMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Domain\RefundOutput;
-use Ingenico\Direct\Sdk\Domain\RefundRedirectMethodSpecificOutput;
-use Ingenico\Direct\Sdk\Merchant\MerchantClient;
+use OnlinePayments\Sdk\Domain\CaptureOutput;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\PaymentOutput;
+use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\RefundCardMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\RefundEWalletMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\RefundMobileMethodSpecificOutput;
+use OnlinePayments\Sdk\Domain\RefundOutput;
+use OnlinePayments\Sdk\Domain\RefundRedirectMethodSpecificOutput;
+use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
 

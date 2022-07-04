@@ -17,7 +17,7 @@ namespace WorldlineOP\PrestaShop\Presenter;
 
 use Configuration;
 use Context;
-use Ingenico\Direct\Sdk\Domain\CreateHostedTokenizationRequest;
+use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use Language;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Worldlineop;
@@ -127,7 +127,7 @@ class PaymentOptionsPresenter implements PresenterInterface
             }
         } else {
             $tokenIds = [];
-            /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+            /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
             $merchantClient = $this->module->getService('worldlineop.sdk.client');
             $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
             foreach ($tokens as $token) {
@@ -193,7 +193,7 @@ class PaymentOptionsPresenter implements PresenterInterface
         if (false === $paymentMethodsSettings->displayIframePaymentOptions) {
             return [];
         }
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
         $hostedTokenizationRequest = new CreateHostedTokenizationRequest();
@@ -241,10 +241,18 @@ class PaymentOptionsPresenter implements PresenterInterface
             $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
             $defaultIsoLang = Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'));
             $cta = $this->settings->paymentMethodsSettings->redirectCallToAction;
+            if ($this->settings->advancedSettings->switchEndpoint && $this->settings->advancedSettings->endpointLogoFilename) {
+                $logo = sprintf(
+                    $this->module->getPathUri().'views/img/payment_logos/%s',
+                    $this->settings->advancedSettings->endpointLogoFilename
+                );
+            } else {
+                $logo = $this->module->getPathUri().'views/img/payment_logos/worldlineop_symbol.svg';
+            }
             $paymentOption = new PaymentOption();
             $paymentOption
                 ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true]))
-                ->setLogo($this->module->getPathUri().'views/img/payment_logos/worldlineop_symbol.svg')
+                ->setLogo($logo)
                 ->setCallToActionText(isset($cta[$cartIsoLang]) ? $cta[$cartIsoLang] : $cta[$defaultIsoLang]);
 
             return [$paymentOption];

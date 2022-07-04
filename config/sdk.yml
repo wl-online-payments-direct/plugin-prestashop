@@ -16,7 +16,7 @@ services:
     factory: ['@worldlineop.sdk.client.factory', 'getMerchant']
 
   worldlineop.sdk.connection:
-    class: 'Ingenico\Direct\Sdk\DefaultConnection'
+    class: 'OnlinePayments\Sdk\DefaultConnection'
     public: true
 
   worldlineop.sdk.communicator_configuration.factory:
@@ -27,7 +27,7 @@ services:
       - '@worldlineop.module'
 
   worldlineop.sdk.communicator:
-    class: 'Ingenico\Direct\Sdk\Communicator'
+    class: 'OnlinePayments\Sdk\Communicator'
     public: true
     arguments:
       - '@worldlineop.sdk.connection'

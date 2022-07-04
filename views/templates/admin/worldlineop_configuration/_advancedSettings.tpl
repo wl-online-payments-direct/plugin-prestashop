@@ -188,26 +188,6 @@
             </div>
           </div>
           <!-- /Payment accepted status mapping -->
-          <!-- Payment pending status mapping -->
-          <div class="form-group">
-            <label class="control-label col-lg-3" for="worldlineopAdvancedSettings[paymentSettings][successOrderStateId]">
-            <span>
-              {l s='Pending payment status mapping' mod='worldlineop'}
-            </span>
-            </label>
-            <div class="col-lg-9">
-              <select name="worldlineopAdvancedSettings[paymentSettings][pendingOrderStateId]" class="fixed-width-xxl">
-                {foreach $data.extra.statuses as $status}
-                  <option value="{$status.id_order_state|intval}"
-                          {if $status.id_order_state == $data.advancedSettings.paymentSettings.pendingOrderStateId}selected{/if}>
-                    {$status.name|escape:'html':'UTF-8'}
-                    {if $status.id_order_state == $data.extra.defaultStatuses.WOP_PENDING_ORDER_STATUS_ID}{l s='(default)' mod='worldlineop'}{/if}
-                  </option>
-                {/foreach}
-              </select>
-            </div>
-          </div>
-          <!-- /Payment pending status mapping -->
           <!-- Payment error status mapping -->
           <div class="form-group">
             <label class="control-label col-lg-3" for="worldlineopAdvancedSettings[paymentSettings][successOrderStateId]">
@@ -228,6 +208,50 @@
             </div>
           </div>
           <!-- /Payment error status mapping -->
+          <!-- Payment pending status mapping -->
+          <div class="form-group">
+            <label class="control-label col-lg-3" for="worldlineopAdvancedSettings[paymentSettings][successOrderStateId]">
+            <span>
+              {l s='Pending payment status mapping' mod='worldlineop'}
+            </span>
+            </label>
+            <div class="col-lg-9">
+              <select name="worldlineopAdvancedSettings[paymentSettings][pendingOrderStateId]" class="fixed-width-xxl">
+                {foreach $data.extra.statuses as $status}
+                  <option value="{$status.id_order_state|intval}"
+                          {if $status.id_order_state == $data.advancedSettings.paymentSettings.pendingOrderStateId}selected{/if}>
+                    {$status.name|escape:'html':'UTF-8'}
+                    {if $status.id_order_state == $data.extra.defaultStatuses.WOP_PENDING_ORDER_STATUS_ID}{l s='(default)' mod='worldlineop'}{/if}
+                  </option>
+                {/foreach}
+              </select>
+            </div>
+          </div>
+          <!-- /Payment pending status mapping -->
+          <!-- Safety Delay -->
+          <div class="form-group">
+            <label class="control-label col-lg-3" for="worldlineopAdvancedSettings[paymentSettings][safetyDelay]">
+          <span>
+            {l s='Order validation safety delay' mod='worldlineop'}
+          </span>
+            </label>
+            <div class="col-lg-9">
+              <select name="worldlineopAdvancedSettings[paymentSettings][safetyDelay]" class="fixed-width-md">
+                {for $seconds=$data.extra.const.SAFETY_DELAY_MIN to $data.extra.const.SAFETY_DELAY_MAX}
+                  <option value="{$seconds|intval}"
+                          {if $data.advancedSettings.paymentSettings.safetyDelay == $seconds}selected{/if}>
+                    {$seconds|intval} {l s='seconds' mod='worldlineop'}
+                  </option>
+                {/for}
+              </select>
+            </div>
+            <div class="col-lg-9 col-lg-offset-3">
+              <div class="help-block">
+                  {l s='If you use the split order feature, activate this option to gracefully handle the duplication of the order by retaining any incoming webhook for the determined period' mod='worldlineop'}
+              </div>
+            </div>
+          </div>
+          <!-- /Safety Delay -->
           <!-- Retention Delay -->
           <div class="form-group">
             <label class="control-label col-lg-3" for="worldlineopAdvancedSettings[paymentSettings][retentionHours]">
@@ -291,6 +315,97 @@
             </div>
           </div>
           <!-- /Force 3DsV2 -->
+          <!-- Switch Endpoint -->
+          <div class="form-group form-group-h2 js-worldlineop-switch-endpoint-block">
+            <label class="control-label col-lg-3 ">{l s='Switch endpoint' mod='worldlineop'}</label>
+            <div class="col-lg-9 js-worldlineop-switch-endpoint-switch">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[switchEndpoint]"
+                     id="worldlineopAdvancedSettings_switchEndpoint_on"
+                     {if $data.advancedSettings.switchEndpoint === true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_switchEndpoint_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[switchEndpoint]"
+                     id="worldlineopAdvancedSettings_switchEndpoint_off"
+                     {if $data.advancedSettings.switchEndpoint != true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_switchEndpoint_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+            </div>
+          </div>
+          <!-- /Switch Endpoint -->
+
+          <div class="js-worldlineop-switch-endpoint-settings-block">
+            <!-- Test Endpoint -->
+            <div class="form-group">
+              <label class="control-label col-lg-3">
+                <span>{l s='Test Endpoint' mod='worldlineop'}</span>
+              </label>
+              <div class="col-lg-9">
+                <div class="fixed-width-xxl">
+                  <input value="{$data.advancedSettings.testEndpoint|escape:'htmlall':'UTF-8'}"
+                         type="text"
+                         name="worldlineopAdvancedSettings[testEndpoint]"
+                         class="input fixed-width-xxl">
+                </div>
+              </div>
+            </div>
+            <!-- /Test Endpoint -->
+            <!-- Prod Endpoint -->
+            <div class="form-group">
+              <label class="control-label col-lg-3">
+                <span>{l s='Prod Endpoint' mod='worldlineop'}</span>
+              </label>
+              <div class="col-lg-9">
+                <div class="fixed-width-xxl">
+                  <input value="{$data.advancedSettings.prodEndpoint|escape:'htmlall':'UTF-8'}"
+                         type="text"
+                         name="worldlineopAdvancedSettings[prodEndpoint]"
+                         class="input fixed-width-xxl">
+                </div>
+              </div>
+            </div>
+            <!-- /Prod Endpoint -->
+            <!-- Logo -->
+            <div class="form-group">
+              <label class="control-label col-lg-3 ">
+              <span>
+                {l s='Logo displayed on your payment page' mod='worldlineop'}
+              </span>
+              </label>
+              <div class="col-lg-9">
+                  {if $data.advancedSettings.endpointLogoFilename}
+                    <img class="preview-logo"
+                         src="{$data.extra.path.img|escape:'html':'UTF-8'}payment_logos/{$data.advancedSettings.endpointLogoFilename|escape:'html':'UTF-8'}"/>
+                  {/if}
+                <input type="file"
+                       name="worldlineopAdvancedSettings[endpointLogo]"
+                       id="worldlineopAdvancedSettings[endpointLogo]"
+                       class="worldlineop-upload js-worldlineop-upload"/>
+                <label for="worldlineopAdvancedSettings[endpointLogo]">
+                  <i class="icon icon-upload"></i>
+                  <span>
+                    {l s='Upload' mod='worldlineop'}
+                  </span>
+                </label>
+              </div>
+              <div class="col-lg-9 col-lg-offset-3">
+                  {if $data.advancedSettings.endpointLogoFilename}
+                    <input type="checkbox" id="worldlineopAdvancedSettings[deleteEndpointLogo]" name="worldlineopAdvancedSettings[deleteEndpointLogo]" />
+                    <label for="worldlineopAdvancedSettings[deleteEndpointLogo]">{l s='Delete current logo' mod='worldlineop'}</label>
+                  {/if}
+                <div class="help-block">
+                    {l s='You can upload here a new logo (file types accepted for logos are: .png .gif .jpg only)' mod='worldlineop'}<br/>
+                    {l s='We recommend that you use images with 20px height & 120px length maximum' mod='worldlineop'}
+                  <span></span>
+                </div>
+              </div>
+            </div>
+            <!-- /Logo -->
+          </div>
         </div>
         <input type="hidden" name="action" value="saveAdvancedSettingsForm"/>
       </div>

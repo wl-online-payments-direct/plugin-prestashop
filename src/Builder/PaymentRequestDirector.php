@@ -15,8 +15,8 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
-use Ingenico\Direct\Sdk\Domain\CreateHostedCheckoutRequest;
-use Ingenico\Direct\Sdk\Domain\CreatePaymentRequest;
+use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
+use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 
 /**
  * Class PaymentRequestDirector

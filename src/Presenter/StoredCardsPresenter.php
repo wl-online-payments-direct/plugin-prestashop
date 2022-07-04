@@ -19,8 +19,8 @@ use Configuration;
 use Context;
 use Country;
 use Currency;
-use Ingenico\Direct\Sdk\Merchant\MerchantClient;
-use Ingenico\Direct\Sdk\Merchant\Products\GetPaymentProductParams;
+use OnlinePayments\Sdk\Merchant\MerchantClient;
+use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
 

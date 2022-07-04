@@ -12,13 +12,18 @@
  *
  *}
 
-<h1>{l s='What\'s new in version 1.1.0' mod='worldlineop'}</h1>
+<h1>{l s='What\'s new in version 1.2.0' mod='worldlineop'}</h1>
 <br>
 <ul>
-  <li>{l s='1-Click live - \'Lightning Mode\'' mod='worldlineop'}</li>
-  <li>{l s='Diverse Payment Methods like CB, Visa, Mastercard, ApplePay, Bancontact, Alipay...' mod='worldlineop'}</li>
-  <li>{l s='Checkout Type: (1) Authorize + Capture (2) Authorize only' mod='worldlineop'}</li>
-  <li>{l s='Checkout Mode: (1) Redirection (2) Inline mode' mod='worldlineop'}</li>
+  <li>{l s='Automatic refresh of payment methods list on a new instance of the plugin' mod='worldlineop'}</li>
+  <li>{l s='Workflow improvements:' mod='worldlineop'}</li>
+  <li style="list-style-type: none">
+    <ul>
+      <li>{l s='Gracefull split order management' mod='worldlineop'}</li>
+      <li>{l s='Dynamic feedback retrieval – if no feedback is received on a transaction, the plugin will fetch it!' mod='worldlineop'}</li>
+    </ul>
+  </li>
+  <li>{l s='Standardized logo sizes' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

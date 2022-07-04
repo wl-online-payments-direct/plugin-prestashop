@@ -33,6 +33,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
         $resolver
             ->setDefined([
                 'force3DsV2',
+                'switchEndpoint',
+                'testEndpoint',
+                'prodEndpoint',
+                'endpointLogo',
+                'endpointLogoFilename',
+                'deleteEndpointLogo',
                 'logsEnabled',
                 'paymentFlowSettingsDisplayed',
                 'advancedSettingsEnabled',
@@ -42,6 +48,7 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'retentionHours',
                 'successOrderStateId',
                 'pendingOrderStateId',
+                'safetyDelay',
                 'errorOrderStateId',
                 'displayWhatsNew',
             ])
@@ -58,6 +65,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 }
             )
             ->setNormalizer(
+                'switchEndpoint',
+                function (Options $options, $value) {
+                    return boolval($value);
+                }
+            )
+            ->setNormalizer(
                 'paymentFlowSettingsDisplayed',
                 function (Options $options, $value) {
                     return boolval($value);
@@ -95,6 +108,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
             )
             ->setNormalizer(
                 'pendingOrderStateId',
+                function (Options $options, $value) {
+                    return intval($value);
+                }
+            )
+            ->setNormalizer(
+                'safetyDelay',
                 function (Options $options, $value) {
                     return intval($value);
                 }

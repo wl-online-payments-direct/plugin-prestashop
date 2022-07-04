@@ -13,7 +13,7 @@
  *
  */
 
-use Ingenico\Direct\Sdk\Domain\CapturePaymentRequest;
+use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Utils\Decimal;
 
@@ -121,7 +121,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             $this->printDebug('No orders eligible');
             exit;
         }
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
         $transactionRepository = $this->module->getService('worldlineop.repository.transaction');

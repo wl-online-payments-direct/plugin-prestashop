@@ -13,10 +13,9 @@
  *
  */
 
-use Ingenico\Direct\Sdk\Webhooks\InMemorySecretKeyStore;
-use Ingenico\Direct\Sdk\Webhooks\WebhooksHelper;
+use OnlinePayments\Sdk\Webhooks\InMemorySecretKeyStore;
+use OnlinePayments\Sdk\Webhooks\WebhooksHelper;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
-use WorldlineOP\PrestaShop\Repository\TokenRepository;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
@@ -24,7 +23,6 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class WorldlineopWebhookModuleFrontController extends ModuleFrontController
 {
-
     /** @var Worldlineop $module */
     public $module;
 
@@ -73,8 +71,11 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         /** @var \WorldlineOP\PrestaShop\Presenter\WebhookEventPresenter $eventPresenter */
         $eventPresenter = $this->module->getService('worldlineop.event.presenter');
         try {
-            $eventPresenter->handlePending($event);
-            $data = $eventPresenter->present($event, $this->context->shop->id);
+            $eventPresenter->handlePending($event, $settings);
+            $presentedData = $eventPresenter->present($event, $this->context->shop->id);
+            /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
+            $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
+            $transactionResponseProcessor->process($presentedData);
         } catch (Exception $e) {
             $this->logger->error(
                 $e->getMessage(),
@@ -82,94 +83,6 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
             );
         }
 
-        if ($data['validateOrder']) {
-            try {
-                if ($data['token']['needSave']) {
-                    /** @var TokenRepository $tokenRepository */
-                    $tokenRepository = $this->module->getService('worldlineop.repository.token');
-                    $token = $tokenRepository->findByCustomerIdToken(
-                        $data['cartDetails']['idCustomer'],
-                        $data['token']['value']
-                    );
-                    if (false === $token) {
-                        $token = new WorldlineopToken();
-                    }
-                    $this->logger->debug('Saving token');
-                    $token->id_customer = (int) $data['cartDetails']['idCustomer'];
-                    $token->id_shop = (int) $data['token']['idShop'];
-                    $token->product_id = pSQL($data['transaction']['productId']);
-                    $token->card_number = pSQL($data['token']['cardNumber']);
-                    $token->expiry_date = pSQL($data['token']['expiryDate']);
-                    $token->value = pSQL($data['token']['value']);
-                    $token->secure_key = pSQL($data['cartDetails']['secureKey']);
-                    $tokenRepository->save($token);
-                }
-                $this->logger->debug('Validating order');
-                $this->module->validateOrder(
-                    (int) $data['cartDetails']['idCart'],
-                    (int) $data['idOrderState'],
-                    (float) $data['cartDetails']['total'],
-                    $data['transaction']['paymentMethod'],
-                    null,
-                    $data['transaction']['details'],
-                    $data['transaction']['idCurrency'],
-                    false,
-                    $data['cartDetails']['secureKey']
-                );
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            }
-            if (false !== ($orderIds = Tools::getOrderIdsByIdCart($data['cartDetails']['idCart']))) {
-                foreach ($orderIds as $idOrder) {
-                    $this->logger->debug(sprintf('Saving transaction for order %d', $idOrder));
-                    /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
-                    $transactionRepository = $this->module->getService('worldlineop.repository.transaction');
-                    $transaction = new WorldlineopTransaction();
-                    $transaction->reference = pSQL($data['transaction']['merchantReference']);
-                    $transaction->id_order = (int) $idOrder;
-                    try {
-                        $transactionRepository->save($transaction);
-                    } catch (Exception $e) {
-                        $this->logger->error($e->getMessage());
-                    }
-                    if ($data['sendMail']) {
-                        $this->logger->debug('Sending mail');
-                        try {
-                            Tools::sendPendingCaptureMail($idOrder);
-                        } catch (Exception $e) {
-                            $this->logger->error($e->getMessage());
-                        }
-                    }
-                }
-            }
-        } elseif ($data['updateOrderStatus']) {
-            foreach ($data['order']['ids'] as $idOrder) {
-                $order = new Order((int) $idOrder);
-                if (!count($order->getHistory($this->context->language->id, $data['idOrderState']))) {
-                    $orderHistory = new \OrderHistory();
-                    $orderHistory->id_order = (int) $idOrder;
-                    try {
-                        $orderHistory->changeIdOrderState($data['idOrderState'], $idOrder);
-                        $orderHistory->addWithemail();
-                    } catch (\Exception $e) {
-                        $this->logger->error($e->getMessage());
-                    }
-                    if (count($order->getOrderPayments()) > count($data['payments']['hasPayments'])) {
-                        Db::getInstance()->update(
-                            'order_payment',
-                            ['transaction_id' => $data['payments']['merchantReference']],
-                            'order_reference = "'.pSQL($order->reference).'"'
-                        );
-                    }
-                    if ($data['sendMail']) {
-                        $this->logger->debug('Sending mail');
-                        Tools::sendPendingCaptureMail($order->id);
-                    }
-                }
-            }
-        } else {
-            exit;
-        }
         exit;
     }
 

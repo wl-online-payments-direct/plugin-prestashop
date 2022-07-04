@@ -30,6 +30,18 @@ class AdvancedSettings
     /** @var bool $force3DsV2 */
     public $force3DsV2;
 
+    /** @var bool $switchEndpoint */
+    public $switchEndpoint;
+
+    /** @var string $testEndpoint */
+    public $testEndpoint;
+
+    /** @var string $prodEndpoint */
+    public $prodEndpoint;
+
+    /** @var string $endpointLogoFilename */
+    public $endpointLogoFilename;
+
     /** @var bool $logsEnabled */
     public $logsEnabled;
 

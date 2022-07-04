@@ -27,6 +27,8 @@ class PaymentSettings
     const CAPTURE_DELAY_MAX = 7;
     const RETENTION_DELAY_MIN = 3;
     const RETENTION_DELAY_MAX = 24;
+    const SAFETY_DELAY_MIN = 6;
+    const SAFETY_DELAY_MAX = 20;
 
     /** @var string $transactionType */
     public $transactionType;
@@ -42,6 +44,9 @@ class PaymentSettings
 
     /** @var int $pendingOrderStateId */
     public $pendingOrderStateId;
+
+    /** @var int $safetyDelay */
+    public $safetyDelay;
 
     /** @var int $errorOrderStateId */
     public $errorOrderStateId;

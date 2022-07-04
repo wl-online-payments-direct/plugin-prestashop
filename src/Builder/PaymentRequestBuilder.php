@@ -15,10 +15,10 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
-use Ingenico\Direct\Sdk\Domain\CardPaymentMethodSpecificInput;
-use Ingenico\Direct\Sdk\Domain\MobilePaymentMethodSpecificInput;
-use Ingenico\Direct\Sdk\Domain\RedirectionData;
-use Ingenico\Direct\Sdk\Domain\ThreeDSecure;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\RedirectionData;
+use OnlinePayments\Sdk\Domain\ThreeDSecure;
 
 /**
  * Class PaymentRequestBuilder

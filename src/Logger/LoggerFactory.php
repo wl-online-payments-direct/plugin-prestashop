@@ -17,6 +17,7 @@ namespace WorldlineOP\PrestaShop\Logger;
 
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
@@ -47,7 +48,8 @@ class LoggerFactory
             $level
         );
         $fileHandler->setFilenameFormat('{date}_{filename}', 'Ym');
-        $this->logger->pushHandler($fileHandler);
+        $this->logger->pushHandler($fileHandler)
+                     ->pushProcessor(new UidProcessor(7));
     }
 
     /**

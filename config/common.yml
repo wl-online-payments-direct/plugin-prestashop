@@ -35,7 +35,29 @@ services:
     class: 'WorldlineOP\PrestaShop\Presenter\WebhookEventPresenter'
     public: true
     arguments:
+      - '@worldlineop.getpayment.presenter'
+      - '@worldlineop.getrefund.presenter'
+      - '@worldlineop.logger.factory'
+
+  worldlineop.getpayment.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter'
+    public: true
+    arguments:
       - '@worldlineop.module'
       - '@worldlineop.sdk.client.factory'
       - '@worldlineop.settings.loader'
+      - '@worldlineop.logger.factory'
+
+  worldlineop.getrefund.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\GetRefundPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.logger.factory'
+
+  worldlineop.processor.transaction:
+    class: 'WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor'
+    public: true
+    arguments:
+      - '@worldlineop.module'
       - '@worldlineop.logger.factory'

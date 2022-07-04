@@ -81,6 +81,9 @@ configuration:
     advancedSettingsEnabled: 0
     paymentFlowSettingsDisplayed: 0
     force3DsV2: 1
+    switchEndpoint: 0
+    testEndpoint: 'https://payment.preprod.direct.ingenico.com'
+    prodEndpoint: 'https://payment.direct.ingenico.com'
     logsEnabled: 0
     paymentSettings:
       transactionType: 'SALE'
@@ -88,6 +91,7 @@ configuration:
       retentionHours: 3
       successOrderStateId: 0
       pendingOrderStateId: 0
+      safetyDelay: 20
       errorOrderStateId: 0
     displayWhatsNew: 0
   paymentMethodsSettings:

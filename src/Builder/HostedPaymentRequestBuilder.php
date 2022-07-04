@@ -15,14 +15,14 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
-use Ingenico\Direct\Sdk\Domain\CardPaymentMethodSpecificInput;
-use Ingenico\Direct\Sdk\Domain\HostedCheckoutSpecificInput;
-use Ingenico\Direct\Sdk\Domain\MobilePaymentMethodHostedCheckoutSpecificInput;
-use Ingenico\Direct\Sdk\Domain\Order;
-use Ingenico\Direct\Sdk\Domain\OrderReferences;
-use Ingenico\Direct\Sdk\Domain\PaymentProductFilter;
-use Ingenico\Direct\Sdk\Domain\PaymentProductFiltersHostedCheckout;
-use Ingenico\Direct\Sdk\Domain\ThreeDSecure;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\MobilePaymentMethodHostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\Order;
+use OnlinePayments\Sdk\Domain\OrderReferences;
+use OnlinePayments\Sdk\Domain\PaymentProductFilter;
+use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
+use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use Language;
 use RandomLib\Factory;
 use SecurityLib\Strength;

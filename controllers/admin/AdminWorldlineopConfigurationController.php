@@ -13,10 +13,10 @@
  *
  */
 
-use Ingenico\Direct\Sdk\Client;
-use Ingenico\Direct\Sdk\Communicator;
-use Ingenico\Direct\Sdk\CommunicatorConfiguration;
-use Ingenico\Direct\Sdk\DefaultConnection;
+use OnlinePayments\Sdk\Client;
+use OnlinePayments\Sdk\Communicator;
+use OnlinePayments\Sdk\CommunicatorConfiguration;
+use OnlinePayments\Sdk\DefaultConnection;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
@@ -120,11 +120,13 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
                 return;
             }
             $this->saveAccount();
+            $this->updatePaymentMethods();
         }
         if (Tools::isSubmit('submitSaveAccountForm')) {
             if (false === $this->saveAccount()) {
                 return;
             }
+            $this->updatePaymentMethods();
         }
     }
 
@@ -165,8 +167,11 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         $form = $accountUpdater->forceResolve($form);
         $accountTested = new AccountSettings();
         $accountTested = $accountUpdater->forceDenormalize($form, $accountTested);
+        /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $savedSettings */
+        $savedSettings = $this->module->getService('worldlineop.settings');
         $settings = new Settings();
         $settings->accountSettings = $accountTested;
+        $settings->advancedSettings = $savedSettings->advancedSettings;
         $settings = $settings->postLoading();
         $connection = new DefaultConnection();
         $communicatorConfiguration = new CommunicatorConfiguration(
@@ -201,6 +206,27 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     }
 
     /**
+     * @return void
+     */
+    public function updatePaymentMethods()
+    {
+        /** @var \WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $getProductsService */
+        $getProductsService = $this->module->getService('worldlineop.settings.get_products');
+        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater $updater */
+        $updater = $this->module->getService('worldlineop.settings.payment_methods.updater');
+        try {
+            $iframeProducts = $getProductsService->request('iframe');
+            $redirectProducts = $getProductsService->request('redirect');
+            $updater->update([
+                'redirectPaymentMethods' => $redirectProducts,
+                'iframePaymentMethods' => $iframeProducts,
+            ]);
+        } catch (Exception $e) {
+            return;
+        }
+    }
+
+    /**
      *
      */
     public function processSaveAdvancedSettingsForm()
@@ -211,6 +237,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         $form = Tools::getValue('worldlineopAdvancedSettings');
         try {
             $updater->update($form);
+            $updater->updateLogo(isset($form['deleteEndpointLogo']));
         } catch (ExceptionList $e) {
             $this->errors += $e->getExceptionsMessages();
 

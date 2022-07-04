@@ -101,7 +101,7 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
             $this->printDebug('No orders eligible');
             exit;
         }
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
         $rows = array_map(

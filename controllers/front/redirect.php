@@ -20,10 +20,12 @@ use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
  */
 class WorldlineopRedirectModuleFrontController extends ModuleFrontController
 {
-    const STATUS_CANCELLED = 'CANCELLED_BY_CONSUMER';
-    const STATUS_CREATED = 'PAYMENT_CREATED';
-    const STATUS_CATEGORY_REJECTED = 'REJECTED';
-    const STATUS_CATEGORY_SUCCESSFUL = 'SUCCESSFUL';
+    const HC_STATUS_CANCELLED = 'CANCELLED_BY_CONSUMER';
+    const HC_STATUS_CREATED = 'PAYMENT_CREATED';
+
+    const PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED = 'REJECTED';
+
+    const PAYMENT_STATUS_UNSUCCESSFUL = 'UNSUCCESSFUL';
 
     const ACTIONS = ['redirectReturnHosted', 'redirectReturnIframe', 'redirectReturnInternalIframe'];
 
@@ -39,7 +41,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
     /** @var \WorldlineOP\PrestaShop\Repository\CreatedPaymentRepository $createdPaymentRepository */
     private $createdPaymentRepository;
 
-    /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+    /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
     private $merchantClient;
 
     /** @var CartChecksum $cartChecksum */
@@ -55,6 +57,17 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $this->createdPaymentRepository = $this->module->getService('worldlineop.repository.created_payment');
         $this->merchantClient = $this->module->getService('worldlineop.sdk.client');
         $this->cartChecksum = $this->module->getService('worldlineop.checksum.cart');
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateVarPage()
+    {
+        $page = parent::getTemplateVarPage();
+        $page['meta']['robots'] = 'noindex';
+
+        return $page;
     }
 
     /**
@@ -135,9 +148,9 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                     $this->logger->error($e->getMessage());
                 }
                 if (isset($existingHostedCheckoutResponse)) {
-                    if (self::STATUS_CANCELLED === $existingHostedCheckoutResponse->getStatus() ||
-                        self::STATUS_CATEGORY_REJECTED === $existingHostedCheckoutResponse->getCreatedPaymentOutput()
-                                                                                          ->getPaymentStatusCategory()
+                    if (self::HC_STATUS_CANCELLED === $existingHostedCheckoutResponse->getStatus() ||
+                        self::PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED === $existingHostedCheckoutResponse->getCreatedPaymentOutput()
+                                                                                                         ->getPaymentStatusCategory()
                     ) {
                         $this->hostedCheckoutRepository->delete($hostedCheckout);
                         $hostedCheckout = new HostedCheckout();
@@ -205,42 +218,54 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         }
 
         try {
-            /** @var \Ingenico\Direct\Sdk\Domain\GetHostedCheckoutResponse $hostedCheckoutResponse */
+            /** @var \OnlinePayments\Sdk\Domain\GetHostedCheckoutResponse $hostedCheckoutResponse */
             $hostedCheckoutResponse = $this->merchantClient->hostedCheckout()
                                                            ->getHostedCheckout($hostedCheckout->session_id);
         } catch (Exception $e) {
             $this->dieOrderStep3();
         }
 
-        if (self::STATUS_CANCELLED === $hostedCheckoutResponse->getStatus()) {
+        if (self::HC_STATUS_CANCELLED === $hostedCheckoutResponse->getStatus()) {
             $this->hostedCheckoutRepository->delete($hostedCheckout);
             $this->dieOrderStep3(false);
         }
-        if (self::STATUS_CREATED === $hostedCheckoutResponse->getStatus()) {
-            if (self::STATUS_CATEGORY_REJECTED === $hostedCheckoutResponse->getCreatedPaymentOutput()
-                                                                          ->getPaymentStatusCategory()
+        if (self::HC_STATUS_CREATED === $hostedCheckoutResponse->getStatus()) {
+            if (self::PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED === $hostedCheckoutResponse->getCreatedPaymentOutput()
+                                                                                         ->getPaymentStatusCategory()
             ) {
                 $this->hostedCheckoutRepository->delete($hostedCheckout);
+                if (($idOrder = Order::getOrderByCartId($hostedCheckout->id_cart)) !== false) {
+                    die(json_encode([
+                        'redirectUrl' => $this->context->link->getModuleLink(
+                            $this->module->name,
+                            'rejected',
+                            ['id_order' => (int) $idOrder]
+                        ),
+                    ]));
+                } else {
                 $this->dieOrderStep3();
             }
         }
+        }
 
         $cart = new Cart((int) $hostedCheckout->id_cart);
-        if (false !== Order::getOrderByCartId($cart->id)) {
-            $customer = new Customer((int) $cart->id_customer);
-            die(json_encode([
-                'redirectUrl' => $this->context->link->getPageLink(
-                    'order-confirmation',
-                    null,
-                    null,
-                    [
-                        'id_cart' => $hostedCheckout->id_cart,
-                        'id_module' => $this->module->id,
-                        'key' => $customer->secure_key,
-                    ]
-                ),
-            ]));
+        $this->dieRedirectOrderConfirmation($cart, $hostedCheckout);
+        if (!Tools::getValue('getCall')) {
+            die();
         }
+        $this->logger->debug('Get call');
+        $paymentResponse = $hostedCheckoutResponse->getCreatedPaymentOutput()->getPayment();
+        /** @var \WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
+        $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
+        try {
+            $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
+            /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
+            $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
+            $transactionResponseProcessor->process($presentedData);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+        $this->dieRedirectOrderConfirmation($cart, $hostedCheckout);
         die();
     }
 
@@ -299,21 +324,27 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $cart = new Cart((int) $createdPayment->id_cart);
         $customer = new Customer((int) $cart->id_customer);
         $statusCategory = $paymentResponse->getStatusOutput()->getStatusCategory();
-        switch ($statusCategory) {
-            case 'UNSUCCESSFUL':
-                $this->dieOrderStep3();
-                break;
-            case 'COMPLETED':
-            case 'PENDING_MERCHANT':
-                $this->dieOrderConfirmation($cart, $customer);
-                break;
-            case 'PENDING_CONNECT_OR_3RD_PARTY':
-                die();
-                break;
-            default:
-                die();
-                break;
+        if (self::PAYMENT_STATUS_UNSUCCESSFUL === $statusCategory) {
+            $this->dieOrderStep3();
         }
+
+        $this->dieIframeOrderConfirmation($cart, $customer);
+        if (!Tools::getValue('getCall')) {
+            die();
+        }
+        $this->logger->debug('Get call');
+        /** @var \WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
+        $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
+        try {
+            $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
+            /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
+            $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
+            $transactionResponseProcessor->process($presentedData);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+        $this->dieIframeOrderConfirmation($cart, $customer);
+        die();
     }
 
     /**
@@ -334,7 +365,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      * @param Cart $cart
      * @param Customer $customer
      */
-    public function dieOrderConfirmation($cart, $customer)
+    public function dieIframeOrderConfirmation($cart, $customer)
     {
         if (false !== Order::getOrderByCartId($cart->id)) {
             die(json_encode([
@@ -350,6 +381,29 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                 ),
             ]));
         }
-        die();
+    }
+
+    /**
+     * @param Cart $cart
+     * @param HostedCheckout $hostedCheckout
+     * @return void
+     */
+    public function dieRedirectOrderConfirmation($cart, $hostedCheckout)
+    {
+        if (false !== Order::getOrderByCartId($cart->id)) {
+            $customer = new Customer((int) $cart->id_customer);
+            die(json_encode([
+                'redirectUrl' => $this->context->link->getPageLink(
+                    'order-confirmation',
+                    null,
+                    null,
+                    [
+                        'id_cart' => $hostedCheckout->id_cart,
+                        'id_module' => $this->module->id,
+                        'key' => $customer->secure_key,
+                    ]
+                ),
+            ]));
+        }
     }
 }

@@ -35,6 +35,10 @@ $(document).ready(function () {
         paymentFlowSwitch: $('.js-worldlineop-payment-flow-modifications-switch'),
         paymentFlowSettingsBlock: $('.js-worldlineop-payment-flow-modifications-settings-block'),
 
+        endpointSwitchBlock: $('.js-worldlineop-switch-endpoint-block'),
+        endpointSwitchSwitch: $('.js-worldlineop-switch-endpoint-switch'),
+        endpointSwitchSettingsBlock: $('.js-worldlineop-switch-endpoint-settings-block'),
+
         redirectPaymentDisplayBlock: $('.js-worldlineop-display-redirect-pm-block'),
         redirectPaymentDisplaySwitch: $('.js-worldlineop-display-redirect-pm-switch'),
         redirectPaymentMethodsBlock: $('.js-worldlineop-redirect-payment-methods-block'),
@@ -64,6 +68,8 @@ $(document).ready(function () {
         this.toggleCapture();
         el.paymentFlowBlock.on('click', el.paymentFlowSwitch, this.togglePaymentFlow);
         this.togglePaymentFlow();
+        el.endpointSwitchBlock.on('click', el.endpointSwitchSwitch, this.toggleEndpoint);
+        this.toggleEndpoint();
         el.advSettingsBlock.on('click', el.advSettingsSwitch, this.updateAdvSettings);
         this.toggleAdvSettings();
         el.redirectPaymentDisplayBlock.on('click', el.redirectPaymentDisplaySwitch, this.toggleRedirectPaymentDisplay);
@@ -103,6 +109,13 @@ $(document).ready(function () {
           WorldlineOP.el.paymentFlowSettingsBlock.show(400);
         } else {
           WorldlineOP.el.paymentFlowSettingsBlock.hide(200);
+        }
+      },
+      toggleEndpoint: function () {
+        if ($('#worldlineopAdvancedSettings_switchEndpoint_on').prop('checked')) {
+          WorldlineOP.el.endpointSwitchSettingsBlock.show(400);
+        } else {
+          WorldlineOP.el.endpointSwitchSettingsBlock.hide(200);
         }
       },
       toggleAdvSettings: function () {

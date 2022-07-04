@@ -13,8 +13,6 @@
  *
  */
 
-use Ingenico\Direct\Sdk\Domain\GetPaymentProductsResponse;
-use Ingenico\Direct\Sdk\Merchant\Products\GetPaymentProductsParams;
 use WorldlineOP\PrestaShop\Exception\ExceptionList;
 
 /**
@@ -55,47 +53,15 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
     public function ajaxProcessGetPaymentProducts()
     {
         $paymentType = Tools::getValue('type');
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
-        $merchantClient = $this->module->getService('worldlineop.sdk.client');
-        $query = new GetPaymentProductsParams();
-        $defaultCurrency = Currency::getDefaultCurrency();
-        $query->setCurrencyCode($defaultCurrency instanceof Currency ? $defaultCurrency->iso_code : 'EUR');
-        $query->setCountryCode(Country::getIsoById((int) Configuration::get('PS_COUNTRY_DEFAULT')));
-        if ('iframe' === $paymentType) {
-            $query->setIsRecurring(true);
-            $query->setHide(['productsWithRedirects ']);
-        }
+        /** @var \WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $productRequest */
+        $productRequest = $this->module->getService('worldlineop.settings.get_products');
         try {
-            /** @var GetPaymentProductsResponse $productsResponses */
-            $productsResponses = $merchantClient->products()->getPaymentProducts($query);
-            $this->logger->debug('GetPaymentProducts response', ['response' => json_decode($productsResponses->toJson(), true)]);
+            $paymentMethods = $productRequest->request($paymentType);
         } catch (Exception $e) {
             $this->ajaxDie(json_encode([
                 'errors' => true,
                 'message' => $e->getMessage(),
             ]));
-        }
-
-        /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
-        $settings = $this->module->getService('worldlineop.settings');
-
-        /** @var \Ingenico\Direct\Sdk\Domain\PaymentProduct[] $products */
-        $products = $productsResponses->getPaymentProducts();
-        $paymentMethods = [];
-        foreach ($products as $product) {
-            if ('iframe' === $paymentType) {
-                $existingProduct = $settings->paymentMethodsSettings->findIframePMByProductId($product->getId());
-            } else {
-                $existingProduct = $settings->paymentMethodsSettings->findRedirectPMByProductId($product->getId());
-            }
-            $enabled = $existingProduct ? $existingProduct->enabled : false;
-            $paymentMethods[] = [
-                'productId' => $product->getId(),
-                'logo' => $product->getDisplayHints()->getLogo(),
-                'type' => $product->getPaymentMethod(),
-                'identifier' => $product->getDisplayHints()->getLabel(),
-                'enabled' => $enabled,
-            ];
         }
 
         $this->context->smarty->assign([

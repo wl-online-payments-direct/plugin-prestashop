@@ -20,6 +20,7 @@ return array(
     'Symfony\\Component\\PropertyInfo\\' => array($vendorDir . '/symfony/property-info'),
     'Symfony\\Component\\PropertyAccess\\' => array($vendorDir . '/symfony/property-access'),
     'Symfony\\Component\\OptionsResolver\\' => array($vendorDir . '/symfony/options-resolver'),
+    'Symfony\\Component\\Lock\\' => array($vendorDir . '/symfony/lock'),
     'Symfony\\Component\\Inflector\\' => array($vendorDir . '/symfony/inflector'),
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\ExpressionLanguage\\' => array($vendorDir . '/symfony/expression-language'),
@@ -33,6 +34,6 @@ return array(
     'PrestaShop\\ModuleLibServiceContainer\\' => array($vendorDir . '/prestashop/module-lib-service-container/src'),
     'PrestaShop\\ModuleLibCacheDirectoryProvider\\' => array($vendorDir . '/prestashop/module-lib-cache-directory-provider/src'),
     'PrestaShop\\Decimal\\' => array($vendorDir . '/prestashop/decimal/src'),
+    'OnlinePayments\\Sdk\\' => array($vendorDir . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk', $vendorDir . '/wl-online-payments-direct/sdk-php/lib/OnlinePayments/Sdk'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
-    'Ingenico\\Direct\\Sdk\\' => array($vendorDir . '/ingenico/direct-sdk-php/src/Ingenico/Direct/Sdk', $vendorDir . '/ingenico/direct-sdk-php/lib/Ingenico/Direct/Sdk'),
 );

@@ -101,7 +101,7 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
             return false;
         }
 
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         try {
             $merchantClient->tokens()->deleteToken($storedCard->value);

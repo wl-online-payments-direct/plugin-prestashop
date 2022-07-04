@@ -15,8 +15,8 @@
 
 namespace WorldlineOP\PrestaShop\Sdk;
 
-use Ingenico\Direct\Sdk\Client;
-use Ingenico\Direct\Sdk\Communicator;
+use OnlinePayments\Sdk\Client;
+use OnlinePayments\Sdk\Communicator;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 
 /**
@@ -43,7 +43,7 @@ class ClientFactory
     }
 
     /**
-     * @return \Ingenico\Direct\Sdk\Merchant\MerchantClient|\Ingenico\Direct\Sdk\Merchant\MerchantClientInterface
+     * @return \OnlinePayments\Sdk\Merchant\MerchantClient|\OnlinePayments\Sdk\Merchant\MerchantClientInterface
      */
     public function getMerchant()
     {

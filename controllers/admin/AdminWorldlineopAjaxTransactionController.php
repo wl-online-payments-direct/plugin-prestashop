@@ -13,9 +13,10 @@
  *
  */
 
-use Ingenico\Direct\Sdk\Domain\AmountOfMoney;
-use Ingenico\Direct\Sdk\Domain\CapturePaymentRequest;
-use Ingenico\Direct\Sdk\Domain\RefundRequest;
+use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
+use OnlinePayments\Sdk\Domain\RefundRequest;
+use OnlinePayments\Sdk\ResponseException;
 use WorldlineOP\PrestaShop\Utils\Decimal;
 
 /**
@@ -43,14 +44,14 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]));
         }
 
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
         $capturePaymentRequest = new CapturePaymentRequest();
         $capturePaymentRequest->setAmount((int) Decimal::multiply((string) $transaction['amountToCapture'], '100')->getIntegerPart());
         try {
             $captureResponse = $merchantClient->payments()->capturePayment($transaction['id'], $capturePaymentRequest);
-        } catch (\Ingenico\Direct\Sdk\ResponseException $re) {
+        } catch (ResponseException $re) {
             $this->context->smarty->assign('worldlineopAjaxTransactionError', $re->getMessage());
             $this->module->logger->error('Capture request', ['request' => json_decode($capturePaymentRequest->toJson(), true)]);
             $this->module->logger->error('Response exception', ['response' => json_decode($re->getResponse()->toJson(), true)]);
@@ -89,7 +90,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
                 'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
             ]));
         }
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
         $refundRequest = new RefundRequest();
@@ -99,7 +100,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
         $refundRequest->setAmountOfMoney($amountOfMoney);
         try {
             $refundResponse = $merchantClient->payments()->refundPayment($transaction['id'], $refundRequest);
-        } catch (\Ingenico\Direct\Sdk\ResponseException $re) {
+        } catch (ResponseException $re) {
             $this->context->smarty->assign('worldlineopAjaxTransactionError', $re->getMessage());
             $this->module->logger->error('Refund request', ['request' => json_decode($refundRequest->toJson(), true)]);
             $this->module->logger->error('Response exception', ['response' => json_decode($re->getResponse()->toJson(), true)]);
@@ -139,12 +140,12 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]));
         }
 
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
         try {
             $cancelResponse = $merchantClient->payments()->cancelPayment($transaction['id']);
-        } catch (\Ingenico\Direct\Sdk\ResponseException $re) {
+        } catch (ResponseException $re) {
             $this->context->smarty->assign('worldlineopAjaxTransactionError', $re->getMessage());
             $this->module->logger->error('Cancel response exception', ['response' => json_decode($re->getResponse()->toJson(), true)]);
         } catch (Exception $e) {

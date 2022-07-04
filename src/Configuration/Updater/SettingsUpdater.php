@@ -31,6 +31,9 @@ use WorldlineOP\PrestaShop\OptionsResolver\AbstractSettingsResolver;
  */
 abstract class SettingsUpdater
 {
+    /** @var array $authorizedLogoExtensions */
+    protected $authorizedLogoExtensions = ['png' => IMAGETYPE_PNG, 'gif' => IMAGETYPE_GIF, 'jpg' => IMAGETYPE_JPEG];
+
     /** @var Serializer $serializer */
     protected $serializer;
 

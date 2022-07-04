@@ -15,8 +15,8 @@
 
 namespace WorldlineOP\PrestaShop\Sdk;
 
-use Ingenico\Direct\Sdk\CommunicatorConfiguration;
-use Ingenico\Direct\Sdk\Domain\ShoppingCartExtension;
+use OnlinePayments\Sdk\CommunicatorConfiguration;
+use OnlinePayments\Sdk\Domain\ShoppingCartExtension;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 

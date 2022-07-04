@@ -13,7 +13,7 @@
  *
  */
 
-use Ingenico\Direct\Sdk\ResponseException;
+use OnlinePayments\Sdk\ResponseException;
 use PrestaShop\Decimal\Number;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
 use WorldlineOP\PrestaShop\Utils\Decimal;
@@ -67,7 +67,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             //@formatter:on
         }
 
-        /** @var \Ingenico\Direct\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         try {
             $hostedTokenizationResponse = $merchantClient->hostedTokenization()
