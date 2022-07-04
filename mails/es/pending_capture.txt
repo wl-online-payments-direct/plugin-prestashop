@@ -1,0 +1,12 @@
+Hola,  {firstname} {lastname},
+
+Gracias por comprar en {shop_name}!
+
+Detalles del pedido
+Pedido : {order_name}
+Pago : Pago aplazado. Se ha autorizado el pago para que sea capturado automáticamente en un plazo de 7 días.
+
+Cuando se haya realizado la remesa bancaria, se activará un mensaje de correo electrónico para informarte de que se ha completado el pago.
+
+Para hacer un seguimiento de tu pedido y descargar la factura en nuestra tienda, ve a la sección de Historial y detalles de pedidos de tu cuenta de cliente.
+Si tienes una cuenta de invitado, puedes hacer un seguimiento de tu pedido a través de la sección Seguimiento para invitados de nuestra tienda.

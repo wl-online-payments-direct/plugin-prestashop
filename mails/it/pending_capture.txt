@@ -1,0 +1,11 @@
+Salve {firstname} {lastname},
+
+Grazie per l’acquisto su {shop_name}!
+
+Dettagli dell’ordine
+Order: {order_name}
+Payment: Deferred payment. Payment has been authorized to be captured automatically within 7 days.
+
+Quando la banca avrà effettuato la rimessa, verrà inviata un’e-mail di avvenuto pagamento.
+Seguire l’ordine e scaricare la fattura per il proprio negozio, andare alla sezione Cronologia ordini e dettagli del proprio account cliente.
+Se si possiede un account ospite, è possibile seguire l’ordine dalla sezione Monitoraggio ospite sul nostro negozio.

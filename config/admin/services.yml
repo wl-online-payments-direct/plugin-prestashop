@@ -1,0 +1,12 @@
+imports:
+  - { resource: ../common.yml }
+
+services:
+
+  worldlineop.transaction.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\TransactionPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.repository.transaction'
+      - '@worldlineop.sdk.client'

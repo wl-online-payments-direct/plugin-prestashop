@@ -1,0 +1,6 @@
+Hi {firstname} {lastname},
+
+Thank you for shopping on {shop_name}!
+
+Order: {order_name}
+Payment: Deferred payment. Payment has been authorized to be captured automatically within 7 days.

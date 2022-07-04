@@ -1,0 +1,116 @@
+tabs:
+  - className: 'AdminWorldlineopLogs'
+    parentClassName: ''
+    names:
+      fr: 'Logs Worldline OP'
+      en: 'Worldline OP Logs'
+  - className: 'AdminWorldlineopAjax'
+    parentClassName: ''
+    names:
+      fr: 'Ajax Worldline OP'
+      en: 'Worldline OP Ajax'
+  - className: 'AdminWorldlineopAjaxTransaction'
+    parentClassName: ''
+    names:
+      fr: 'Ajax Transaction Worldline OP'
+      en: 'Worldline OP Ajax Transaction'
+  - className: 'AdminWorldlineopConfiguration'
+    parentClassName: ''
+    names:
+      fr: 'Configuration Worldline OP'
+      en: 'Worldline OP Configuration'
+hooks:
+  - 'paymentOptions'
+  - 'orderConfirmation'
+  - 'displayAdminOrderLeft'
+  - 'displayAdminOrderMainBottom'
+  - 'displayHeader'
+  - 'displayPaymentByBinaries'
+  - 'displayPaymentTop'
+  - 'actionOrderStatusPostUpdate'
+  - 'displayBackOfficeFooter'
+  - 'actionFrontControllerSetMedia'
+  - 'actionAdminControllerSetMedia'
+  - 'customerAccount'
+  - 'displayPDFInvoice'
+orderStatuses:
+  - configKey: 'WOP_PENDING_ORDER_STATUS_ID'
+    color: '#34209E'
+    logo: 'icon_WOP_PENDING_ORDER_STATUS.gif'
+    template: ''
+    send_email: 0
+    invoice: 0
+    logable: 0
+    deleted: 0
+    names:
+      fr: 'En attente de la confirmation de paiement'
+      en: 'Awaiting payment confirmation'
+      es: 'Esperando confirmación del pago'
+      it: 'In attesa della conferma di pagamento'
+      nl: 'In afwachting van betalingsbevestiging'
+      de: 'Warten auf Zahlungsbestätigung'
+  - configKey: 'WOP_AWAITING_CAPTURE_STATUS_ID'
+    color: '#3498D8'
+    logo: 'icon_WOP_AWAITING_CAPTURE_STATUS.gif'
+    template: ''
+    send_email: 0
+    invoice: 0
+    logable: 0
+    deleted: 0
+    names:
+      fr: 'En attente de la remise en banque du paiement'
+      en: 'Awaiting payment capture'
+      es: 'Esperando captura del pago'
+      it: 'In attesa di ricevere il pagamento'
+      nl: 'In afwachting van betalingsvastlegging'
+      de: 'Warten auf Zahlungserfassung'
+configuration:
+  accountSettings:
+    environment: 'test'
+    testPspid: ''
+    testApiKey: ''
+    testApiSecret: ''
+    testWebhooksKey: ''
+    testWebhooksSecret: ''
+    prodPspid: ''
+    prodApiKey: ''
+    prodApiSecret: ''
+    prodWebhooksKey: ''
+    prodWebhooksSecret: ''
+  advancedSettings:
+    advancedSettingsEnabled: 0
+    paymentFlowSettingsDisplayed: 0
+    force3DsV2: 1
+    logsEnabled: 0
+    paymentSettings:
+      transactionType: 'SALE'
+      captureDelay: 3
+      retentionHours: 3
+      successOrderStateId: 0
+      pendingOrderStateId: 0
+      errorOrderStateId: 0
+    displayWhatsNew: 0
+  paymentMethodsSettings:
+    displayGenericOption: 1
+    redirectTemplateFilename: ''
+    redirectCallToAction:
+      fr: 'Payer avec Worldline Online Payments'
+      en: 'Pay with Worldline Online Payments'
+      es: 'Pagar con Worldline Online Payments'
+      it: 'Pagare con Worldline Online Payments'
+      nl: 'Betaal met Worldline Online Payments'
+      de: 'Bezahlen mit Worldline Online Payments'
+    iframeTemplateFilename: 'HTPTemplate11_Full.html'
+    iframeCallToAction:
+      fr: 'Payer avec une carte de crédit'
+      en: 'Pay with credit card'
+      es: 'Pagar con tarjeta de crédito'
+      it: 'Pagare con carta di credito'
+      nl: 'Betaal met creditcard'
+      de: 'Bezahlen mit Kreditkarte'
+    displayRedirectPaymentOptions: 0
+    displayIframePaymentOptions: 0
+    iframeLogoFilename: 'cb_visa_mc_amex.svg'
+    redirectPaymentMethods: []
+    iframePaymentMethods: []
+

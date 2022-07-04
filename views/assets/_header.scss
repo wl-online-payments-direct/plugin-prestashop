@@ -1,0 +1,33 @@
+.worldlineop-header {
+  justify-content: space-between;
+
+  .worldlineop-logo {
+    img {
+      height: 50px;
+    }
+
+    align-items: center;
+  }
+  .worldlineop-support {
+    .contact {
+      i {
+        align-items: center;
+        font-size: 50px;
+      }
+
+      > div {
+        flex-direction: column;
+        padding-left: 15px;
+        margin-left: 15px;
+        margin-right: 15px;
+        border-left: 1px solid;
+        justify-content: center;
+      }
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      justify-content: space-around;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+Hallo {firstname} {lastname},
+
+Vielen Dank für Ihren Einkauf bei {shop_name}!
+
+Bestelldetails
+Bestellung: {order_name}
+Zahlung: Zahlungsverzug. Es wurde genehmigt, dass die Zahlung innerhalb von 7 Tagen automatisch eingezogen wird.
+
+Sobald die Banküberweisung erfolgt ist, wird eine E-Mail mit der Information ausgelöst, dass die Zahlung abgeschlossen ist.
+Verfolgen Sie Ihre Bestellung und laden Sie Ihre Rechnung von unserem Shop herunter, indem Sie in Ihrem Kundenkonto den Bereich Bestellverlauf und Details aufrufen.
+Wenn Sie ein Gastkonto haben, können Sie Ihre Bestellung über den Abschnitt Guest Tracking in unserem Shop verfolgen.

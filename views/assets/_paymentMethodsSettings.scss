@@ -1,0 +1,43 @@
+h3.title {
+  margin-top: 30px;
+}
+
+.worldlineop-payment-methods-list {
+  padding-top: 50px;
+
+  .payment-products {
+    display: flex;
+    flex-wrap: wrap;
+
+    .payment-product {
+      margin-right: 20px;
+      text-align: center;
+      width: 165px;
+      display: flex;
+      flex-direction: column;
+
+      .logo {
+        height: 50px;
+
+        img {
+          height: 100%;
+        }
+      }
+
+      .title {
+        font-weight: bold;
+        font-size: 16px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        height: 60px;
+      }
+
+      .enable-title {
+        display: block;
+        text-align: center;
+      }
+    }
+  }
+}
+

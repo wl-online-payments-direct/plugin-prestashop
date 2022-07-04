@@ -1,0 +1,41 @@
+imports:
+  - { resource: install.yml }
+  - { resource: settings.yml }
+  - { resource: repository.yml }
+  - { resource: sdk.yml }
+
+services:
+
+  worldlineop.module:
+    class: 'Worldlineop'
+    factory: ['Module', 'getInstanceByName']
+    public: true
+    arguments:
+      - 'worldlineop'
+
+  worldlineop.context:
+    class: 'Context'
+    factory: ['Context', 'getContext']
+    public: true
+
+  worldlineop.logger.factory:
+    class: 'WorldlineOP\PrestaShop\Logger\LoggerFactory'
+    public: true
+    arguments:
+      - '@worldlineop.settings'
+
+  worldlineop.logger:
+    class: 'WorldlineOP\PrestaShop\Logger\LoggerFactory'
+    public: true
+    arguments:
+      - '@worldlineop.settings'
+    factory: ['@worldlineop.logger.factory', 'getLogger']
+
+  worldlineop.event.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\WebhookEventPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.sdk.client.factory'
+      - '@worldlineop.settings.loader'
+      - '@worldlineop.logger.factory'

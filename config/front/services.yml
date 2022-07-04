@@ -1,0 +1,41 @@
+imports:
+  - { resource: ../common.yml }
+  - { resource: ./payment_builder.yml }
+
+services:
+
+  worldlineop.payment.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\PaymentOptionsPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.settings'
+      - '@worldlineop.context'
+
+  worldlineop.repository.hosted_checkout:
+    class: 'WorldlineOP\PrestaShop\Repository\HostedCheckoutRepository'
+    public: true
+
+  worldlineop.repository.created_payment:
+    class: 'WorldlineOP\PrestaShop\Repository\CreatedPaymentRepository'
+    public: true
+
+  worldlineop.checksum.address:
+    class: 'AddressChecksum'
+    public: true
+
+  worldlineop.checksum.cart:
+    class: 'CartChecksum'
+    public: true
+    arguments:
+      - '@worldlineop.checksum.address'
+
+  worldlineop.storedcards.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\StoredCardsPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.context'
+      - '@worldlineop.sdk.client'
+      - '@worldlineop.repository.token'
+

@@ -1,0 +1,39 @@
+.preview-logo {
+  vertical-align: baseline;
+  max-width: 120px;
+  max-height: 30px;
+}
+
+.worldlineop-upload {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.worldlineop-upload + label {
+  width: 120px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  color: #009597;
+  padding-top: 5px;
+  padding-left: 5px;
+}
+
+.worldlineop-upload:focus + label,
+.worldlineop-upload.has-focus + label {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.worldlineop-upload:focus + label,
+.worldlineop-upload.has-focus + label,
+.worldlineop-upload + label:hover {
+  color: #005f61;
+}

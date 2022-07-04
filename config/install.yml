@@ -1,0 +1,22 @@
+services:
+
+  worldlineop.tab.manager:
+    class: 'WorldlineOP\PrestaShop\Utils\TabManager'
+    public: true
+
+  worldlineop.status.manager:
+    class: 'WorldlineOP\PrestaShop\Utils\OrderStatusManager'
+    public: true
+
+  worldlineop.installer:
+    class: 'WorldlineOP\PrestaShop\Installer\Installer'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.tab.manager'
+      - '@worldlineop.status.manager'
+      - '@worldlineop.settings.account.updater'
+      - '@worldlineop.settings.advanced_settings.updater'
+      - '@worldlineop.settings.payment_methods.updater'
+      - !php/const _PS_VERSION_
+      - '@worldlineop.logger.factory'

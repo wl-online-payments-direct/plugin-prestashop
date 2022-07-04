@@ -1,0 +1,65 @@
+<?php
+/**
+ * 2021 Worldline Online Payments
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0).
+ * It is also available through the world-wide-web at this URL: https://opensource.org/licenses/AFL-3.0
+ *
+ * @author    PrestaShop partner
+ * @copyright 2021 Worldline Online Payments
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ *
+ */
+
+namespace WorldlineOP\PrestaShop\Configuration\Entity;
+
+/**
+ * Class Settings
+ * @package WorldlineOP\PrestaShop\Configuration\Entity
+ */
+class Settings
+{
+    const SDK_ENDPOINT_TEST = 'https://payment.preprod.direct.ingenico.com';
+    const SDK_ENDPOINT_PROD = 'https://payment.direct.ingenico.com';
+
+    const DEFAULT_SUBDOMAIN = 'https://payment.';
+
+    /** @var AccountSettings $accountSettings */
+    public $accountSettings;
+
+    /** @var AdvancedSettings $advancedSettings */
+    public $advancedSettings;
+
+    /** @var PaymentMethodsSettings $paymentMethodsSettings */
+    public $paymentMethodsSettings;
+
+    /** @var \stdClass $credentials */
+    public $credentials;
+
+    /**
+     * @return $this
+     */
+    public function postLoading()
+    {
+        $this->credentials = new \stdClass();
+        if (AccountSettings::ACCOUNT_MODE_TEST === $this->accountSettings->environment) {
+            $this->credentials->pspid = $this->accountSettings->testPspid;
+            $this->credentials->apiKey = $this->accountSettings->testApiKey;
+            $this->credentials->apiSecret = $this->accountSettings->testApiSecret;
+            $this->credentials->webhooksKey = $this->accountSettings->testWebhooksKey;
+            $this->credentials->webhooksSecret = $this->accountSettings->testWebhooksSecret;
+            $this->credentials->endpoint = self::SDK_ENDPOINT_TEST;
+        } else {
+            $this->credentials->pspid = $this->accountSettings->prodPspid;
+            $this->credentials->apiKey = $this->accountSettings->prodApiKey;
+            $this->credentials->apiSecret = $this->accountSettings->prodApiSecret;
+            $this->credentials->webhooksKey = $this->accountSettings->prodWebhooksKey;
+            $this->credentials->webhooksSecret = $this->accountSettings->prodWebhooksSecret;
+            $this->credentials->endpoint = self::SDK_ENDPOINT_PROD;
+        }
+
+        return $this;
+    }
+}

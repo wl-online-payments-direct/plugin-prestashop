@@ -1,0 +1,11 @@
+Hallo {firstname} {lastname},
+
+Bedankt dat je bij {shop_name} hebt gewinkeld!
+
+Details order
+Order: {order_name}
+Betaling: Uitgestelde betaling. De betaling is geautoriseerd voor automatische vastlegging binnen 7 dagen.
+
+Zodra afdracht door de bank is uitgevoerd, wordt een e-mailbericht geactiveerd dat je informeert dat de betaling is voltooid.
+Volg je order en download je factuur in onze winkel, ga naar de sectie Ordergeschiedenis en details van je klantaccount.
+Als je een gastaccount hebt, kun je jouw order volgen via de sectie Gasttracering van onze winkel.

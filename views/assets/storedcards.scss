@@ -1,0 +1,55 @@
+#module-worldlineop-storedcards {
+  #stored-cards {
+    padding-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .stored-card {
+      margin-right: 30px;
+      margin-bottom: 30px;
+
+      .card-content {
+        padding: 15px;
+        border: 0;
+        border-radius: 10px;
+        height: 160px;
+        width: 300px;
+        font-family: monospace;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: rgb(101,37,174);
+        background: -moz-linear-gradient(180deg, rgba(101,37,174,1) 23%, rgba(68,22,147,1) 63%, rgba(66,10,125,1) 100%);
+        background: -webkit-linear-gradient(180deg, rgba(101,37,174,1) 23%, rgba(68,22,147,1) 63%, rgba(66,10,125,1) 100%);
+        background: linear-gradient(180deg, rgba(101,37,174,1) 23%, rgba(68,22,147,1) 63%, rgba(66,10,125,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6525ae",endColorstr="#420a7d",GradientType=1);
+        color: white;
+
+        img {
+          width: 40px;
+        }
+        .card-brand {
+          display: flex;
+          justify-content: space-between;
+
+          img {
+            max-height: 30px;
+          }
+        }
+
+        .card-details {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      .card-action {
+        text-align: center;
+
+        span {
+          vertical-align: bottom;
+        }
+      }
+    }
+  }
+}

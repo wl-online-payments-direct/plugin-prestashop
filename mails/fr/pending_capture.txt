@@ -1,0 +1,9 @@
+Bonjour {firstname} {lastname},
+
+Merci d’avoir fait des achats sur {shop_name}!
+
+Commande : {order_name}
+Paiement : Paiement différé. Le paiement a été autorisé pour une remise en banque automatique dans un délai de 7 jours au maximum.
+Lorsque le versement de la banque aura été réalisé, un e-mail sera envoyé pour vous informer du fait que le paiement est finalisé.
+Faites le suivi de vos commandes et téléchargez votre facture sur notre boutique, rendez-vous dans l’Historique des commandes et la section « Détails » de votre compte client.
+Si vous disposez d’un compte invité, vous pouvez faire le suivi de votre commande via la section Suivi invité sur notre boutique.

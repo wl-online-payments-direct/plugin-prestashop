@@ -1,0 +1,30 @@
+#worldlineop-configuration {
+  .flex {
+    display: flex;
+  }
+
+  @import "header";
+
+  .worldlineop-advanced-settings-block {
+    div {
+      margin-left: 15px;
+      padding-top: 8px;
+    }
+
+    span {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 20px;
+      margin-top: 0;
+    }
+  }
+
+  .worldlineop-advanced-settings {
+    @import "_advancedSettings";
+  }
+
+  .worldlineop-payment-methods-settings {
+    @import "_paymentMethodsSettings";
+    @import "upload";
+  }
+}

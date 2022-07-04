@@ -1,0 +1,9 @@
+services:
+
+  worldlineop.repository.token:
+    class: 'WorldlineOP\PrestaShop\Repository\TokenRepository'
+    public: true
+
+  worldlineop.repository.transaction:
+    class: 'WorldlineOP\PrestaShop\Repository\TransactionRepository'
+    public: true

@@ -1,0 +1,92 @@
+services:
+
+  worldlineop.settings.serializer:
+    class: 'WorldlineOP\PrestaShop\Serializer\SettingsSerializer'
+    public: true
+
+  worldlineop.settings.loader:
+    class: 'WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader'
+    public: true
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+
+  worldlineop.settings.presenter:
+    class: 'WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+      - '@worldlineop.settings.loader'
+
+  worldlineop.settings.factory:
+    class: 'WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader'
+    public: true
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+
+  worldlineop.settings:
+    class: 'WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader'
+    public: true
+    shared: false
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+    factory: ['@worldlineop.settings.factory', 'deserialize']
+
+  worldlineop.settings.account.validation:
+    class: 'WorldlineOP\PrestaShop\Configuration\Validation\AccountValidationData'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+
+  worldlineop.settings.advanced_settings.validation:
+    class: 'WorldlineOP\PrestaShop\Configuration\Validation\AdvancedSettingsValidationData'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+
+  worldlineop.settings.payment_methods.validation:
+    class: 'WorldlineOP\PrestaShop\Configuration\Validation\PaymentMethodsValidationData'
+    public: true
+    arguments:
+      - '@worldlineop.module'
+
+  worldlineop.settings.account.resolver:
+    class: 'WorldlineOP\PrestaShop\OptionsResolver\AccountSettingsResolver'
+    public: true
+
+  worldlineop.settings.account.updater:
+    class: 'WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater'
+    public: true
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+      - '@worldlineop.settings.account.resolver'
+      - '@worldlineop.settings'
+      - '@worldlineop.settings.account.validation'
+      - '@worldlineop.module'
+
+  worldlineop.settings.advanced_settings.resolver:
+    class: 'WorldlineOP\PrestaShop\OptionsResolver\AdvancedSettingsResolver'
+    public: true
+
+  worldlineop.settings.advanced_settings.updater:
+    class: 'WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater'
+    public: true
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+      - '@worldlineop.settings.advanced_settings.resolver'
+      - '@worldlineop.settings'
+      - '@worldlineop.settings.advanced_settings.validation'
+      - '@worldlineop.module'
+
+  worldlineop.settings.payment_methods.resolver:
+    class: 'WorldlineOP\PrestaShop\OptionsResolver\PaymentMethodsSettingsResolver'
+    public: true
+
+  worldlineop.settings.payment_methods.updater:
+    class: 'WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater'
+    public: true
+    arguments:
+      - '@=service("worldlineop.settings.serializer").getSerializer()'
+      - '@worldlineop.settings.payment_methods.resolver'
+      - '@worldlineop.settings'
+      - '@worldlineop.settings.payment_methods.validation'
+      - '@worldlineop.module'
