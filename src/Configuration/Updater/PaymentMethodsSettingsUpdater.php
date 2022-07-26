@@ -52,7 +52,7 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
      * @param bool $deleteLogo
      * @throws Exception
      */
-    public function updateLogo($deleteLogo)
+    public function updateIframeLogo($deleteLogo)
     {
         if ($deleteLogo) {
             $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$this->settings->paymentMethodsSettings->iframeLogoFilename;
@@ -103,6 +103,65 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
         }
 
         $this->denormalize(['iframeLogoFilename' => $filename]);
+        $this->serialize();
+        $this->save();
+    }
+
+    /**
+     * @param bool $deleteLogo
+     * @throws Exception
+     */
+    public function updateGenericLogo($deleteLogo)
+    {
+        if ($deleteLogo) {
+            $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$this->settings->paymentMethodsSettings->genericLogoFilename;
+            if (realpath($file) === $file) {
+                unlink($file);
+            }
+            $this->denormalize(['genericLogoFilename' => '']);
+            $this->serialize();
+            $this->save();
+
+            return;
+        }
+        if (!isset($_FILES['worldlineopPaymentMethodsSettings']['error']['genericLogo']) ||
+            is_array($_FILES['worldlineopPaymentMethodsSettings']['error']['genericLogo'])
+        ) {
+            //@formatter:off
+            throw new Exception($this->module->l('Error while uploading subscription logo', 'PaymentMethodsSettingsUpdater'));
+            //@formatter:on
+        }
+        switch ($_FILES['worldlineopPaymentMethodsSettings']['error']['genericLogo']) {
+            case UPLOAD_ERR_OK:
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                return;
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                //@formatter:off
+                throw new Exception($this->module->l('Exceeded filesize limit for logo.', 'PaymentMethodsSettingsUpdater'));
+            //@formatter:on
+            default:
+                //@formatter:off
+                throw new Exception($this->module->l('Logo: Unknown error.', 'PaymentMethodsSettingsUpdater'));
+            //@formatter:on
+        }
+        $source = $_FILES['worldlineopPaymentMethodsSettings']['tmp_name']['genericLogo'];
+        list($width, $height, $fileType) = getimagesize($source);
+        if (!in_array($fileType, $this->authorizedLogoExtensions)) {
+            //@formatter:off
+            throw new Exception($this->module->l('Logo: You must submit .png, .gif, or .jpg files only.', 'PaymentMethodsSettingsUpdater'));
+            //@formatter:on
+        }
+        $filename = sprintf('%s.%s', md5(time()), array_search($fileType, $this->authorizedLogoExtensions));
+        $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$filename;
+        if (!move_uploaded_file($source, $file)) {
+            //@formatter:off
+            throw new Exception($this->module->l('Cannot upload logo.', 'PaymentMethodsSettingsUpdater'));
+            //@formatter:on
+        }
+
+        $this->denormalize(['genericLogoFilename' => $filename]);
         $this->serialize();
         $this->save();
     }

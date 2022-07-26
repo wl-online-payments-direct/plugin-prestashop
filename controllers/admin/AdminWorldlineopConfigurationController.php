@@ -237,7 +237,6 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         $form = Tools::getValue('worldlineopAdvancedSettings');
         try {
             $updater->update($form);
-            $updater->updateLogo(isset($form['deleteEndpointLogo']));
         } catch (ExceptionList $e) {
             $this->errors += $e->getExceptionsMessages();
 
@@ -259,7 +258,8 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         $form = Tools::getValue('worldlineopPaymentMethodsSettings');
         try {
             $updater->update($form);
-            $updater->updateLogo(isset($form['deleteLogo']));
+            $updater->updateGenericLogo(isset($form['deleteGenericLogo']));
+            $updater->updateIframeLogo(isset($form['deleteLogo']));
         } catch (ExceptionList $e) {
             $this->errors += $e->getExceptionsMessages();
 

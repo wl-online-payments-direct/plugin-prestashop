@@ -66,6 +66,42 @@
           </div>
         </div>
         <!-- /Display Generic Button -->
+        <!-- Generic Logo -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+              <span>
+                {l s='Generic logo displayed on your payment page' mod='worldlineop'}
+              </span>
+          </label>
+          <div class="col-lg-9">
+              {if $data.paymentMethodsSettings.genericLogoFilename}
+                <img class="preview-logo"
+                     src="{$data.extra.path.img|escape:'html':'UTF-8'}payment_logos/{$data.paymentMethodsSettings.genericLogoFilename|escape:'html':'UTF-8'}"/>
+              {/if}
+            <input type="file"
+                   name="worldlineopPaymentMethodsSettings[genericLogo]"
+                   id="worldlineopPaymentMethodsSettings[genericLogo]"
+                   class="worldlineop-upload js-worldlineop-upload"/>
+            <label for="worldlineopPaymentMethodsSettings[genericLogo]">
+              <i class="icon icon-upload"></i>
+              <span>
+                    {l s='Upload' mod='worldlineop'}
+                  </span>
+            </label>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+              {if $data.paymentMethodsSettings.genericLogoFilename}
+                <input type="checkbox" id="worldlineopPaymentMethodsSettings[deleteGenericLogo]" name="worldlineopPaymentMethodsSettings[deleteGenericLogo]" />
+                <label for="worldlineopPaymentMethodsSettings[deleteGenericLogo]">{l s='Delete current logo' mod='worldlineop'}</label>
+              {/if}
+            <div class="help-block">
+                {l s='You can upload here a new logo (file types accepted for logos are: .png .gif .jpg only)' mod='worldlineop'}<br/>
+                {l s='We recommend that you use images with 20px height & 120px length maximum' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
+        <!-- /Generic Logo -->
         <!-- Redirect CTA -->
         <div class="form-group">
           <label class="control-label col-lg-3 ">
@@ -315,14 +351,13 @@
           <!-- /Iframe payment methods list -->
           <!-- Template filename -->
           <div class="form-group">
-            <label class="control-label col-lg-3 required">
+            <label class="control-label col-lg-3">
               <span>{l s='Template filename' mod='worldlineop'}</span>
             </label>
             <div class="col-lg-9">
               <div class="fixed-width-xxl">
                 <input value="{$data.paymentMethodsSettings.iframeTemplateFilename|escape:'htmlall':'UTF-8'}"
                        type="text"
-                       required="required"
                        name="worldlineopPaymentMethodsSettings[iframeTemplateFilename]"
                        class="input fixed-width-xxl">
               </div>

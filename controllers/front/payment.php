@@ -62,7 +62,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             //@formatter:off
             die(json_encode([
                 'success' => false,
-                'message' => $this->module->l('An error occurred while processing the payment. Please refresh this page or contact our Customer Service.', 'payment'),
+                'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
             //@formatter:on
         }
@@ -77,7 +77,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             //@formatter:off
             die(json_encode([
                 'success' => false,
-                'message' => $this->module->l('An error occurred while processing the payment. Please refresh this page or contact our Customer Service.', 'payment'),
+                'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
             //@formatter:on
         }
@@ -122,7 +122,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             //@formatter:off
             die(json_encode([
                 'success' => false,
-                'message' => $this->module->l('An error occurred while processing the payment. Please refresh this page or contact our Customer Service.', 'payment'),
+                'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
             //@formatter:on
         } catch (Exception $e) {
@@ -130,7 +130,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             //@formatter:off
             die(json_encode([
                 'success' => false,
-                'message' => $this->module->l('An error occurred while processing the payment. Please refresh this page or contact our Customer Service.', 'payment'),
+                'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
             //@formatter:on
         }

@@ -241,10 +241,10 @@ class PaymentOptionsPresenter implements PresenterInterface
             $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
             $defaultIsoLang = Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'));
             $cta = $this->settings->paymentMethodsSettings->redirectCallToAction;
-            if ($this->settings->advancedSettings->switchEndpoint && $this->settings->advancedSettings->endpointLogoFilename) {
+            if ($this->settings->paymentMethodsSettings->genericLogoFilename) {
                 $logo = sprintf(
                     $this->module->getPathUri().'views/img/payment_logos/%s',
-                    $this->settings->advancedSettings->endpointLogoFilename
+                    $this->settings->paymentMethodsSettings->genericLogoFilename
                 );
             } else {
                 $logo = $this->module->getPathUri().'views/img/payment_logos/worldlineop_symbol.svg';

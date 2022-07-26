@@ -16,10 +16,14 @@
   <div id="js-worldlineop-iframe" class="js-worldlineop-htp worldlineop-htp"></div>
 
   <div class="js-worldlineop-generic-error alert alert-danger" style="display: none">
-    {l s='An error occurred while processing the payment. Please refresh this page or contact our Customer Service' mod='worldlineop'}
+    {l s='An error occurred while processing the payment.' mod='worldlineop'}
+    <a href="javascript:window.location.reload()">{l s='Please click here' mod='worldlineop'}</a>
+    {l s='to refresh this page or contact our Customer Service' mod='worldlineop'}
   </div>
   <div class="js-worldlineop-error alert alert-danger" style="display: none">
     <span></span>
+    <a href="javascript:window.location.reload()">{l s='Please click here' mod='worldlineop'}</a>
+    {l s='to refresh this page or contact our Customer Service' mod='worldlineop'}
   </div>
 </div>
 

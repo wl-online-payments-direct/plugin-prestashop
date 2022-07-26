@@ -15,15 +15,8 @@
 <h1>{l s='What\'s new in version 1.2.0' mod='worldlineop'}</h1>
 <br>
 <ul>
-  <li>{l s='Automatic refresh of payment methods list on a new instance of the plugin' mod='worldlineop'}</li>
-  <li>{l s='Workflow improvements:' mod='worldlineop'}</li>
-  <li style="list-style-type: none">
-    <ul>
-      <li>{l s='Gracefull split order management' mod='worldlineop'}</li>
-      <li>{l s='Dynamic feedback retrieval – if no feedback is received on a transaction, the plugin will fetch it!' mod='worldlineop'}</li>
-    </ul>
-  </li>
-  <li>{l s='Standardized logo sizes' mod='worldlineop'}</li>
+  <li>{l s='Upload your own logo for Hosted Checkout integration directly from the « payment methods » tab.' mod='worldlineop'}</li>
+  <li>{l s='Refresh directly the checkout page from the error message received in case of unsuccessful payment through the iFrame.' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

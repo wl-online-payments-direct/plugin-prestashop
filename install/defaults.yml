@@ -96,6 +96,7 @@ configuration:
     displayWhatsNew: 0
   paymentMethodsSettings:
     displayGenericOption: 1
+    genericLogoFilename: 'worldlineop_symbol.svg'
     redirectTemplateFilename: ''
     redirectCallToAction:
       fr: 'Payer avec Worldline Online Payments'

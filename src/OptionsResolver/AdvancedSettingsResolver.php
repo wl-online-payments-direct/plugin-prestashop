@@ -37,8 +37,6 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'testEndpoint',
                 'prodEndpoint',
                 'endpointLogo',
-                'endpointLogoFilename',
-                'deleteEndpointLogo',
                 'logsEnabled',
                 'paymentFlowSettingsDisplayed',
                 'advancedSettingsEnabled',

@@ -369,42 +369,6 @@
               </div>
             </div>
             <!-- /Prod Endpoint -->
-            <!-- Logo -->
-            <div class="form-group">
-              <label class="control-label col-lg-3 ">
-              <span>
-                {l s='Logo displayed on your payment page' mod='worldlineop'}
-              </span>
-              </label>
-              <div class="col-lg-9">
-                  {if $data.advancedSettings.endpointLogoFilename}
-                    <img class="preview-logo"
-                         src="{$data.extra.path.img|escape:'html':'UTF-8'}payment_logos/{$data.advancedSettings.endpointLogoFilename|escape:'html':'UTF-8'}"/>
-                  {/if}
-                <input type="file"
-                       name="worldlineopAdvancedSettings[endpointLogo]"
-                       id="worldlineopAdvancedSettings[endpointLogo]"
-                       class="worldlineop-upload js-worldlineop-upload"/>
-                <label for="worldlineopAdvancedSettings[endpointLogo]">
-                  <i class="icon icon-upload"></i>
-                  <span>
-                    {l s='Upload' mod='worldlineop'}
-                  </span>
-                </label>
-              </div>
-              <div class="col-lg-9 col-lg-offset-3">
-                  {if $data.advancedSettings.endpointLogoFilename}
-                    <input type="checkbox" id="worldlineopAdvancedSettings[deleteEndpointLogo]" name="worldlineopAdvancedSettings[deleteEndpointLogo]" />
-                    <label for="worldlineopAdvancedSettings[deleteEndpointLogo]">{l s='Delete current logo' mod='worldlineop'}</label>
-                  {/if}
-                <div class="help-block">
-                    {l s='You can upload here a new logo (file types accepted for logos are: .png .gif .jpg only)' mod='worldlineop'}<br/>
-                    {l s='We recommend that you use images with 20px height & 120px length maximum' mod='worldlineop'}
-                  <span></span>
-                </div>
-              </div>
-            </div>
-            <!-- /Logo -->
           </div>
         </div>
         <input type="hidden" name="action" value="saveAdvancedSettingsForm"/>

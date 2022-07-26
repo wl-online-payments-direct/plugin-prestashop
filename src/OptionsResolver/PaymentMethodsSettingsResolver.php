@@ -33,6 +33,8 @@ class PaymentMethodsSettingsResolver extends AbstractSettingsResolver
         $resolver
             ->setDefined([
                 'displayGenericOption',
+                'genericLogoFilename',
+                'deleteGenericLogo',
                 'redirectTemplateFilename',
                 'redirectCallToAction',
                 'iframeTemplateFilename',

@@ -28,6 +28,9 @@ class PaymentMethodsSettings
     /** @var bool $displayGenericOption */
     public $displayGenericOption;
 
+    /** @var string $genericLogoFilename */
+    public $genericLogoFilename;
+
     /** @var string $redirectTemplateFilename */
     public $redirectTemplateFilename;
 

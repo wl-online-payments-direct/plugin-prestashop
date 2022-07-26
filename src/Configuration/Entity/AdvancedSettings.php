@@ -39,9 +39,6 @@ class AdvancedSettings
     /** @var string $prodEndpoint */
     public $prodEndpoint;
 
-    /** @var string $endpointLogoFilename */
-    public $endpointLogoFilename;
-
     /** @var bool $logsEnabled */
     public $logsEnabled;
 
