@@ -12,11 +12,11 @@
  *
  *}
 
-<h1>{l s='What\'s new in version 1.2.0' mod='worldlineop'}</h1>
+<h1>{l s='What\'s new in version 1.3.0' mod='worldlineop'}</h1>
 <br>
 <ul>
-  <li>{l s='Upload your own logo for Hosted Checkout integration directly from the « payment methods » tab.' mod='worldlineop'}</li>
-  <li>{l s='Refresh directly the checkout page from the error message received in case of unsuccessful payment through the iFrame.' mod='worldlineop'}</li>
+  <li>{l s='Order Line Item data sent to Worldline Payment Page' mod='worldlineop'}</li>
+  <li>{l s='New Payment Methods added: Klarna, Oney' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

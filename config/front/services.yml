@@ -25,7 +25,7 @@ services:
     public: true
 
   worldlineop.checksum.cart:
-    class: 'CartChecksum'
+    class: 'WorldlineopCartChecksum'
     public: true
     arguments:
       - '@worldlineop.checksum.address'

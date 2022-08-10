@@ -18,7 +18,6 @@ namespace WorldlineOP\PrestaShop\Builder;
 use Context;
 use Country;
 use OnlinePayments\Sdk\Domain\Address;
-use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CompanyInformation;
@@ -31,13 +30,13 @@ use OnlinePayments\Sdk\Domain\PersonalInformation;
 use OnlinePayments\Sdk\Domain\PersonalName;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput;
-use OnlinePayments\Sdk\Domain\Shipping;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
+use WorldlineOP\PrestaShop\Presenter\ShoppingCartPresenter;
 use WorldlineOP\PrestaShop\Utils\Decimal;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
@@ -64,6 +63,9 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     /** @var Context $context */
     protected $context;
 
+    /** @var ShoppingCartPresenter $shoppingCartPresenter */
+    protected $shoppingCartPresenter;
+
     /** @var string $idProduct */
     protected $idProduct;
 
@@ -82,11 +84,13 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     public function __construct(
         Settings $settings,
         Worldlineop $module,
-        Context $context
+        Context $context,
+        ShoppingCartPresenter $shoppingCartPresenter
     ) {
         $this->settings = $settings;
         $this->module = $module;
         $this->context = $context;
+        $this->shoppingCartPresenter = $shoppingCartPresenter;
     }
 
     /**
@@ -138,7 +142,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     {
         $order = new Order();
         $amount = new AmountOfMoney();
-        $amount->setAmount(Decimal::multiply((string) $this->context->cart->getOrderTotal(), '100')->getIntegerPart());
+        $amount->setAmount((int) Decimal::multiply((string) $this->context->cart->getOrderTotal(), '100')->getIntegerPart());
         $amount->setCurrencyCode(Tools::getIsoCurrencyCodeById($this->context->cart->id_currency));
         $order->setAmountOfMoney($amount);
         $order->setCustomer($this->buildCustomer());
@@ -149,24 +153,6 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
             $this->context->cart->id.'-'.$generator->generateString(7, self::REFERENCE_CHARS)
         );
         $order->setReferences($orderReferences);
-        $shipping = new Shipping();
-        $customerAddress = new \Address((int) $this->context->cart->id_address_delivery);
-        $shippingAddress = new AddressPersonal();
-        $shippingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
-        $shippingAddress->setCity($customerAddress->city);
-        $shippingAddress->setStreet($customerAddress->address1);
-        $shippingAddress->setAdditionalInfo($customerAddress->address2);
-        $shippingAddress->setZip($customerAddress->postcode);
-        if ($customerAddress->id_state) {
-            $shippingAddress->setState(\State::getNameById($customerAddress->id_state));
-        }
-        $personalName = new PersonalName();
-        $personalName->setFirstName($customerAddress->firstname);
-        $personalName->setSurname($customerAddress->lastname);
-        $shippingAddress->setName($personalName);
-        $shipping->setAddress($shippingAddress);
-        $shipping->setEmailAddress($this->context->customer->email);
-        $shipping->setAddressIndicator($this->context->cart->id_address_delivery === $this->context->cart->id_address_invoice ? 'same-as-billing' : 'different-than-billing');
 
         return $order;
     }

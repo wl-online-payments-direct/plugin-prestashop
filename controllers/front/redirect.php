@@ -173,6 +173,21 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
             );
             $hostedCheckoutResponse = $this->merchantClient->hostedCheckout()
                                                            ->createHostedCheckout($hostedCheckoutRequest);
+        } catch (\OnlinePayments\Sdk\ValidationException $ve) {
+            foreach ($ve->getResponse()->getErrors() as $error) {
+                $this->logger->error(
+                    'Request validation error',
+                    ['error' => json_decode($error->toJson(), true)]
+                );
+            }
+            Tools::redirect($this->context->link->getPageLink(
+                'order',
+                null,
+                null,
+                ['step' => 3, 'worldlineopDisplayPaymentTopMessage' => 1]
+            ));
+
+            return;
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
             Tools::redirect($this->context->link->getPageLink(
@@ -243,9 +258,9 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                         ),
                     ]));
                 } else {
-                $this->dieOrderStep3();
+                    $this->dieOrderStep3();
+                }
             }
-        }
         }
 
         $cart = new Cart((int) $hostedCheckout->id_cart);

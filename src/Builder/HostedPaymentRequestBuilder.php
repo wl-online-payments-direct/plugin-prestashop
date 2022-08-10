@@ -15,13 +15,21 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
+use Country;
+use OnlinePayments\Sdk\Domain\AddressPersonal;
+use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\LineItem;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodHostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
+use OnlinePayments\Sdk\Domain\OrderLineDetails;
 use OnlinePayments\Sdk\Domain\OrderReferences;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
+use OnlinePayments\Sdk\Domain\PersonalName;
+use OnlinePayments\Sdk\Domain\Shipping;
+use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use Language;
 use RandomLib\Factory;
@@ -135,6 +143,69 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $this->context->cart->id.'-'.$generator->generateString(7, self::REFERENCE_CHARS)
         );
         $order->setReferences($orderReferences);
+        try {
+            $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
+        } catch (\Exception $e) {
+            return $order;
+        }
+        $shoppingCart = new ShoppingCart();
+        $items = [];
+        foreach ($shoppingCartPresented['products'] as $product) {
+            $item = new LineItem();
+            $itemAmount = new AmountOfMoney();
+            $itemAmount->setAmount((int)(string) $product['totalWithTax']);
+            $itemAmount->setCurrencyCode('EUR');
+            $item->setAmountOfMoney($itemAmount);
+            $itemLineDetails = new OrderLineDetails();
+            $itemLineDetails->setProductPrice((int)(string) $product['productPrice']);
+            $itemLineDetails->setDiscountAmount((int)(string) $product['discountPrice']);
+            $itemLineDetails->setProductCode($product['productCode']);
+            $itemLineDetails->setProductName($product['productName']);
+            $itemLineDetails->setQuantity($product['quantity']);
+            $itemLineDetails->setTaxAmount((int)(string) $product['tax']);
+            $itemLineDetails->setUnit('piece');
+            $itemLineDetails->setProductType('');
+            $item->setOrderLineDetails($itemLineDetails);
+            $items[] = $item;
+        }
+        $shippingItem = new LineItem();
+        $shippingItemAmount = new AmountOfMoney();
+        $shippingItemAmount->setAmount((int)(string) $shoppingCartPresented['shipping']['priceWithTax']);
+        $shippingItemAmount->setCurrencyCode('EUR');
+        $shippingItem->setAmountOfMoney($shippingItemAmount);
+        $shippingItemLineDetails = new OrderLineDetails();
+        $shippingItemLineDetails->setProductPrice((int)(string) $shoppingCartPresented['shipping']['priceWithoutTax']);
+        $shippingItemLineDetails->setDiscountAmount((int)(string) $shoppingCartPresented['shipping']['discountPrice']);
+        $shippingItemLineDetails->setProductCode('SHIPPING');
+        $shippingItemLineDetails->setProductName($this->module->l('Shipping cost'));
+        $shippingItemLineDetails->setQuantity(1);
+        $shippingItemLineDetails->setTaxAmount((int)(string) $shoppingCartPresented['shipping']['tax']);
+        $shippingItemLineDetails->setUnit('piece');
+        $shippingItemLineDetails->setProductType('');
+        $shippingItem->setOrderLineDetails($shippingItemLineDetails);
+        $items[] = $shippingItem;
+        $shoppingCart->setItems($items);
+        $order->setShoppingCart($shoppingCart);
+
+        $shipping = new Shipping();
+        $customerAddress = new \Address((int) $this->context->cart->id_address_delivery);
+        $shippingAddress = new AddressPersonal();
+        $shippingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
+        $shippingAddress->setCity($customerAddress->city);
+        $shippingAddress->setStreet($customerAddress->address1);
+        $shippingAddress->setAdditionalInfo($customerAddress->address2);
+        $shippingAddress->setZip($customerAddress->postcode);
+        if ($customerAddress->id_state) {
+            $shippingAddress->setState(\State::getNameById($customerAddress->id_state));
+        }
+        $personalName = new PersonalName();
+        $personalName->setFirstName($customerAddress->firstname);
+        $personalName->setSurname($customerAddress->lastname);
+        $shippingAddress->setName($personalName);
+        $shipping->setAddress($shippingAddress);
+        $shipping->setEmailAddress($this->context->customer->email);
+        $shipping->setAddressIndicator($this->context->cart->id_address_delivery === $this->context->cart->id_address_invoice ? 'same-as-billing' : 'different-than-billing');
+        $order->setShipping($shipping);
 
         return $order;
     }
