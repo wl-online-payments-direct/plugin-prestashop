@@ -48,6 +48,7 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'pendingOrderStateId',
                 'safetyDelay',
                 'errorOrderStateId',
+                'groupCardPaymentOptions',
                 'displayWhatsNew',
             ])
             ->setNormalizer(
@@ -120,6 +121,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'errorOrderStateId',
                 function (Options $options, $value) {
                     return intval($value);
+                }
+            )
+            ->setNormalizer(
+                'groupCardPaymentOptions',
+                function (Options $options, $value) {
+                    return boolval($value);
                 }
             );
     }

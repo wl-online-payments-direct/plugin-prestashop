@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2022-12-02
+### Added
+
+- Add a copy button on webhooks URL
+- Add option to group card payment options
+
+### Changed
+
+- Update default safety delay to 12 sec.
+- Remove default iframe template value
+- Update SDK to v4.5.0
+
+### Fixed
+
+- Remove spaces & other characters in phone fields
+- Support currencies other than EUR in line items details
+- Fix order status workflow in case of multiple webhooks calls
+- Fix rounded prices in line items
+
 ## [1.3.0] - 2022-08-10
 ### Added
 

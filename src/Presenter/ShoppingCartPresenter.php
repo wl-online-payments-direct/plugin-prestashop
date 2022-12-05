@@ -64,6 +64,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $this->separateDiscount();
         $rows['shipping'] = $this->getShippingRow();
         $rows['products'] = $this->getProductRows();
+        $rows['cart'] = $cart;
         $this->applyProductDiscounts($rows['products']);
         $this->fixTotalsRounding($rows['products']);
         $this->formatPrices($rows['products']);
@@ -120,11 +121,13 @@ class ShoppingCartPresenter implements PresenterInterface
         foreach ($this->products as $product) {
             $i = 0;
             while ($i < $product['quantity']) {
+                $totalWithTax = \Tools::ps_round($product['price_with_reduction'], 2);
+                $productPrice = \Tools::ps_round($product['price_with_reduction_without_tax'], 2);
                 $row = [
-                    'totalWithTax' => \Tools::ps_round($product['price_with_reduction'], 2),
-                    'productPrice' => \Tools::ps_round($product['price_with_reduction_without_tax'], 2),
+                    'totalWithTax' => $totalWithTax,
+                    'productPrice' => $productPrice,
                     'discountPrice' => 0,
-                    'tax' => \Tools::ps_round($product['price_with_reduction'] - $product['price_with_reduction_without_tax'], 2),
+                    'tax' => \Tools::ps_round($totalWithTax - $productPrice, 2),
                     'quantity' => 1,
                     'productCode' => $product['reference'] ?: $product['unique_id'],
                     'productName' => $product['name'],

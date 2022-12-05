@@ -65,6 +65,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
             'worldlineopAjaxToken' => Tools::getAdminTokenLite('AdminWorldlineopAjax'),
             'genericErrorMessage' => $this->module->l('An error occurred during the process, please try again', 'AdminWorldlineopConfigurationController'),
             'showWhatsNew' => $settings->advancedSettings->displayWhatsNew === true,
+            'copyMessage' => $this->module->l('Copied!', 'AdminWorldlineopConfigurationController'),
         ]);
         //@formatter:on
     }

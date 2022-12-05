@@ -12,11 +12,20 @@
  *
  *}
 
-<h1>{l s='What\'s new in version 1.3.0' mod='worldlineop'}</h1>
+<h1>
+  {l s='What\'s new in version' mod='worldlineop'}
+  1.3.1
+</h1>
 <br>
 <ul>
-  <li>{l s='Order Line Item data sent to Worldline Payment Page' mod='worldlineop'}</li>
-  <li>{l s='New Payment Methods added: Klarna, Oney' mod='worldlineop'}</li>
+  <li>{l s='Order cancelled on multiple webhooks receival' mod='worldlineop'}</li>
+  <li>{l s='AUD currency' mod='worldlineop'}</li>
+  <li>{l s='Update message on waiting page' mod='worldlineop'}</li>
+  <li>{l s='Default waiting time ==> 12 seconds' mod='worldlineop'}</li>
+  <li>{l s='Clear hardcoded template' mod='worldlineop'}</li>
+  <li>{l s='Copy button next to webhooks URL' mod='worldlineop'}</li>
+  <li>{l s='Remove spaces in phone number' mod='worldlineop'}</li>
+  <li>{l s='Cards grouped together on redirection page' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

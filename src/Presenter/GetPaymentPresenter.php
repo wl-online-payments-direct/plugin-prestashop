@@ -157,12 +157,12 @@ class GetPaymentPresenter implements PresenterInterface
     /**
      * @param $idOrderState
      * @param PaymentResponse $paymentResponse
-     * @return TransactionPresented
+     * @return void
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
-    private function presentNewOrder($idOrderState, $paymentResponse)
+    private function presentNewOrder($idOrderState, $paymentResponse) : void
     {
         $merchantClient = $this->merchantClientFactory->getMerchant();
         $paymentOutput = $paymentResponse->getPaymentOutput();
@@ -197,7 +197,7 @@ class GetPaymentPresenter implements PresenterInterface
         if (!$hostedCheckout && !$createdPayment) {
             $this->logger->debug(sprintf('Merchant reference %s not found', $merchantReference));
 
-            return $this->presentedData;
+            return;
         }
         if ($hostedCheckout) {
             $this->logger->debug('Payment has been made through Hosted Checkout Page');
@@ -240,7 +240,7 @@ class GetPaymentPresenter implements PresenterInterface
         } else {
             $this->logger->debug('Could not find hosted or htp', ['merchantReference' => $merchantReference]);
 
-            return $this->presentedData;
+            return;
         }
         $this->presentedData->validateOrder = true;
         $this->presentedData->token = $token;
@@ -259,19 +259,18 @@ class GetPaymentPresenter implements PresenterInterface
         $this->presentedData->idOrderState = $idOrderState;
         $this->presentedData->sendMail = \Configuration::getGlobalValue('WOP_AWAITING_CAPTURE_STATUS_ID') == $idOrderState;
 
-        return $this->presentedData;
     }
 
     /**
      * @param Order $order
      * @param int $idOrderState
      * @param PaymentResponse $paymentResponse
-     * @return TransactionPresented
+     * @return void
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
-    private function presentExistingOrder($order, $idOrderState, $paymentResponse)
+    private function presentExistingOrder($order, $idOrderState, $paymentResponse) : void
     {
         $merchantClient = $this->merchantClientFactory->getMerchant();
         /** @var TransactionRepository $transactionRepository */
@@ -286,14 +285,14 @@ class GetPaymentPresenter implements PresenterInterface
         ) {
             $this->logger->error('Cannot find transaction for order '.$order->id);
 
-            return $this->presentedData;
+            return;
         }
         if (\Configuration::getGlobalValue('PS_OS_CANCELED') == $order->current_state) {
             $cancelState = $order->getHistory(null, $order->current_state);
             $cancelledDate = $cancelState[0]['date_add'];
             $now = date('Y-m-d H:i:s');
-            $datetime1 = new DateTime($cancelledDate);
-            $datetime2 = new DateTime($now);
+            $datetime1 = new \DateTime($cancelledDate);
+            $datetime2 = new \DateTime($now);
             $interval = $datetime1->diff($datetime2);
             if ($interval->format('%a') >= self::MAX_DELAY_BEFORE_REFUND) {
                 try {
@@ -301,7 +300,7 @@ class GetPaymentPresenter implements PresenterInterface
                 } catch (\Exception $e) {
                     $this->logger->error($e->getMessage());
 
-                    return $this->presentedData;
+                    return;
                 }
                 if ($paymentDetails->getStatusOutput()->getIsRefundable()) {
                     $refundRequest = new RefundRequest();
@@ -315,12 +314,12 @@ class GetPaymentPresenter implements PresenterInterface
                     } catch (\Exception $e) {
                         $this->logger->error($e->getMessage());
 
-                        return $this->presentedData;
+                        return;
                     }
                 } else {
                     $this->logger->error('Transaction cannot be refunded');
 
-                    return $this->presentedData;
+                    return;
                 }
             }
         }
@@ -334,7 +333,14 @@ class GetPaymentPresenter implements PresenterInterface
             if (false === $transaction) {
                 $this->logger->error('Transaction cannot be retrieved');
 
-                return $this->presentedData;
+                return;
+            }
+            $receivedIteration = substr($paymentResponse->getId(), strpos($paymentResponse->getId(), '_') + 1);
+            $storedIteration = substr($transaction->reference, strpos($transaction->reference, '_') + 1);
+            if (self::STATUS_REJECTED === $paymentResponse->getStatus() && (int) $receivedIteration < (int) $storedIteration) {
+                $this->logger->error('Event received is older than last processed');
+
+                return;
             }
             if ($order->current_state == $settings->advancedSettings->paymentSettings->errorOrderStateId) {
                 $transaction->reference = pSQL($paymentResponse->getId());
@@ -350,7 +356,6 @@ class GetPaymentPresenter implements PresenterInterface
             $this->logger->debug('Update order state to ID '.$idOrderState);
         }
 
-        return $this->presentedData;
     }
 
     /**

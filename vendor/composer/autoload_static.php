@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
+class ComposerStaticInit34718b7e12e9bed0097ef512c255e7f4
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -350,6 +350,7 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
         'OnlinePayments\\Sdk\\Domain\\AmountOfMoney' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/AmountOfMoney.php',
         'OnlinePayments\\Sdk\\Domain\\BankAccountIban' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/BankAccountIban.php',
         'OnlinePayments\\Sdk\\Domain\\BrowserData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/BrowserData.php',
+        'OnlinePayments\\Sdk\\Domain\\CancelPaymentRequest' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CancelPaymentRequest.php',
         'OnlinePayments\\Sdk\\Domain\\CancelPaymentResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CancelPaymentResponse.php',
         'OnlinePayments\\Sdk\\Domain\\Capture' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/Capture.php',
         'OnlinePayments\\Sdk\\Domain\\CaptureOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CaptureOutput.php',
@@ -410,6 +411,7 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
         'OnlinePayments\\Sdk\\Domain\\GetMandateResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/GetMandateResponse.php',
         'OnlinePayments\\Sdk\\Domain\\GetPaymentProductGroupsResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/GetPaymentProductGroupsResponse.php',
         'OnlinePayments\\Sdk\\Domain\\GetPaymentProductsResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/GetPaymentProductsResponse.php',
+        'OnlinePayments\\Sdk\\Domain\\GetPrivacyPolicyResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/GetPrivacyPolicyResponse.php',
         'OnlinePayments\\Sdk\\Domain\\GiftCardPurchase' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/GiftCardPurchase.php',
         'OnlinePayments\\Sdk\\Domain\\HostedCheckoutSpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/HostedCheckoutSpecificInput.php',
         'OnlinePayments\\Sdk\\Domain\\HostedCheckoutSpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/HostedCheckoutSpecificOutput.php',
@@ -449,7 +451,6 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct130SpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct130SpecificInput.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct130SpecificThreeDSecure' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct130SpecificThreeDSecure.php',
-        'OnlinePayments\\Sdk\\Domain\\PaymentProduct3012SpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct3012SpecificInput.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct302SpecificData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct302SpecificData.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct320SpecificData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct320SpecificData.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct5100SpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct5100SpecificInput.php',
@@ -511,6 +512,7 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
         'OnlinePayments\\Sdk\\Domain\\SessionRequest' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SessionRequest.php',
         'OnlinePayments\\Sdk\\Domain\\SessionResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SessionResponse.php',
         'OnlinePayments\\Sdk\\Domain\\Shipping' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/Shipping.php',
+        'OnlinePayments\\Sdk\\Domain\\ShippingMethod' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ShippingMethod.php',
         'OnlinePayments\\Sdk\\Domain\\ShoppingCart' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ShoppingCart.php',
         'OnlinePayments\\Sdk\\Domain\\ShoppingCartExtension' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/lib/OnlinePayments/Sdk/Domain/ShoppingCartExtension.php',
         'OnlinePayments\\Sdk\\Domain\\TestConnection' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/TestConnection.php',
@@ -553,6 +555,7 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
         'OnlinePayments\\Sdk\\Merchant\\Products\\GetProductDirectoryParams' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Products/GetProductDirectoryParams.php',
         'OnlinePayments\\Sdk\\Merchant\\Products\\ProductsClient' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Products/ProductsClient.php',
         'OnlinePayments\\Sdk\\Merchant\\Products\\ProductsClientInterface' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Products/ProductsClientInterface.php',
+        'OnlinePayments\\Sdk\\Merchant\\Services\\GetPrivacyPolicyParams' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Services/GetPrivacyPolicyParams.php',
         'OnlinePayments\\Sdk\\Merchant\\Services\\ServicesClient' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Services/ServicesClient.php',
         'OnlinePayments\\Sdk\\Merchant\\Services\\ServicesClientInterface' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Services/ServicesClientInterface.php',
         'OnlinePayments\\Sdk\\Merchant\\Sessions\\SessionsClient' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Merchant/Sessions/SessionsClient.php',
@@ -1493,10 +1496,10 @@ class ComposerStaticInit6c4aae52783feba02a192d9a87dd5614
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6c4aae52783feba02a192d9a87dd5614::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6c4aae52783feba02a192d9a87dd5614::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit6c4aae52783feba02a192d9a87dd5614::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit6c4aae52783feba02a192d9a87dd5614::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit34718b7e12e9bed0097ef512c255e7f4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit34718b7e12e9bed0097ef512c255e7f4::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit34718b7e12e9bed0097ef512c255e7f4::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit34718b7e12e9bed0097ef512c255e7f4::$classMap;
 
         }, null, ClassLoader::class);
     }

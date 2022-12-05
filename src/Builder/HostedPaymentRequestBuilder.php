@@ -19,6 +19,7 @@ use Country;
 use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInputForHostedCheckout;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\LineItem;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodHostedCheckoutSpecificInput;
@@ -35,6 +36,7 @@ use Language;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
+use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class HostedPaymentRequestBuilder
@@ -66,6 +68,11 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         }
         if (false !== $this->tokenValue) {
             $hostedCheckoutSpecificInput->setTokens($this->tokenValue);
+        }
+        if (true === $this->settings->advancedSettings->groupCardPaymentOptions) {
+            $cardPaymentMethodSpecificInputForHC = new CardPaymentMethodSpecificInputForHostedCheckout();
+            $cardPaymentMethodSpecificInputForHC->setGroupCards(true);
+            $hostedCheckoutSpecificInput->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInputForHC);
         }
 
         return $hostedCheckoutSpecificInput;
@@ -154,7 +161,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $item = new LineItem();
             $itemAmount = new AmountOfMoney();
             $itemAmount->setAmount((int)(string) $product['totalWithTax']);
-            $itemAmount->setCurrencyCode('EUR');
+            $itemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
             $item->setAmountOfMoney($itemAmount);
             $itemLineDetails = new OrderLineDetails();
             $itemLineDetails->setProductPrice((int)(string) $product['productPrice']);
@@ -171,7 +178,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $shippingItem = new LineItem();
         $shippingItemAmount = new AmountOfMoney();
         $shippingItemAmount->setAmount((int)(string) $shoppingCartPresented['shipping']['priceWithTax']);
-        $shippingItemAmount->setCurrencyCode('EUR');
+        $shippingItemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
         $shippingItem->setAmountOfMoney($shippingItemAmount);
         $shippingItemLineDetails = new OrderLineDetails();
         $shippingItemLineDetails->setProductPrice((int)(string) $shoppingCartPresented['shipping']['priceWithoutTax']);

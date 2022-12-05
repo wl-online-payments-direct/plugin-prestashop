@@ -371,6 +371,38 @@
             <!-- /Prod Endpoint -->
           </div>
         </div>
+        <h2 class="form-group form-group-h2">{l s='Checkout Flow Modifications' mod='worldlineop'}</h2>
+        <!-- Group cards -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+              {l s='Group payment options by card' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[groupCardPaymentOptions]"
+                     id="worldlineopAdvancedSettings_groupCardPaymentOptions_on"
+                     {if $data.advancedSettings.groupCardPaymentOptions === true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_groupCardPaymentOptions_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[groupCardPaymentOptions]"
+                     id="worldlineopAdvancedSettings_groupCardPaymentOptions_off"
+                     {if $data.advancedSettings.groupCardPaymentOptions != true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_groupCardPaymentOptions_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s='Only for the generic payment option. If you choose to group payment options by card, the customer will have one unique choice for cards instead of x choices.' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
+        <!-- /Logs -->
+
         <input type="hidden" name="action" value="saveAdvancedSettingsForm"/>
       </div>
     </div>

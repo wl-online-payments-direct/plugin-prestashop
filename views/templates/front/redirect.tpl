@@ -16,7 +16,7 @@
 
 {block name='page_content_container'}
   <div id="js-worldlineop-loader">
-    <h1>{l s='Please wait, you will be redirected shortly...' mod='worldlineop'}</h1>
+    <h1>{l s='Please wait while we are processing your payment' mod='worldlineop'}</h1>
     <img src="{$img_path}icons/loader.svg" title="Loading..." alt="Loading..." />
   </div>
   <div id="js-worldlineop-timeout-message" style="display: none;">

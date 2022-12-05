@@ -45,6 +45,9 @@ class AdvancedSettings
     /** @var PaymentSettings $paymentSettings */
     public $paymentSettings;
 
+    /** @var bool $groupCardPaymentOptions */
+    public $groupCardPaymentOptions;
+
     /** @var bool $displayWhatsNew */
     public $displayWhatsNew;
 }

@@ -52,6 +52,8 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     const PRODUCT_ID_MAESTRO = 117;
     const PRODUCT_ID_PAYPAL = 840;
 
+    const PHONE_NUMBER_MAX_CHARS = 15;
+
     const REFERENCE_CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /** @var Settings $settings */
@@ -177,10 +179,12 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
             $device->setBrowserData($browserData);
             $customer->setDevice($device);
         }
+        $customerAddress = new \Address((int) $this->context->cart->id_address_invoice);
         $contactDetails = new ContactDetails();
         $contactDetails->setEmailAddress($this->context->customer->email);
+        $contactDetails->setPhoneNumber(substr(preg_replace('/[^0-9+]/', '', $customerAddress->phone), 0, self::PHONE_NUMBER_MAX_CHARS));
+        $contactDetails->setMobilePhoneNumber(substr(preg_replace('/[^0-9+]/', '', $customerAddress->phone_mobile), 0, self::PHONE_NUMBER_MAX_CHARS));
         $customer->setContactDetails($contactDetails);
-        $customerAddress = new \Address((int) $this->context->cart->id_address_invoice);
         $billingAddress = new Address();
         $billingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
         $billingAddress->setCity($customerAddress->city);

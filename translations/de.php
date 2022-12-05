@@ -16,6 +16,7 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopajaxtransactioncontroller_8ff
 $_MODULE['<{worldlineop}prestashop>adminworldlineopajaxtransactioncontroller_957b6735a723d3eee5037a5ef416c32b'] = 'Erstattung von Geldmitteln fehlgeschlagen mit Status';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopajaxtransactioncontroller_316a88b88dbc5fbf5efd3bc6030865d4'] = 'Sie haben keine Berechtigung zur Stornierung von Transaktionen.';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_ad96af85eeb3bd68b7330b0e2fcdef9d'] = 'Während des Vorgangs ist ein Fehler aufgetreten, bitte versuchen Sie es erneut';
+$_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_6d6db52799620de23c1e87d00abde8c4'] = 'Kopiert!';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_da84922a714cf259476bc4f827bf07cd'] = 'Neueste Version - Was ist neu?';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_9b4ab7939c685cb4077302a346e9087c'] = 'Kontoeinstellungen erfolgreich gespeichert.';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8cac469c2d683d9c60406549faa29ba8'] = 'Bitte überprüfen Sie Ihre Anmeldedaten';
@@ -134,6 +135,7 @@ $_MODULE['<{worldlineop}prestashop>_account_b10dd6ea1a32fb6f635fb218dde2b8d7'] =
 $_MODULE['<{worldlineop}prestashop>_account_708ce17caa0e0ddf0223b5ccf3b86ff2'] = 'Prod Webhooks-Schlüssel';
 $_MODULE['<{worldlineop}prestashop>_account_a85cd91c822649f170d1bcfdfc8b05db'] = 'Prod Webhooks-Geheimwort';
 $_MODULE['<{worldlineop}prestashop>_account_aaa2404d7b1b8fa0655b59ad4e5ebe94'] = 'Webhooks-URL';
+$_MODULE['<{worldlineop}prestashop>_account_29a0d059c6b89ad88830e8f38c47b4f6'] = 'Um Probleme beim Kopieren/Einfügen zu vermeiden, verwenden Sie das Symbol „Kopieren“, um die URL zu kopieren';
 $_MODULE['<{worldlineop}prestashop>_account_c9cc8cce247e49bae79f15173ce97354'] = 'Speichern';
 $_MODULE['<{worldlineop}prestashop>_account_a0a3752003ee536d18e8fba990b29f02'] = 'Anmeldedaten speichern & prüfen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_d5815623c49bc79327917762848902f0'] = 'Zahlungseinstellungen';
@@ -173,6 +175,9 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_f03e80fcfec07f4794f12c6ee8c
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_a2bdb55f79e5a9d882a2415e7c39d719'] = 'Endpunkt wechseln';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_0a4f44db1bd2055ac0d7b63295efad1c'] = 'Test-Endpunkt';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_c251b887b21eb17fb8e87ceaec33f7ef'] = 'Prod-Endpunkt';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_465b5078e4a4c5ca00f5e8402489f6c3'] = 'Checkout-Flow-Modifikationen';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_9bda7a868f28ca545e2f120c42ae311d'] = 'Gruppenzahlungsmöglichkeiten mit Karte';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_7f19a50fd7fa687314826e7a71980d64'] = 'Nur für die generische Zahlungsoption. Wenn Sie Zahlungsoptionen nach Karte gruppieren, hat der Kunde eine eindeutige Auswahl für Karten anstelle von x Auswahlmöglichkeiten.';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_c9cc8cce247e49bae79f15173ce97354'] = 'Speichern';
 $_MODULE['<{worldlineop}prestashop>_header_1cccb2b31d097289e4246c69dac6ec67'] = 'Haben Sie eine Frage?';
 $_MODULE['<{worldlineop}prestashop>_header_f0788937b4f72cbaa31a95bddeb7bb51'] = 'Kontaktieren Sie uns über';
@@ -214,9 +219,15 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_a8db4be3154bc78b2f3c2
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be8066fa11578'] = 'Verfügbare Zahlungsmethoden';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Dateiname der Vorlage';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Speichern';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_9af11745fda7276b14bdefab0834b9dd'] = 'Was ist neu in Version 1.3.0';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_a06f66d398a93ff97563c8d10fda06d3'] = 'Bestellpositionsdaten werden an die Worldline-Zahlungsseite gesendet';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_2646a62c5c414638323126fce48a0b0d'] = 'Neue Zahlungsmethoden hinzugefügt: Klarna, Oney';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Was ist neu in Version';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_d03c62a68d1a786fa79e2c8fb0a66390'] = 'Die Bestellung wurde bei mehreren Webhooks storniert';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_1fab3cb037132b3cff8b4d31e175e50b'] = 'AUD-Währung';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_56013e2356dea3d628906ea4fbb59ed7'] = 'Aktualisierungsnachricht auf der Warteseite';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_53c98e0592d6e2a3c38054a8fcb2f036'] = 'Standardwartezeit ==> 12 Sekunden';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_5f62f2b4e3b29d408d8a344322bbf9c3'] = 'Klare hartcodierte Vorlage';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_45160cbf3b78abed00eba16f6a066d66'] = 'Kopieren-Schaltfläche neben der Webhooks-URL';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_9163733c3a428cc220593cba030607ba'] = 'Leerzeichen in Telefonnummer entfernen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_1eacc25b1f8745760778afbe4393b62b'] = 'Karten gruppiert auf Weiterleitungsseite';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'Dies nicht mehr anzeigen';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Meine gespeicherten Karten';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Bestellung aufgeben';
@@ -227,7 +238,7 @@ $_MODULE['<{worldlineop}prestashop>hostedtokenizationadditionalinformation_63327
 $_MODULE['<{worldlineop}prestashop>hostedtokenizationadditionalinformation_1click_abcd10a3b2f38f78042c8fd5f5e30ca4'] = 'Bei der Verarbeitung der Zahlung ist ein Fehler aufgetreten.';
 $_MODULE['<{worldlineop}prestashop>hostedtokenizationadditionalinformation_1click_ee97266f5bc6a25e89f1a7d0f889394c'] = 'bitte klicken hier';
 $_MODULE['<{worldlineop}prestashop>hostedtokenizationadditionalinformation_1click_633277fd0e2d615ba153e7debe9220aa'] = 'um diese Seite zu aktualisieren oder wenden Sie sich an unseren Kundendienst';
-$_MODULE['<{worldlineop}prestashop>redirect_2a4c3ef96abb704123bdfd5efa2a63f3'] = 'Bitte warten Sie, Sie werden in Kürze weitergeleitet...';
+$_MODULE['<{worldlineop}prestashop>redirect_e9793dceca1ac0fdba320bd85da48653'] = 'Bitte warten Sie, während wir Ihre Zahlung bearbeiten';
 $_MODULE['<{worldlineop}prestashop>redirect_9f7650d584cdde9f908ac85d61dfbe6f'] = 'Die Transaktion wurde noch nicht bestätigt.';
 $_MODULE['<{worldlineop}prestashop>redirect_a9b4c839a8bd8ee2ae72a8dd980a1dba'] = 'Wir empfehlen Ihnen, sich über diesen Link an unseren Kundendienst zu wenden:';
 $_MODULE['<{worldlineop}prestashop>redirect_425ff0ecbf53db5d37109e566d4f7e9e'] = 'Kontaktieren Sie uns';

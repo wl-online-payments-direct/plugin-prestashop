@@ -257,13 +257,19 @@
           <!-- /Prod Webhooks Secret -->
         </div>
         <!-- Webhooks URL -->
-        <div class="form-group">
+        <div class="form-group worldlineop-webhooks-block">
           <label class="control-label col-lg-3">
             <span>{l s='Webhooks URL' mod='worldlineop'}</span>
           </label>
           <div class="col-lg-9">
             <div class="form-control-static">
-              <code>{$data.extra.path.controllers.webhooks|escape:'htmlall':'UTF-8'}</code>
+              <code id="js-webhooks-code">{$data.extra.path.controllers.webhooks|escape:'htmlall':'UTF-8'}</code>
+              <i class="icon icon-copy js-icon-copy"></i>
+            </div>
+          </div>
+          <div class="col-lg-offset-3 col-lg-9">
+            <div class="help-block">
+              <p>{l s='To avoid copy/paste issue, use the "copy" icon to copy the URL' mod='worldlineop'}</p>
             </div>
           </div>
         </div>
@@ -281,3 +287,28 @@
     </div>
   </form>
 </div>
+
+{literal}
+<script type="text/javascript">
+  function copyInput($input) {
+    let range = document.createRange();
+    let sel = window.getSelection();
+
+    range.setStartBefore($input.firstChild);
+    range.setEndAfter($input.lastChild);
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    try {
+      document.execCommand('copy');
+      showSuccessMessage(copyMessage);
+    } catch (err) {
+      console.error('Unable to copy');
+    }
+  }
+
+  $('.js-icon-copy').on('click', function (e) {
+    copyInput(document.getElementById('js-webhooks-code'));
+  });
+</script>
+{/literal}

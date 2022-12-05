@@ -91,7 +91,7 @@ configuration:
       retentionHours: 3
       successOrderStateId: 0
       pendingOrderStateId: 0
-      safetyDelay: 20
+      safetyDelay: 12
       errorOrderStateId: 0
     displayWhatsNew: 0
   paymentMethodsSettings:
@@ -105,7 +105,7 @@ configuration:
       it: 'Pagare con Worldline Online Payments'
       nl: 'Betaal met Worldline Online Payments'
       de: 'Bezahlen mit Worldline Online Payments'
-    iframeTemplateFilename: 'HTPTemplate11_Full.html'
+    iframeTemplateFilename: ''
     iframeCallToAction:
       fr: 'Payer avec une carte de crédit'
       en: 'Pay with credit card'

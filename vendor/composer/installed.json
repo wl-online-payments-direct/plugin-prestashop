@@ -2322,17 +2322,17 @@
         },
         {
             "name": "wl-online-payments-direct/sdk-php",
-            "version": "3.5.0",
-            "version_normalized": "3.5.0.0",
+            "version": "4.5.0",
+            "version_normalized": "4.5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wl-online-payments-direct/sdk-php.git",
-                "reference": "f5ed279dfa88710545bd624ccc62bca39c9acee8"
+                "reference": "6699d4ab364ec07a70aa8083ae52b0f7206b0bd8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wl-online-payments-direct/sdk-php/zipball/f5ed279dfa88710545bd624ccc62bca39c9acee8",
-                "reference": "f5ed279dfa88710545bd624ccc62bca39c9acee8",
+                "url": "https://api.github.com/repos/wl-online-payments-direct/sdk-php/zipball/6699d4ab364ec07a70aa8083ae52b0f7206b0bd8",
+                "reference": "6699d4ab364ec07a70aa8083ae52b0f7206b0bd8",
                 "shasum": ""
             },
             "require": {
@@ -2341,7 +2341,7 @@
             "require-dev": {
                 "phpunit/phpunit": "~4"
             },
-            "time": "2022-06-07T08:37:24+00:00",
+            "time": "2022-11-10T12:57:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2367,7 +2367,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wl-online-payments-direct/sdk-php/issues",
-                "source": "https://github.com/wl-online-payments-direct/sdk-php/tree/3.5.0"
+                "source": "https://github.com/wl-online-payments-direct/sdk-php/tree/4.5.0"
             },
             "install-path": "../wl-online-payments-direct/sdk-php"
         }
