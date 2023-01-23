@@ -15,8 +15,6 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
-use Country;
-use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInputForHostedCheckout;
@@ -28,8 +26,6 @@ use OnlinePayments\Sdk\Domain\OrderLineDetails;
 use OnlinePayments\Sdk\Domain\OrderReferences;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
-use OnlinePayments\Sdk\Domain\PersonalName;
-use OnlinePayments\Sdk\Domain\Shipping;
 use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use Language;
@@ -80,6 +76,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * @return CardPaymentMethodSpecificInput|false
+     * @throws \Exception
      */
     public function buildCardPaymentMethodSpecificInput()
     {
@@ -103,10 +100,25 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         if (false !== $this->idProduct) {
             $cardPaymentMethodSpecificInput->setPaymentProductId($this->idProduct);
         }
+        $threeDSecure = new ThreeDSecure();
+        $threeDSecure->setSkipAuthentication(true);
         if (self::PRODUCT_ID_MAESTRO == $this->idProduct || true === $this->settings->advancedSettings->force3DsV2) {
-            $threeDSecure = new ThreeDSecure();
-            $threeDSecure->setChallengeIndicator('challenge-required');
-            $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
+            $threeDSecure->setSkipAuthentication(false);
+        }
+        $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(), new \Currency($this->context->cart->id_currency));
+        if (true === $this->settings->advancedSettings->threeDSExempted && self::THREE_DS_AMOUNT_EUR > $orderTotalInEuros) {
+            $threeDSecure->setExemptionRequest(self::THREE_DS_LOW_VALUE);
+        }
+        if (true === $this->settings->advancedSettings->enforce3DS) {
+            $threeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
+        }
+        $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
+        if (false === $this->tokenValue) {
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileRequestor(self::CARD_ON_FILE_REQUESTOR_FIRST);
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileSequenceIndicator(self::CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST);
+        } else {
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileRequestor(self::CARD_ON_FILE_REQUESTOR_SUBSEQUENT);
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileSequenceIndicator(self::CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT);
         }
 
         return $cardPaymentMethodSpecificInput;
@@ -193,26 +205,6 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $items[] = $shippingItem;
         $shoppingCart->setItems($items);
         $order->setShoppingCart($shoppingCart);
-
-        $shipping = new Shipping();
-        $customerAddress = new \Address((int) $this->context->cart->id_address_delivery);
-        $shippingAddress = new AddressPersonal();
-        $shippingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
-        $shippingAddress->setCity($customerAddress->city);
-        $shippingAddress->setStreet($customerAddress->address1);
-        $shippingAddress->setAdditionalInfo($customerAddress->address2);
-        $shippingAddress->setZip($customerAddress->postcode);
-        if ($customerAddress->id_state) {
-            $shippingAddress->setState(\State::getNameById($customerAddress->id_state));
-        }
-        $personalName = new PersonalName();
-        $personalName->setFirstName($customerAddress->firstname);
-        $personalName->setSurname($customerAddress->lastname);
-        $shippingAddress->setName($personalName);
-        $shipping->setAddress($shippingAddress);
-        $shipping->setEmailAddress($this->context->customer->email);
-        $shipping->setAddressIndicator($this->context->cart->id_address_delivery === $this->context->cart->id_address_invoice ? 'same-as-billing' : 'different-than-billing');
-        $order->setShipping($shipping);
 
         return $order;
     }

@@ -49,6 +49,8 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'safetyDelay',
                 'errorOrderStateId',
                 'groupCardPaymentOptions',
+                'threeDSExempted',
+                'enforce3DS',
                 'displayWhatsNew',
             ])
             ->setNormalizer(
@@ -125,6 +127,18 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
             )
             ->setNormalizer(
                 'groupCardPaymentOptions',
+                function (Options $options, $value) {
+                    return boolval($value);
+                }
+            )
+            ->setNormalizer(
+                'threeDSExempted',
+                function (Options $options, $value) {
+                    return boolval($value);
+                }
+            )
+            ->setNormalizer(
+                'enforce3DS',
                 function (Options $options, $value) {
                     return boolval($value);
                 }

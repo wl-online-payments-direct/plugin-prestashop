@@ -18,6 +18,7 @@ namespace WorldlineOP\PrestaShop\Builder;
 use Context;
 use Country;
 use OnlinePayments\Sdk\Domain\Address;
+use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CompanyInformation;
@@ -30,6 +31,7 @@ use OnlinePayments\Sdk\Domain\PersonalInformation;
 use OnlinePayments\Sdk\Domain\PersonalName;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\Shipping;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use Worldlineop;
@@ -56,6 +58,16 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 
     const REFERENCE_CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+    const CARD_ON_FILE_REQUESTOR_FIRST = 'cardholderInitiated';
+    const CARD_ON_FILE_REQUESTOR_SUBSEQUENT = 'cardholderInitiated';
+    const CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST = 'first';
+    const CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT = 'subsequent';
+
+    const THREE_DS_LOW_VALUE = 'low-value';
+    const THREE_DS_AMOUNT_EUR = 30;
+
+    const CHALLENGE_INDICATOR_REQUIRED = 'challenge-required';
+
     /** @var Settings $settings */
     protected $settings;
 
@@ -74,7 +86,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     /** @var string $tokenValue */
     protected $tokenValue;
 
-    /** @var array $ccForm */
+    /** @var array|false $ccForm */
     protected $ccForm;
 
     /**
@@ -148,6 +160,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $amount->setCurrencyCode(Tools::getIsoCurrencyCodeById($this->context->cart->id_currency));
         $order->setAmountOfMoney($amount);
         $order->setCustomer($this->buildCustomer());
+        $order->setShipping($this->buildShipping());
         $factory = new Factory();
         $generator = $factory->getGenerator(new Strength(Strength::LOW));
         $orderReferences = new OrderReferences();
@@ -165,20 +178,25 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     private function buildCustomer()
     {
         $customer = new Customer();
+        $device = new CustomerDevice();
+        $device->setAcceptHeader($_SERVER['HTTP_ACCEPT']);
+        $device->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+        $customerConnections = $this->context->customer->getLastConnections();
+        if (!empty($customerConnections)) {
+            $connection = $customerConnections[0];
+            $device->setIpAddress($connection['ipaddress']);
+        }
         if (false !== $this->ccForm) {
-            $device = new CustomerDevice();
             $browserData = new BrowserData();
             $browserData->setColorDepth((int) $this->ccForm['colorDepth']);
             $browserData->setJavaEnabled(boolval($this->ccForm['javaEnabled']));
             $browserData->setScreenHeight($this->ccForm['screenHeight']);
             $browserData->setScreenWidth($this->ccForm['screenWidth']);
-            $device->setAcceptHeader($_SERVER['HTTP_ACCEPT']);
             $device->setLocale($this->ccForm['locale']);
             $device->setTimezoneOffsetUtcMinutes($this->ccForm['timezoneOffsetUtcMinutes']);
-            $device->setUserAgent($_SERVER['HTTP_USER_AGENT']);
             $device->setBrowserData($browserData);
-            $customer->setDevice($device);
         }
+        $customer->setDevice($device);
         $customerAddress = new \Address((int) $this->context->cart->id_address_invoice);
         $contactDetails = new ContactDetails();
         $contactDetails->setEmailAddress($this->context->customer->email);
@@ -208,5 +226,32 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $customer->setPersonalInformation($personalInformation);
 
         return $customer;
+    }
+
+    /**
+     * @return Shipping
+     */
+    public function buildShipping()
+    {
+        $shipping = new Shipping();
+        $customerAddress = new \Address((int) $this->context->cart->id_address_delivery);
+        $shippingAddress = new AddressPersonal();
+        $shippingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
+        $shippingAddress->setCity($customerAddress->city);
+        $shippingAddress->setStreet($customerAddress->address1);
+        $shippingAddress->setAdditionalInfo($customerAddress->address2);
+        $shippingAddress->setZip($customerAddress->postcode);
+        if ($customerAddress->id_state) {
+            $shippingAddress->setState(\State::getNameById($customerAddress->id_state));
+        }
+        $personalName = new PersonalName();
+        $personalName->setFirstName($customerAddress->firstname);
+        $personalName->setSurname($customerAddress->lastname);
+        $shippingAddress->setName($personalName);
+        $shipping->setAddress($shippingAddress);
+        $shipping->setEmailAddress($this->context->customer->email);
+        $shipping->setAddressIndicator($this->context->cart->id_address_delivery === $this->context->cart->id_address_invoice ? 'same-as-billing' : 'different-than-billing');
+
+        return $shipping;
     }
 }

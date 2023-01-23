@@ -80,6 +80,24 @@ class Tools
     }
 
     /**
+     * @param string $isoCode
+     * @return Currency|false
+     */
+    public static function getCurrencyByIsoCode($isoCode)
+    {
+        $dbQuery = new \DbQuery();
+        $dbQuery
+            ->select('id_currency')
+            ->from('currency')
+            ->where('iso_code = "'.pSQL($isoCode).'"');
+
+        $idCurrency = \Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($dbQuery);
+        $currency = new Currency((int) $idCurrency);
+
+        return \Validate::isLoadedObject($currency) ? $currency : false;
+    }
+
+    /**
      * @param int $idOrder
      * @return bool|int
      * @throws \PrestaShopDatabaseException
@@ -123,6 +141,9 @@ class Tools
      */
     public static function getOrderIdsByIdCart($idCart)
     {
+        if (!$idCart) {
+            return [];
+        }
         $dbQuery = new \DbQuery();
         $dbQuery
             ->select('id_order')
@@ -139,5 +160,22 @@ class Tools
         }
 
         return $orderIds;
+    }
+
+    /**
+     * @param float     $amount
+     * @param \Currency $currencyFrom
+     * @return float
+     * @throws \Exception
+     */
+    public static function getAmountInEuros($amount, $currencyFrom)
+    {
+        $currencyEUR = self::getCurrencyByIsoCode('EUR');
+        if (false === $currencyEUR) {
+            throw new \Exception('EURO currency is missing');
+        }
+        $amountInDefaultCurrency = Decimal::divide((string) $amount, (string) $currencyFrom->conversion_rate);
+
+        return Decimal::multiply((string) $amountInDefaultCurrency, (string) $currencyEUR->conversion_rate)->__toString();
     }
 }

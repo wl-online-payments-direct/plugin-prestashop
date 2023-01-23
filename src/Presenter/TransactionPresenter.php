@@ -131,6 +131,15 @@ class TransactionPresenter implements PresenterInterface
             }
         }
         $refundableAmount = !$paymentDetails->getStatusOutput()->getIsRefundable() ? 0 : ($totalCaptured - ($totalRefunded + $totalPendingRefund)) / 100;
+        $apiErrors = $paymentDetails->getStatusOutput()->getErrors() ?: [];
+        $errors = [];
+        foreach ($apiErrors as $apiError) {
+            $errors[] = [
+                'id' => $apiError->getId(),
+                'code' => $apiError->getCode(),
+            ];
+        }
+        $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
 
         return [
             'orderId' => $idOrder,
@@ -142,6 +151,8 @@ class TransactionPresenter implements PresenterInterface
                 'status' => $paymentDetails->getStatus(),
                 'productId' => $paymentSpecificOutput->getPaymentProductId(),
                 'fraudResult' => $paymentSpecificOutput->getFraudResults()->getFraudServiceResult(),
+                'liability' => $liability,
+                'errors' => $errors,
             ],
             'actions' => [
                 'isAuthorized' => $paymentDetails->getStatusOutput()->getIsAuthorized(),

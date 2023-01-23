@@ -162,7 +162,7 @@ class GetPaymentPresenter implements PresenterInterface
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
-    private function presentNewOrder($idOrderState, $paymentResponse) : void
+    private function presentNewOrder($idOrderState, $paymentResponse)
     {
         $merchantClient = $this->merchantClientFactory->getMerchant();
         $paymentOutput = $paymentResponse->getPaymentOutput();
@@ -270,7 +270,7 @@ class GetPaymentPresenter implements PresenterInterface
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
-    private function presentExistingOrder($order, $idOrderState, $paymentResponse) : void
+    private function presentExistingOrder($order, $idOrderState, $paymentResponse)
     {
         $merchantClient = $this->merchantClientFactory->getMerchant();
         /** @var TransactionRepository $transactionRepository */

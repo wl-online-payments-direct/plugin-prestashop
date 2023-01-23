@@ -60,6 +60,14 @@ class Settings
             $endpoint = $this->advancedSettings->prodEndpoint ?: self::DEFAULT_SDK_ENDPOINT_PROD;
         }
         $this->credentials->endpoint = rtrim($endpoint, '/');
+        if (false === $this->advancedSettings->force3DsV2) {
+            $this->advancedSettings->enforce3DS = false;
+            $this->advancedSettings->threeDSExempted = false;
+        } else {
+            if (true === $this->advancedSettings->enforce3DS) {
+                $this->advancedSettings->threeDSExempted = false;
+            }
+        }
 
         return $this;
     }

@@ -49,7 +49,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $cartCurrencyCodePost = Tools::getValue('worldlineopCartCurrencyCode');
         $totalCart = Decimal::multiply((string) $cart->getOrderTotal(), '100');
         $cartCurrencyCode = \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency);
-        if (!$totalCart->equals($totalCartPost) || $cartCurrencyCode !== $cartCurrencyCodePost) {
+        if ($totalCart->getIntegerPart() !== $totalCartPost->getIntegerPart() || $cartCurrencyCode !== $cartCurrencyCodePost) {
             $this->logger->error(
                 'Cart currency/amount does not match context',
                 [
@@ -114,11 +114,12 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $hostedCheckoutDirector = $this->module->getService('worldlineop.payment_request.director');
         try {
             $paymentRequest = $hostedCheckoutDirector->buildPaymentRequest($tokenId, $ccForm);
+            $this->module->logger->debug('IframeHostedTokenizationRequest', ['json' => json_decode($paymentRequest->toJson(), true)]);
             $paymentResponse = $merchantClient->payments()
                                               ->createPayment($paymentRequest);
+            $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($paymentResponse->toJson(), true)]);
         } catch (ResponseException $re) {
-            $this->logger->debug('CreatePaymentRequest', ['json' => json_decode($paymentRequest->toJson(), true)]);
-            $this->logger->debug('CreatePaymentResponse', ['json' => json_decode($re->getResponse()->toJson(), true)]);
+            $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($re->getResponse()->toJson(), true)]);
             //@formatter:off
             die(json_encode([
                 'success' => false,
@@ -126,7 +127,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             ]));
             //@formatter:on
         } catch (Exception $e) {
-            $this->logger->debug('CreatePaymentRequest', ['json' => json_decode($paymentRequest->toJson(), true)]);
+            $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($e->getResponse()->toJson(), true)]);
             //@formatter:off
             die(json_encode([
                 'success' => false,

@@ -45,6 +45,7 @@ class PaymentOptionsPresenter implements PresenterInterface
      * ModuleConfigurationPresenter constructor.
      * @param Worldlineop $module
      * @param Settings    $settings
+     * @param Context     $context
      */
     public function __construct(Worldlineop $module, Settings $settings, Context $context)
     {
@@ -80,7 +81,7 @@ class PaymentOptionsPresenter implements PresenterInterface
         try {
             $redirectPaymentMethodsOptions = $this->getRedirectPaymentMethodsOptions();
         } catch (\Exception $e) {
-            $this->module->logger->error('Error while redirect iframe payment options', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'line' => $e->getLine()]);
+            $this->module->logger->error('Error while redirect redirect payment options', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'line' => $e->getLine()]);
         }
 
         return array_merge(

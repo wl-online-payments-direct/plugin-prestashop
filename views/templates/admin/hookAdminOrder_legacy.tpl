@@ -64,8 +64,23 @@
           {$transactionData.payment.fraudResult|escape:'htmlall':'UTF-8'}
         </strong>
       </div>
+      <div id="" class="col-sm-3 text-center">
+        <p class="text-muted"><strong>{l s='Liability' mod='worldlineop'}</strong></p>
+        <strong id="">
+          {$transactionData.payment.liability|escape:'htmlall':'UTF-8'}
+        </strong>
+      </div>
     </div>
   </div>
+  {if !empty($transactionData.payment.errors)}
+    <div class="alert alert-danger">
+      <ul>
+        {foreach $transactionData.payment.errors as $error}
+          <li><b>{l s='Error ID:' mod='worldlineop'}</b>{$error.id|escape:'htmlall':'UTF-8'} - <b>{l s='Code' mod='worldlineop'}</b> {$error.code|escape:'htmlall':'UTF-8'}</li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
   <div class="row">
     <div class="col-lg-6">
       <div class="card">

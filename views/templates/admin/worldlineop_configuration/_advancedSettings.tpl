@@ -286,35 +286,6 @@
             </div>
           </div>
           <!-- /Pending cronjob -->
-          <!-- Force 3DsV2 -->
-          <div class="form-group">
-            <label class="control-label col-lg-3 ">
-              {l s='Force 3DsV2' mod='worldlineop'}
-            </label>
-            <div class="col-lg-9">
-              <span class="switch prestashop-switch fixed-width-sm">
-                <input type="radio"
-                       value="1"
-                       name="worldlineopAdvancedSettings[force3DsV2]"
-                       id="worldlineopAdvancedSettings_force3DsV2_on"
-                       {if $data.advancedSettings.force3DsV2 === true}checked="checked"{/if}>
-                <label for="worldlineopAdvancedSettings_force3DsV2_on">{l s='Yes' mod='worldlineop'}</label>
-                <input type="radio"
-                       value="0"
-                       name="worldlineopAdvancedSettings[force3DsV2]"
-                       id="worldlineopAdvancedSettings_force3DsV2_off"
-                       {if $data.advancedSettings.force3DsV2 != true}checked="checked"{/if}>
-                <label for="worldlineopAdvancedSettings_force3DsV2_off">{l s='No' mod='worldlineop'}</label>
-                <a class="slide-button btn"></a>
-              </span>
-            </div>
-            <div class="col-lg-9 col-lg-offset-3">
-              <div class="help-block">
-                {l s='It is mandatory to enforce 3DsV2 in Europe, but can be turned off for other geographies' mod='worldlineop'}
-              </div>
-            </div>
-          </div>
-          <!-- /Force 3DsV2 -->
           <!-- Switch Endpoint -->
           <div class="form-group form-group-h2 js-worldlineop-switch-endpoint-block">
             <label class="control-label col-lg-3 ">{l s='Switch endpoint' mod='worldlineop'}</label>
@@ -371,7 +342,10 @@
             <!-- /Prod Endpoint -->
           </div>
         </div>
-        <h2 class="form-group form-group-h2">{l s='Checkout Flow Modifications' mod='worldlineop'}</h2>
+        <div class="form-group form-group-h2">
+          <h2 class="col-lg-3">{l s='Checkout Flow Modifications' mod='worldlineop'}</h2>
+          <div class="col-lg-9"></div>
+        </div>
         <!-- Group cards -->
         <div class="form-group">
           <label class="control-label col-lg-3 ">
@@ -401,7 +375,96 @@
             </div>
           </div>
         </div>
-        <!-- /Logs -->
+        <!-- /Group cards -->
+        <!-- Force 3DsV2 -->
+        <div class="form-group js-worldlineop-switch-force-3ds-block">
+          <label class="control-label col-lg-3 ">
+              {l s='Force 3DsV2' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9 js-worldlineop-switch-force-3ds-switch">
+              <span class="switch prestashop-switch fixed-width-sm">
+                <input type="radio"
+                       value="1"
+                       name="worldlineopAdvancedSettings[force3DsV2]"
+                       id="worldlineopAdvancedSettings_force3DsV2_on"
+                       {if $data.advancedSettings.force3DsV2 === true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_force3DsV2_on">{l s='Yes' mod='worldlineop'}</label>
+                <input type="radio"
+                       value="0"
+                       name="worldlineopAdvancedSettings[force3DsV2]"
+                       id="worldlineopAdvancedSettings_force3DsV2_off"
+                       {if $data.advancedSettings.force3DsV2 != true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_force3DsV2_off">{l s='No' mod='worldlineop'}</label>
+                <a class="slide-button btn"></a>
+              </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+                {l s='It is mandatory to enforce 3DsV2 in Europe, but can be turned off for other geographies' mod='worldlineop'}
+            </div>
+          </div>
+        </div>
+        <!-- /Force 3DsV2 -->
+        <div class="js-worldlineop-force-3ds-disabled-block">
+          <!-- Enforce 3DS -->
+          <div class="form-group js-worldlineop-enforce-challenge-block">
+            <label class="control-label col-lg-3 ">
+              {l s='Request challenge on all cards transactions' mod='worldlineop'}
+            </label>
+            <div class="col-lg-9 js-worldlineop-enforce-challenge-switch">
+              <span class="switch prestashop-switch fixed-width-sm">
+                <input type="radio"
+                       value="1"
+                       name="worldlineopAdvancedSettings[enforce3DS]"
+                       id="worldlineopAdvancedSettings_enforce3DS_on"
+                       {if $data.advancedSettings.enforce3DS === true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_enforce3DS_on">{l s='Yes' mod='worldlineop'}</label>
+                <input type="radio"
+                       value="0"
+                       name="worldlineopAdvancedSettings[enforce3DS]"
+                       id="worldlineopAdvancedSettings_enforce3DS_off"
+                       {if $data.advancedSettings.enforce3DS != true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_enforce3DS_off">{l s='No' mod='worldlineop'}</label>
+                <a class="slide-button btn"></a>
+              </span>
+            </div>
+            <div class="col-lg-9 col-lg-offset-3">
+              <div class="help-block">
+              </div>
+            </div>
+          </div>
+          <!-- /Enforce 3DS -->
+          <!-- 3DS Exemption -->
+          <div class="form-group js-worldlineop-3ds-exemption-block">
+            <label class="control-label col-lg-3 ">
+                {l s='Exempt transactions from 3DS' mod='worldlineop'}
+            </label>
+            <div class="col-lg-9">
+              <span class="switch prestashop-switch fixed-width-sm">
+                <input type="radio"
+                       value="1"
+                       name="worldlineopAdvancedSettings[threeDSExempted]"
+                       id="worldlineopAdvancedSettings_threeDSExempted_on"
+                       {if $data.advancedSettings.threeDSExempted === true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_threeDSExempted_on">{l s='Yes' mod='worldlineop'}</label>
+                <input type="radio"
+                       value="0"
+                       name="worldlineopAdvancedSettings[threeDSExempted]"
+                       id="worldlineopAdvancedSettings_threeDSExempted_off"
+                       {if $data.advancedSettings.threeDSExempted != true}checked="checked"{/if}>
+                <label for="worldlineopAdvancedSettings_threeDSExempted_off">{l s='No' mod='worldlineop'}</label>
+                <a class="slide-button btn"></a>
+              </span>
+            </div>
+            <div class="col-lg-9 col-lg-offset-3">
+              <div class="help-block">
+                  {l s='When enabled, transactions with an order amount < 30 EUR will be exempted from 3DS' mod='worldlineop'}
+                <span></span>
+              </div>
+            </div>
+          </div>
+          <!-- /3DS Exemption -->
+        </div>
 
         <input type="hidden" name="action" value="saveAdvancedSettingsForm"/>
       </div>

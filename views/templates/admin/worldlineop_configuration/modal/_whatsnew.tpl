@@ -14,18 +14,16 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.3.1
+  1.3.2
 </h1>
 <br>
 <ul>
-  <li>{l s='Order cancelled on multiple webhooks receival' mod='worldlineop'}</li>
-  <li>{l s='AUD currency' mod='worldlineop'}</li>
-  <li>{l s='Update message on waiting page' mod='worldlineop'}</li>
-  <li>{l s='Default waiting time ==> 12 seconds' mod='worldlineop'}</li>
-  <li>{l s='Clear hardcoded template' mod='worldlineop'}</li>
-  <li>{l s='Copy button next to webhooks URL' mod='worldlineop'}</li>
-  <li>{l s='Remove spaces in phone number' mod='worldlineop'}</li>
-  <li>{l s='Cards grouped together on redirection page' mod='worldlineop'}</li>
+  <li>{l s='Additional information in "Worldline" box in orders' mod='worldlineop'}</li>
+  <li>{l s='Prepare extension for recurring payments' mod='worldlineop'}</li>
+  <li>{l s='Add parameter to the requests for Hosted Checkout & iFrame : order.shipping.addressIndicator' mod='worldlineop'}</li>
+  <li>{l s='Improve chances of frictionless flows' mod='worldlineop'}</li>
+  <li>{l s='Create option to manage < 30 EUR transactions exemptions' mod='worldlineop'}</li>
+  <li>{l s='Enforce 3DS challenge' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

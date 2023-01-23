@@ -48,6 +48,12 @@ class AdvancedSettings
     /** @var bool $groupCardPaymentOptions */
     public $groupCardPaymentOptions;
 
+    /** @var bool $threeDSExempted */
+    public $threeDSExempted;
+
+    /** @var bool $enforce3DS */
+    public $enforce3DS;
+
     /** @var bool $displayWhatsNew */
     public $displayWhatsNew;
 }

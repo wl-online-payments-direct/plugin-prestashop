@@ -19,6 +19,7 @@ use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
+use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class PaymentRequestBuilder
@@ -28,6 +29,7 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
 {
     /**
      * @return CardPaymentMethodSpecificInput
+     * @throws \Exception
      */
     public function buildCardPaymentMethodSpecificInput()
     {
@@ -38,6 +40,13 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
         if (false !== $this->tokenValue) {
             $cardPaymentMethodSpecificInput->setToken($this->tokenValue);
         }
+        if (false === $this->tokenValue) {
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileRequestor(self::CARD_ON_FILE_REQUESTOR_FIRST);
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileSequenceIndicator(self::CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST);
+        } else {
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileRequestor(self::CARD_ON_FILE_REQUESTOR_SUBSEQUENT);
+            $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileSequenceIndicator(self::CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT);
+        }
 
         $threeDSecure = new ThreeDSecure();
         $redirectionData = new RedirectionData();
@@ -45,8 +54,17 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
         $redirectionData->setReturnUrl(
             $this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectReturnIframe'])
         );
-        $threeDSecure->setSkipAuthentication(false);
+        if (self::PRODUCT_ID_MAESTRO == $this->idProduct || true === $this->settings->advancedSettings->force3DsV2) {
+            $threeDSecure->setSkipAuthentication(false);
+        }
         $threeDSecure->setRedirectionData($redirectionData);
+        $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(), new \Currency($this->context->cart->id_currency));
+        if (true === $this->settings->advancedSettings->threeDSExempted && self::THREE_DS_AMOUNT_EUR > $orderTotalInEuros) {
+            $threeDSecure->setExemptionRequest(self::THREE_DS_LOW_VALUE);
+        }
+        if (true === $this->settings->advancedSettings->enforce3DS) {
+            $threeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
+        }
         $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
 
         return $cardPaymentMethodSpecificInput;

@@ -35,6 +35,14 @@ $(document).ready(function () {
         paymentFlowSwitch: $('.js-worldlineop-payment-flow-modifications-switch'),
         paymentFlowSettingsBlock: $('.js-worldlineop-payment-flow-modifications-settings-block'),
 
+        force3DSBlock: $('.js-worldlineop-switch-force-3ds-block'),
+        force3DSSwitch: $('.js-worldlineop-switch-force-3ds-switch'),
+        force3DSDisabledBlock: $('.js-worldlineop-force-3ds-disabled-block'),
+
+        enforceChallengeBlock: $('.js-worldlineop-enforce-challenge-block'),
+        enforceChallengeSwitch: $('.js-worldlineop-enforce-challenge-switch'),
+        threeDSExemptionBlock: $('.js-worldlineop-3ds-exemption-block'),
+
         endpointSwitchBlock: $('.js-worldlineop-switch-endpoint-block'),
         endpointSwitchSwitch: $('.js-worldlineop-switch-endpoint-switch'),
         endpointSwitchSettingsBlock: $('.js-worldlineop-switch-endpoint-settings-block'),
@@ -74,6 +82,10 @@ $(document).ready(function () {
         this.toggleAdvSettings();
         el.redirectPaymentDisplayBlock.on('click', el.redirectPaymentDisplaySwitch, this.toggleRedirectPaymentDisplay);
         this.toggleRedirectPaymentDisplay();
+        el.enforceChallengeBlock.on('click', el.enforceChallengeSwitch, this.toggle3DSExemption);
+        this.toggle3DSExemption();
+        el.force3DSBlock.on('click', el.force3DSSwitch, this.toggle3DSBlock);
+        this.toggle3DSBlock();
         el.iframePaymentDisplayBlock.on('click', el.iframePaymentDisplaySwitch, this.toggleIframePaymentDisplay);
         this.toggleIframePaymentDisplay();
         el.refreshRedirectPaymentMethodsBtn.on('click', this.refreshRedirectPaymentMethods);
@@ -130,6 +142,20 @@ $(document).ready(function () {
           WorldlineOP.el.redirectPaymentMethodsBlock.show(400);
         } else {
           WorldlineOP.el.redirectPaymentMethodsBlock.hide(200);
+        }
+      },
+      toggle3DSBlock: function () {
+        if ($('#worldlineopAdvancedSettings_force3DsV2_on').prop('checked')) {
+          WorldlineOP.el.force3DSDisabledBlock.show(400);
+        } else {
+          WorldlineOP.el.force3DSDisabledBlock.hide(200);
+        }
+      },
+      toggle3DSExemption: function () {
+        if ($('#worldlineopAdvancedSettings_enforce3DS_on').prop('checked')) {
+          WorldlineOP.el.threeDSExemptionBlock.hide(200);
+        } else {
+          WorldlineOP.el.threeDSExemptionBlock.show(400);
         }
       },
       toggleIframePaymentDisplay: function () {
