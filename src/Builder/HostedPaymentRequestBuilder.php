@@ -32,6 +32,7 @@ use Language;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
+use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
@@ -40,6 +41,11 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 {
+    const GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK = 'FoodAndDrink';
+    const GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN = 'HomeAndGarden';
+    const GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS = 'GiftAndFlowers';
+    const GIFT_CARD_PRODUCT_TYPE_NONE = 'none';
+
     /**
      * @return HostedCheckoutSpecificInput|null
      * @throws \Exception
@@ -88,9 +94,13 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         }
 
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
-        $cardPaymentMethodSpecificInput->setAuthorizationMode(
-            $this->settings->advancedSettings->paymentSettings->transactionType
-        );
+        if (self::PRODUCT_ID_INTERSOLVE == $this->idProduct) {
+            $cardPaymentMethodSpecificInput->setAuthorizationMode(PaymentSettings::TRANSACTION_TYPE_IMMEDIATE);
+        } else {
+            $cardPaymentMethodSpecificInput->setAuthorizationMode(
+                $this->settings->advancedSettings->paymentSettings->transactionType
+            );
+        }
         if (false !== $this->tokenValue) {
             $cardPaymentMethodSpecificInput->setToken($this->tokenValue);
         }
@@ -180,10 +190,10 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $itemLineDetails->setDiscountAmount((int)(string) $product['discountPrice']);
             $itemLineDetails->setProductCode($product['productCode']);
             $itemLineDetails->setProductName($product['productName']);
+            $itemLineDetails->setProductType($product['productType']);
             $itemLineDetails->setQuantity($product['quantity']);
             $itemLineDetails->setTaxAmount((int)(string) $product['tax']);
             $itemLineDetails->setUnit('piece');
-            $itemLineDetails->setProductType('');
             $item->setOrderLineDetails($itemLineDetails);
             $items[] = $item;
         }
@@ -200,7 +210,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $shippingItemLineDetails->setQuantity(1);
         $shippingItemLineDetails->setTaxAmount((int)(string) $shoppingCartPresented['shipping']['tax']);
         $shippingItemLineDetails->setUnit('piece');
-        $shippingItemLineDetails->setProductType('');
+        $shippingItemLineDetails->setProductType($shoppingCartPresented['shipping']['type']);
         $shippingItem->setOrderLineDetails($shippingItemLineDetails);
         $items[] = $shippingItem;
         $shoppingCart->setItems($items);

@@ -33,6 +33,8 @@ hooks:
   - 'actionAdminControllerSetMedia'
   - 'customerAccount'
   - 'displayPDFInvoice'
+  - 'displayAdminProductsExtra'
+  - 'actionProductUpdate'
 orderStatuses:
   - configKey: 'WOP_PENDING_ORDER_STATUS_ID'
     color: '#34209E'
@@ -93,6 +95,10 @@ configuration:
       pendingOrderStateId: 0
       safetyDelay: 12
       errorOrderStateId: 0
+    groupCardPaymentOptions: 0
+    threeDSExempted: 0
+    enforce3DS: 0
+    surchargingEnabled: 0
     displayWhatsNew: 0
   paymentMethodsSettings:
     displayGenericOption: 1

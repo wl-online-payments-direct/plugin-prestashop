@@ -209,7 +209,19 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $hostedCheckout->merchant_reference = pSQL($hostedCheckoutResponse->getMerchantReference());
         $hostedCheckout->returnmac = pSQL($hostedCheckoutResponse->getRETURNMAC());
         $hostedCheckout->date_add = date('Y-m-d H:i:s');
-        $this->hostedCheckoutRepository->save($hostedCheckout);
+        try {
+            $this->hostedCheckoutRepository->save($hostedCheckout);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage(), ['hostedCheckout' => json_decode(json_encode($hostedCheckout), true)]);
+            Tools::redirect($this->context->link->getPageLink(
+                'order',
+                null,
+                null,
+                ['step' => 3, 'worldlineopDisplayPaymentTopMessage' => 1]
+            ));
+
+            return;
+        }
         Tools::redirect(Settings::DEFAULT_SUBDOMAIN.$hostedCheckout->partial_redirect_url);
     }
 
@@ -274,6 +286,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
         try {
             $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
+            $this->logger->debug('Presented data after GET call', ['data' => $presentedData]);
             /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
             $transactionResponseProcessor->process($presentedData);

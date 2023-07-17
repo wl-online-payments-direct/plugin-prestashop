@@ -68,26 +68,6 @@ class TransactionResponseProcessor
 
                     return;
                 }
-                if ($presentedData->token['needSave']) {
-                    /** @var TokenRepository $tokenRepository */
-                    $tokenRepository = $this->module->getService('worldlineop.repository.token');
-                    $token = $tokenRepository->findByCustomerIdToken(
-                        $presentedData->cardDetails['idCustomer'],
-                        $presentedData->token['value']
-                    );
-                    if (false === $token) {
-                        $token = new WorldlineopToken();
-                    }
-                    $this->logger->debug('Saving token');
-                    $token->id_customer = (int) $presentedData->cardDetails['idCustomer'];
-                    $token->id_shop = (int) $presentedData->token['idShop'];
-                    $token->product_id = pSQL($presentedData->transaction['productId']);
-                    $token->card_number = pSQL($presentedData->token['cardNumber']);
-                    $token->expiry_date = pSQL($presentedData->token['expiryDate']);
-                    $token->value = pSQL($presentedData->token['value']);
-                    $token->secure_key = pSQL($presentedData->cardDetails['secureKey']);
-                    $tokenRepository->save($token);
-                }
                 $this->logger->debug('Validating order');
                 $this->module->validateOrder(
                     (int) $presentedData->cardDetails['idCart'],
@@ -151,6 +131,26 @@ class TransactionResponseProcessor
                     }
                 }
             }
+        }
+        if (isset($presentedData->token['needSave']) && $presentedData->token['needSave']) {
+            /** @var TokenRepository $tokenRepository */
+            $tokenRepository = $this->module->getService('worldlineop.repository.token');
+            $token = $tokenRepository->findByCustomerIdToken(
+                $presentedData->cardDetails['idCustomer'],
+                $presentedData->token['value']
+            );
+            if (false === $token) {
+                $token = new WorldlineopToken();
+            }
+            $this->logger->debug('Saving token');
+            $token->id_customer = (int) $presentedData->cardDetails['idCustomer'];
+            $token->id_shop = (int) $presentedData->token['idShop'];
+            $token->product_id = pSQL($presentedData->transaction['productId']);
+            $token->card_number = pSQL($presentedData->token['cardNumber']);
+            $token->expiry_date = pSQL($presentedData->token['expiryDate']);
+            $token->value = pSQL($presentedData->token['value']);
+            $token->secure_key = pSQL($presentedData->cardDetails['secureKey']);
+            $tokenRepository->save($token);
         }
     }
 }

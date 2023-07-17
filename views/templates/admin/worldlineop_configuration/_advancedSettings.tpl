@@ -376,6 +376,10 @@
           </div>
         </div>
         <!-- /Group cards -->
+        <div class="form-group form-group-h2">
+          <div class="col-lg-3"></div>
+          <h4 class="col-lg-9">{l s='UE specific settings' mod='worldlineop'}</h4>
+        </div>
         <!-- Force 3DsV2 -->
         <div class="form-group js-worldlineop-switch-force-3ds-block">
           <label class="control-label col-lg-3 ">
@@ -465,6 +469,40 @@
           </div>
           <!-- /3DS Exemption -->
         </div>
+        <div class="form-group form-group-h2">
+          <div class="col-lg-3"></div>
+          <h4 class="col-lg-9">{l s='Non-UE specific settings' mod='worldlineop'}</h4>
+        </div>
+        <!-- Surcharging -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+              {l s='Enable surcharging' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[surchargingEnabled]"
+                     id="worldlineopAdvancedSettings_surchargingEnabled_on"
+                     {if $data.advancedSettings.surchargingEnabled === true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_surchargingEnabled_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[surchargingEnabled]"
+                     id="worldlineopAdvancedSettings_surchargingEnabled_off"
+                     {if $data.advancedSettings.surchargingEnabled != true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_surchargingEnabled_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s='When surcharging is enabled, extra fees related to credit card organizations will be supported by your customers' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
+        <!-- /Group cards -->
 
         <input type="hidden" name="action" value="saveAdvancedSettingsForm"/>
       </div>

@@ -10,6 +10,15 @@
         'dev' => false,
     ),
     'versions' => array(
+        'alcohol/iso4217' => array(
+            'pretty_version' => '3.1.5',
+            'version' => '3.1.5.0',
+            'reference' => '3a764b8d8f1d5ea7506620a21f42909a7d6a4832',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../alcohol/iso4217',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'ircmaxell/random-lib' => array(
             'pretty_version' => 'v1.2.0',
             'version' => '1.2.0.0',
@@ -332,9 +341,9 @@
             'dev_requirement' => false,
         ),
         'wl-online-payments-direct/sdk-php' => array(
-            'pretty_version' => '4.5.0',
-            'version' => '4.5.0.0',
-            'reference' => '6699d4ab364ec07a70aa8083ae52b0f7206b0bd8',
+            'pretty_version' => '4.6.0',
+            'version' => '4.6.0.0',
+            'reference' => '7b9e803079a7973b5521467a605e22ab1e9550d9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../wl-online-payments-direct/sdk-php',
             'aliases' => array(),

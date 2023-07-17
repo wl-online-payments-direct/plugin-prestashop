@@ -15,6 +15,7 @@
 
 namespace WorldlineOP\PrestaShop\Utils;
 
+use Alcohol\ISO4217;
 use Currency;
 use Customer;
 use Language;
@@ -22,6 +23,7 @@ use Mail;
 use Order;
 use Symfony\Component\Filesystem\Filesystem;
 use Validate;
+use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 
 /**
  * Class Tools
@@ -95,6 +97,91 @@ class Tools
         $currency = new Currency((int) $idCurrency);
 
         return \Validate::isLoadedObject($currency) ? $currency : false;
+    }
+
+    /**
+     * @param string $iso
+     * @return int
+     */
+    public static function getCurrencyDecimalByIso($iso)
+    {
+        static $decimalCurrencies = [];
+
+        if (isset($decimalCurrencies[$iso])) {
+            return (int) $decimalCurrencies[$iso]['exp'];
+        }
+
+        $iso4217 = new ISO4217();
+        try {
+            $decimalCurrency = $iso4217->getByAlpha3($iso);
+        } catch (\Exception $e) {
+            return 2;
+        }
+
+        $decimalCurrencies[$iso] = $decimalCurrency;
+
+        return (int) $decimalCurrencies[$iso]['exp'];
+    }
+
+    /**
+     * @param float $amount
+     * @param string $isoCurrency
+     * @return float|string
+     */
+    public static function getAmountInCents($amount, $isoCurrency)
+    {
+        $pow = self::getCurrencyDecimalByIso($isoCurrency);
+        if (false === $pow) {
+            return $amount;
+        }
+
+        return (string) Decimal::multiply((string) $amount, (string) pow(10, $pow))->getIntegerPart();
+    }
+
+    /**
+     * @param float $amount
+     * @param string $isoCurrency
+     * @return float|string
+     */
+    public static function getRoundedAmountInCents($amount, $isoCurrency)
+    {
+        $pow = self::getCurrencyDecimalByIso($isoCurrency);
+        if (false === $pow) {
+            return $amount;
+        }
+
+        return (string) Decimal::multiply((string) \Tools::ps_round($amount, $pow), (string) pow(10, $pow))->getIntegerPart();
+    }
+
+    /**
+     * @param float  $amount
+     * @param string $isoCurrency
+     * @return float|string
+     * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
+     */
+    public static function getRoundedAmountFromCents($amount, $isoCurrency)
+    {
+        $pow = self::getCurrencyDecimalByIso($isoCurrency);
+        if (false === $pow) {
+            return $amount;
+        }
+
+        return number_format((string) Decimal::divide((string) $amount, (string) pow(10, $pow)), $pow, '.', '');
+    }
+
+    /**
+     * @param float $amount
+     * @param string $isoCurrency
+     * @return float|mixed
+     */
+    public static function getRoundedAmount($amount, $isoCurrency)
+    {
+        $pow = self::getCurrencyDecimalByIso($isoCurrency);
+        if (false === $pow) {
+            return $amount;
+        }
+
+        return \Tools::ps_round($amount, $pow);
     }
 
     /**
@@ -177,5 +264,20 @@ class Tools
         $amountInDefaultCurrency = Decimal::divide((string) $amount, (string) $currencyFrom->conversion_rate);
 
         return Decimal::multiply((string) $amountInDefaultCurrency, (string) $currencyEUR->conversion_rate)->__toString();
+    }
+
+    /**
+     * @param int $idProduct
+     * @return false|string
+     */
+    public static function getGiftCardTypeByIdProduct($idProduct)
+    {
+        $dbQuery = new \DbQuery();
+        $dbQuery
+            ->select('product_type')
+            ->from('worldlineop_product_gift_card')
+            ->where('id_product = '.(int) $idProduct);
+
+        return \Db::getInstance()->getValue($dbQuery) ?: HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE;
     }
 }

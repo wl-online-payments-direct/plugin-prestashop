@@ -17,13 +17,17 @@ namespace WorldlineOP\PrestaShop\Presenter;
 
 use Configuration;
 use Context;
+use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\CalculateSurchargeRequest;
+use OnlinePayments\Sdk\Domain\CalculateSurchargeResponse;
+use OnlinePayments\Sdk\Domain\CardSource;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use Language;
+use OnlinePayments\Sdk\ValidationException;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
-use WorldlineOP\PrestaShop\Utils\Decimal;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
@@ -32,6 +36,8 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class PaymentOptionsPresenter implements PresenterInterface
 {
+    const NO_SURCHARGE = 'NO_SURCHARGE';
+
     /** @var Settings $settingsLoader */
     private $settings;
 
@@ -148,17 +154,66 @@ class PaymentOptionsPresenter implements PresenterInterface
                 if (!empty($hostedTokenizationResponse->getInvalidTokens())) {
                     continue;
                 }
+                $tokenSurcharge = [];
+                if ($this->settings->advancedSettings->surchargingEnabled) {
+                    $surchargeRequest = new CalculateSurchargeRequest();
+                    $amountOfMoney = new AmountOfMoney();
+                    $amountOfMoney->setCurrencyCode(Tools::getIsoCurrencyCodeById($this->context->cart->id_currency));
+                    $amountOfMoney->setAmount(
+                        Tools::getRoundedAmountInCents(
+                            $this->context->cart->getOrderTotal(),
+                            Tools::getIsoCurrencyCodeById($this->context->cart->id_currency)
+                        )
+                    );
+                    $card = new CardSource();
+                    $card->setToken($token->value);
+                    $surchargeRequest->setCardSource($card);
+                    $surchargeRequest->setAmountOfMoney($amountOfMoney);
+                    try {
+                        /** @var CalculateSurchargeResponse $surchargeResponse */
+                        $surchargeResponse = $merchantClient->services()->surchargeCalculation($surchargeRequest);
+                        $this->module->logger->debug('Surcharge resp.', ['resp' => json_decode($surchargeResponse->toJson(), true)]);
+                        $surcharges = $surchargeResponse->getSurcharges();
+                        if (null !== $surcharges && self::NO_SURCHARGE !== $surcharges[0]->getResult()) {
+                            $surcharge = $surcharges[0];
+                            $amountWithoutSurcharge = Tools::getRoundedAmountFromCents(
+                                $surcharge->getNetAmount()->getAmount(),
+                                $surcharge->getNetAmount()->getCurrencyCode()
+                            );
+                            $amountWithSurcharge = Tools::getRoundedAmountFromCents(
+                                $surcharge->getTotalAmount()->getAmount(),
+                                $surcharge->getTotalAmount()->getCurrencyCode()
+                            );
+                            $surchargeAmount = Tools::getRoundedAmountFromCents(
+                                $surcharge->getSurchargeAmount()->getAmount(),
+                                $surcharge->getSurchargeAmount()->getCurrencyCode()
+                            );
+                            $tokenSurcharge = [
+                                'amountWithoutSurcharge' => $amountWithoutSurcharge,
+                                'amountWithSurcharge' => $amountWithSurcharge,
+                                'surchargeAmount' => $surchargeAmount,
+                                'currencyIso' => $surcharge->getNetAmount()->getCurrencyCode(),
+                            ];
+                        }
+                    } catch (ValidationException $e) {
+                        $this->module->logger->error($e->getMessage(), ['response' => json_decode($e->getResponse()->toJson(), true), 'token' => json_decode($surchargeRequest->toJson(), true)]);
+                    } catch (\Exception $e) {
+                        $this->module->logger->error($e->getMessage(), ['token' => json_decode($surchargeRequest->toJson(), true)]);
+                    }
+                }
 
                 $redirectUrl = Settings::DEFAULT_SUBDOMAIN.$hostedTokenizationResponse->getPartialRedirectUrl();
                 $createPaymentUrl = $this->context->link->getModuleLink($this->module->name, 'payment');
                 $this->context->smarty->assign([
                     'tokenId' => $token->id_worldlineop_token,
+                    'tokenSurcharge' => $tokenSurcharge,
                     'hostedTokenizationPageUrl' => $redirectUrl,
                     'createPaymentUrl' => $createPaymentUrl,
                     'cardToken' => $token->value,
-                    'totalCartCents' => Decimal::multiply((string) $this->context->cart->getOrderTotal(), '100')->getIntegerPart(),
+                    'totalCartCents' => Tools::getRoundedAmountInCents($this->context->cart->getOrderTotal(), Tools::getIsoCurrencyCodeById($this->context->cart->id_currency)),
                     'cartCurrencyCode' => Tools::getIsoCurrencyCodeById($this->context->cart->id_currency),
                     'worldlineopCustomerToken' => \Tools::getToken(),
+                    'surchargeEnabled' => $this->settings->advancedSettings->surchargingEnabled,
                 ]);
 
                 $logoPath = realpath($this->module->getLocalPath().sprintf('views/img/payment_logos/%s.svg', $token->product_id));
@@ -215,9 +270,10 @@ class PaymentOptionsPresenter implements PresenterInterface
             'displayHTP' => true,
             'hostedTokenizationPageUrl' => $redirectUrl,
             'createPaymentUrl' => $createPaymentUrl,
-            'totalCartCents' => Decimal::multiply((string) $this->context->cart->getOrderTotal(), '100')->getIntegerPart(),
+            'totalCartCents' => Tools::getRoundedAmountInCents($this->context->cart->getOrderTotal(), Tools::getIsoCurrencyCodeById($this->context->cart->id_currency)),
             'cartCurrencyCode' => Tools::getIsoCurrencyCodeById($this->context->cart->id_currency),
             'worldlineopCustomerToken' => \Tools::getToken(),
+            'surchargeEnabled' => $this->settings->advancedSettings->surchargingEnabled,
         ]);
 
         $defaultIsoLang = Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'));

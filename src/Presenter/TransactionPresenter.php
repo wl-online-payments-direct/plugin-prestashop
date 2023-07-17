@@ -28,6 +28,8 @@ use OnlinePayments\Sdk\Domain\RefundRedirectMethodSpecificOutput;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
+use WorldlineOP\PrestaShop\Utils\Decimal;
+use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class TransactionPresenter
@@ -62,6 +64,7 @@ class TransactionPresenter implements PresenterInterface
      * @param false|int $idOrder
      * @return array
      * @throws \PrestaShopException
+     * @throws \Exception
      */
     public function present($idOrder = false)
     {
@@ -83,6 +86,8 @@ class TransactionPresenter implements PresenterInterface
             throw new \Exception('Could not retrieve transaction details');
         }
 
+        $currencyCode = $payment->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
+        $decimals = Tools::getCurrencyDecimalByIso($currencyCode);
         $capturesData = [];
         $totalCaptured = 0;
         $totalPendingCapture = 0;
@@ -100,9 +105,9 @@ class TransactionPresenter implements PresenterInterface
                 ];
             }
         } elseif (empty($captures->getCaptures()) && !$payment->getStatusOutput()->getIsAuthorized() && self::STATUS_PAYMENT_CAPTURED === $payment->getStatus()) {
-            $totalCaptured = $payment->getPaymentOutput()->getAmountOfMoney()->getAmount();
+            $totalCaptured = $payment->getPaymentOutput()->getAcquiredAmount()->getAmount();
         }
-        $capturableAmount = !$paymentDetails->getStatusOutput()->getIsAuthorized() ? 0 : ($payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - ($totalCaptured + $totalPendingCapture)) / 100;
+        $capturableAmount = !$paymentDetails->getStatusOutput()->getIsAuthorized() ? 0 : Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - $totalCaptured + $totalPendingCapture, $currencyCode);
         if ($capturableAmount < 0) {
             $capturableAmount = 0;
         }
@@ -130,7 +135,7 @@ class TransactionPresenter implements PresenterInterface
                 ];
             }
         }
-        $refundableAmount = !$paymentDetails->getStatusOutput()->getIsRefundable() ? 0 : ($totalCaptured - ($totalRefunded + $totalPendingRefund)) / 100;
+        $refundableAmount = !$paymentDetails->getStatusOutput()->getIsRefundable() ? 0 : Tools::getRoundedAmountFromCents($totalCaptured - $totalRefunded + $totalPendingRefund, $currencyCode);
         $apiErrors = $paymentDetails->getStatusOutput()->getErrors() ?: [];
         $errors = [];
         foreach ($apiErrors as $apiError) {
@@ -140,12 +145,32 @@ class TransactionPresenter implements PresenterInterface
             ];
         }
         $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
+        $order = new \Order((int) $idOrder);
+        $psOrderAmountMatch = true;
+        if ($order->total_paid_tax_incl) {
+            $worldlineAmount = (int) $payment->getPaymentOutput()->getAmountOfMoney()->getAmount();
+            $psAmount = (int) Tools::getRoundedAmountInCents($order->total_paid_tax_incl, $payment->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+            $psOrderAmountMatch = ($worldlineAmount === $psAmount);
+        }
+
+        $surcharge = $payment->getPaymentOutput()->getSurchargeSpecificOutput();
+        $surchargeAmount = 0;
+        if (null !== $surcharge) {
+            $surchargeAmount = Tools::getRoundedAmountFromCents(
+                $payment->getPaymentOutput()->getSurchargeSpecificOutput()->getSurchargeAmount()->getAmount(),
+                $payment->getPaymentOutput()->getSurchargeSpecificOutput()->getSurchargeAmount()->getCurrencyCode()
+            );
+        }
 
         return [
             'orderId' => $idOrder,
             'payment' => [
-                'amount' => $payment->getPaymentOutput()->getAmountOfMoney()->getAmount() / 100,
-                'currencyCode' => $payment->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode(),
+                'amount' => Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAcquiredAmount()->getAmount(), $currencyCode),
+                'hasSurcharge' => !($surchargeAmount === 0),
+                'surchargeAmount' => $surchargeAmount,
+                'amountWithoutSurcharge' => Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAmountOfMoney()->getAmount(), $currencyCode),
+                'psOrderAmountMatch' => $psOrderAmountMatch,
+                'currencyCode' => $currencyCode,
                 'reference' => $payment->getPaymentOutput()->getReferences()->getMerchantReference(),
                 'id' => $transaction->reference,
                 'status' => $paymentDetails->getStatus(),
@@ -161,15 +186,15 @@ class TransactionPresenter implements PresenterInterface
             ],
             'refunds' => [
                 'list' => $refundsData,
-                'refundableAmount' => $refundableAmount,
-                'totalPendingRefund' => $totalPendingRefund / 100,
-                'totalRefunded' => $totalRefunded / 100,
+                'refundableAmount' => number_format($refundableAmount, $decimals, '.', ''),
+                'totalPendingRefund' => Tools::getRoundedAmountFromCents($totalPendingRefund, $currencyCode),
+                'totalRefunded' => Tools::getRoundedAmountFromCents($totalRefunded, $currencyCode),
             ],
             'captures' => [
                 'list' => $capturesData,
-                'capturableAmount' => $capturableAmount,
-                'totalPendingCapture' => $totalPendingCapture / 100,
-                'totalCaptured' => $totalCaptured / 100,
+                'capturableAmount' => number_format($capturableAmount, $decimals, '.', ''),
+                'totalPendingCapture' => Tools::getRoundedAmountFromCents($totalPendingCapture, $currencyCode),
+                'totalCaptured' => Tools::getRoundedAmountFromCents($totalCaptured, $currencyCode),
             ],
         ];
     }

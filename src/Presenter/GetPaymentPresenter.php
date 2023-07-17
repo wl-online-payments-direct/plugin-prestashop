@@ -96,11 +96,12 @@ class GetPaymentPresenter implements PresenterInterface
 
     /**
      * @param PaymentResponse $paymentResponse
-     * @param int $idShop
+     * @param int             $idShop
      * @return TransactionPresented
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
+     * @throws \Exception
      */
     public function present($paymentResponse = false, $idShop = false)
     {
@@ -136,6 +137,12 @@ class GetPaymentPresenter implements PresenterInterface
             $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
         } else {
             return $this->presentedData;
+        }
+        $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
+        $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+        if ($totalPrestaShop != $totalReceived) {
+            $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
+            $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
         }
 
         if (Validate::isLoadedObject($order)) {
@@ -202,38 +209,7 @@ class GetPaymentPresenter implements PresenterInterface
         if ($hostedCheckout) {
             $this->logger->debug('Payment has been made through Hosted Checkout Page');
             $this->logger->debug('Checkout Session found');
-            if (in_array($paymentOutput->getPaymentMethod(), self::PAYMENT_METHODS_TOKEN)) {
-                if ($paymentSpecificOutput->getToken()) {
-                    $this->logger->debug('Token field is not empty.');
-                    /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
-                    $merchantClient = $this->module->getService('worldlineop.sdk.client');
-                    try {
-                        /** @var \OnlinePayments\Sdk\Domain\TokenResponse $tokenResponse */
-                        $tokenResponse = $merchantClient->tokens()
-                                                        ->getToken($paymentSpecificOutput->getToken());
-                    } catch (\Exception $e) {
-                        $this->logger->error(
-                            'Could not fetch token',
-                            ['message' => $e->getMessage(), 'tokenValue' => $paymentSpecificOutput->getToken()]
-                        );
-                    }
-                    if (isset($tokenResponse) &&
-                        $tokenResponse->getId() &&
-                        false === $tokenResponse->getIsTemporary()
-                    ) {
-                        $this->logger->debug('Token is not temporary. Need save.');
-                        $token = [
-                            'needSave' => true,
-                            'value' => $paymentSpecificOutput->getToken(),
-                            'idShop' => $this->cart->id_shop,
-                        ];
-                        if (self::PAYMENT_METHOD_CARD === $paymentOutput->getPaymentMethod()) {
-                            $token['cardNumber'] = $paymentSpecificOutput->getCard()->getCardNumber();
-                            $token['expiryDate'] = $paymentSpecificOutput->getCard()->getExpiryDate();
-                        }
-                    }
-                }
-            }
+            $token = $this->getTokenData($paymentOutput, $paymentSpecificOutput);
         } elseif ($createdPayment) {
             $this->logger->debug('Payment has been made through Tokenization Page');
             $this->logger->debug('CreatedPayment found');
@@ -242,17 +218,20 @@ class GetPaymentPresenter implements PresenterInterface
 
             return;
         }
+        $transactionId = strstr($paymentResponse->getId(), '_', true);
+        if (false === $transactionId) {
+            $transactionId = $paymentResponse->getId();
+        }
+        $pow = Tools::getCurrencyDecimalByIso($currencyCode);
         $this->presentedData->validateOrder = true;
         $this->presentedData->token = $token;
         $this->presentedData->cardDetails['idCart'] = $this->cart->id;
-        $this->presentedData->cardDetails['total'] = Decimal::divide(
-            (string) $paymentOutput->getAmountOfMoney()->getAmount(), '100'
-        )->round(2);
+        $this->presentedData->cardDetails['total'] = Tools::getRoundedAmountFromCents($paymentOutput->getAmountOfMoney()->getAmount(), $paymentOutput->getAmountOfMoney()->getCurrencyCode());
         $this->presentedData->cardDetails['secureKey'] = $this->cart->secure_key;
         $this->presentedData->cardDetails['idCustomer'] = $this->cart->id_customer;
         $this->presentedData->transaction['productId'] = $productId;
         $this->presentedData->transaction['paymentMethod'] = $paymentMethodText;
-        $this->presentedData->transaction['details']['transactionId'] = strstr($paymentResponse->getId(), '_', true);
+        $this->presentedData->transaction['details']['transaction_id'] = $transactionId;
         $this->presentedData->transaction['idCurrency'] = Currency::getIdByIsoCode($currencyCode);
         $this->presentedData->transaction['merchantReference'] = $paymentResponse->getId();
         $this->presentedData->order['ids'] = Tools::getOrderIdsByIdCart($order->id_cart);
@@ -278,11 +257,16 @@ class GetPaymentPresenter implements PresenterInterface
         /** @var \WorldlineopTransaction $transaction */
         $transaction = $transactionRepository->findByIdOrder($order->id);
         $merchantReference = strstr($paymentResponse->getId(), '_', true);
+        if (false === $merchantReference) {
+            $merchantReference = $paymentResponse->getId();
+        }
         $idShop = $this->cart->id_shop;
         $settings = $this->settingsLoader->setContext($idShop);
-        if (false === $transaction ||
-            (strstr($transaction->reference, '_', true) !== $merchantReference && false !== $merchantReference)
-        ) {
+        $transactionReference = strstr($transaction->reference, '_', true);
+        if (false === $transactionReference) {
+            $transactionReference = $transaction->reference;
+        }
+        if (false === $transaction || ($transactionReference !== $merchantReference && false !== $merchantReference)) {
             $this->logger->error('Cannot find transaction for order '.$order->id);
 
             return;
@@ -306,7 +290,7 @@ class GetPaymentPresenter implements PresenterInterface
                     $refundRequest = new RefundRequest();
                     $amountOfMoney = new AmountOfMoney();
                     $amount = $paymentDetails->getPaymentOutput()->getAmountOfMoney();
-                    $amountOfMoney->setAmount((int) Decimal::divide((string) $amount->getAmount(), '100')->getIntegerPart());
+                    $amountOfMoney->setAmount($amount->getAmount());
                     $amountOfMoney->setCurrencyCode($amount->getCurrencyCode());
                     $refundRequest->setAmountOfMoney($amountOfMoney);
                     try {
@@ -335,9 +319,19 @@ class GetPaymentPresenter implements PresenterInterface
 
                 return;
             }
-            $receivedIteration = substr($paymentResponse->getId(), strpos($paymentResponse->getId(), '_') + 1);
-            $storedIteration = substr($transaction->reference, strpos($transaction->reference, '_') + 1);
-            if (self::STATUS_REJECTED === $paymentResponse->getStatus() && (int) $receivedIteration < (int) $storedIteration) {
+            if (false === strpos($paymentResponse->getId(), '_')) {
+                $transactionId = $paymentResponse->getId();
+                $receivedIteration = (int) substr($transactionId, -3);
+            } else {
+                $receivedIteration = substr($paymentResponse->getId(), strpos($paymentResponse->getId(), '_') + 1);
+            }
+            if (false === strpos($transaction->reference, '_')) {
+                $transactionReference = $transaction->reference;
+                $storedIteration = (int) substr($transactionReference, -3);
+            } else {
+                $storedIteration = substr($transaction->reference, strpos($transaction->reference, '_') + 1);
+            }
+            if (in_array($paymentResponse->getStatus(), self::STATUS_REJECTED) && (int) $receivedIteration < (int) $storedIteration) {
                 $this->logger->error('Event received is older than last processed');
 
                 return;
@@ -346,7 +340,22 @@ class GetPaymentPresenter implements PresenterInterface
                 $transaction->reference = pSQL($paymentResponse->getId());
                 $transactionRepository->save($transaction);
             }
+            $paymentOutput = $paymentResponse->getPaymentOutput();
+            if (in_array($paymentResponse->getStatus(), array_merge(self::STATUS_ACCEPTED, self::STATUS_AUTHORIZED))) {
+                $this->presentedData->token = $this->getTokenData($paymentOutput, $this->getPaymentSpecificOutput($paymentOutput->getPaymentMethod(), $paymentOutput));
+                $this->presentedData->cardDetails['secureKey'] = $this->cart->secure_key;
+            }
+            if (in_array($paymentResponse->getStatus(), self::STATUS_ACCEPTED)) {
+                if (($paymentOutput->getAcquiredAmount()->getAmount() !== $paymentOutput->getAmountOfMoney()->getAmount()) && ($paymentOutput->getSurchargeSpecificOutput() === null)) {
+                    $this->logger->debug('Captured event for an incomplete partial payment');
+
+                    return;
+                }
+            }
             $merchantReference = strstr($transaction->reference, '_', true);
+            if (false === $merchantReference) {
+                $merchantReference = $transaction->reference;
+            }
             $this->presentedData->updateStatus = true;
             $this->presentedData->order['ids'] = Tools::getOrderIdsByIdCart($order->id_cart);
             $this->presentedData->idOrderState = $idOrderState;
@@ -355,7 +364,50 @@ class GetPaymentPresenter implements PresenterInterface
             $this->presentedData->payments['merchantReference'] = $merchantReference;
             $this->logger->debug('Update order state to ID '.$idOrderState);
         }
+    }
 
+    /**
+     * @param PaymentOutput $paymentOutput
+     * @param CardPaymentMethodSpecificOutput|MobilePaymentMethodSpecificOutput|RedirectPaymentMethodSpecificOutput $paymentSpecificOutput
+     * @return array
+     */
+    public function getTokenData($paymentOutput, $paymentSpecificOutput)
+    {
+        $token = ['needSave' => false];
+        if (in_array($paymentOutput->getPaymentMethod(), self::PAYMENT_METHODS_TOKEN)) {
+            if ($paymentSpecificOutput->getToken()) {
+                $this->logger->debug('Token field is not empty.');
+                /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+                $merchantClient = $this->module->getService('worldlineop.sdk.client');
+                try {
+                    /** @var \OnlinePayments\Sdk\Domain\TokenResponse $tokenResponse */
+                    $tokenResponse = $merchantClient->tokens()
+                                                    ->getToken($paymentSpecificOutput->getToken());
+                } catch (\Exception $e) {
+                    $this->logger->error(
+                        'Could not fetch token',
+                        ['message' => $e->getMessage(), 'tokenValue' => $paymentSpecificOutput->getToken()]
+                    );
+                }
+                if (isset($tokenResponse) &&
+                    $tokenResponse->getId() &&
+                    false === $tokenResponse->getIsTemporary()
+                ) {
+                    $this->logger->debug('Token is not temporary. Need save.');
+                    $token = [
+                        'needSave' => true,
+                        'value' => $paymentSpecificOutput->getToken(),
+                        'idShop' => $this->cart->id_shop,
+                    ];
+                    if (self::PAYMENT_METHOD_CARD === $paymentOutput->getPaymentMethod()) {
+                        $token['cardNumber'] = $paymentSpecificOutput->getCard()->getCardNumber();
+                        $token['expiryDate'] = $paymentSpecificOutput->getCard()->getExpiryDate();
+                    }
+                }
+            }
+        }
+
+        return $token;
     }
 
     /**

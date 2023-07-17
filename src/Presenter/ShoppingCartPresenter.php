@@ -16,6 +16,8 @@
 namespace WorldlineOP\PrestaShop\Presenter;
 
 use Cart;
+use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
+use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class ShoppingCartPresenter
@@ -28,6 +30,9 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /** @var mixed[] $products */
     private $products;
+
+    /** @var mixed[] $productsType */
+    private $productsType;
 
     /** @var mixed[] $cartRules */
     private $cartRules;
@@ -44,6 +49,9 @@ class ShoppingCartPresenter implements PresenterInterface
     /** @var float $orderDiscountPercent */
     private $orderDiscountPercent;
 
+    /** @var string $cartCurrencyIso */
+    private $cartCurrencyIso;
+
     /**
      * @param Cart|false $cart
      * @return array
@@ -55,6 +63,7 @@ class ShoppingCartPresenter implements PresenterInterface
             throw new \Exception('Cart is not valid');
         }
         $this->cart = $cart;
+        $this->cartCurrencyIso = Tools::getIsoCurrencyCodeById($cart->id_currency);
         $this->products = $cart->getProducts();
         $this->cartRules = $cart->getCartRules();
         $this->discountShippingWithoutTax = 0;
@@ -62,6 +71,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $this->discountProductsWithTax = 0;
         $rows = [];
         $this->separateDiscount();
+        $this->assignProductsType();
         $rows['shipping'] = $this->getShippingRow();
         $rows['products'] = $this->getProductRows();
         $rows['cart'] = $cart;
@@ -104,12 +114,52 @@ class ShoppingCartPresenter implements PresenterInterface
         $shippingWithoutTaxes = $this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING);
 
         return [
-            'priceWithTax' => $this->discountShippingWithoutTax ? 0 : \Tools::ps_round($this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING), 2) * 100,
-            'priceWithoutTax' => \Tools::ps_round($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING), 2) * 100,
-            'discountPrice' => \Tools::ps_round($this->discountShippingWithoutTax, 2) * 100,
-            'priceDiscountedWithoutTax' => \Tools::ps_round($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING) - $this->discountShippingWithoutTax, 2) * 100,
-            'tax' => $this->discountShippingWithoutTax ? 0 : \Tools::ps_round($shippingWithTaxes - $shippingWithoutTaxes, 2) * 100,
+            'priceWithTax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
+            'priceWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
+            'discountPrice' => Tools::getRoundedAmountInCents($this->discountShippingWithoutTax, $this->cartCurrencyIso),
+            'priceDiscountedWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING) - $this->discountShippingWithoutTax, $this->cartCurrencyIso),
+            'tax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($shippingWithTaxes - $shippingWithoutTaxes, $this->cartCurrencyIso),
+            'type' => $this->productsType['SHIPPING'],
         ];
+    }
+
+    /**
+     * @return void
+     */
+    private function assignProductsType()
+    {
+        $types = [];
+        foreach ($this->products as $product) {
+            $type = Tools::getGiftCardTypeByIdProduct($product['id_product']);
+            $types[$type][] = $product['id_product'];
+        }
+
+        $typeNone = isset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE]) ? $types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE] : [];
+        unset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE]);
+        if (count($types) > 1) {
+            $types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE] = array_merge(
+                isset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN]) ? $types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN] : [],
+                isset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS]) ? $types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS] : [],
+                $typeNone
+            );
+            $shippingTypeNone = true;
+            unset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN]);
+            unset($types[HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS]);
+        } else {
+            $shippingTypeNone = false;
+        }
+        $productsTypes = [];
+        $productsTypes['SHIPPING'] = '';
+        foreach ($types as $type => $ids) {
+            foreach ($ids as $id) {
+                $productsTypes[$id] = ($type == HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE ? '' :  $type);
+            }
+            if ($type != HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE && false === $shippingTypeNone) {
+                $productsTypes['SHIPPING'] = $type;
+            }
+        }
+
+        $this->productsType = $productsTypes;
     }
 
     /**
@@ -121,16 +171,17 @@ class ShoppingCartPresenter implements PresenterInterface
         foreach ($this->products as $product) {
             $i = 0;
             while ($i < $product['quantity']) {
-                $totalWithTax = \Tools::ps_round($product['price_with_reduction'], 2);
-                $productPrice = \Tools::ps_round($product['price_with_reduction_without_tax'], 2);
+                $totalWithTax = Tools::getRoundedAmount($product['price_with_reduction'], $this->cartCurrencyIso);
+                $productPrice = Tools::getRoundedAmount($product['price_with_reduction_without_tax'], $this->cartCurrencyIso);
                 $row = [
                     'totalWithTax' => $totalWithTax,
                     'productPrice' => $productPrice,
                     'discountPrice' => 0,
-                    'tax' => \Tools::ps_round($totalWithTax - $productPrice, 2),
+                    'tax' => Tools::getRoundedAmount($totalWithTax - $productPrice, $this->cartCurrencyIso),
                     'quantity' => 1,
                     'productCode' => $product['reference'] ?: $product['unique_id'],
                     'productName' => $product['name'],
+                    'productType' => $this->productsType[$product['id_product']],
                     'data' => $product,
                 ];
 
@@ -157,11 +208,11 @@ class ShoppingCartPresenter implements PresenterInterface
             $unitPriceDiscountedWithoutTax = $productRow['data']['price_with_reduction_without_tax'] - ($productRow['data']['price_with_reduction_without_tax'] * $this->orderDiscountPercent);
             $unitTaxAmountDiscounted = $unitPriceDiscountedWithoutTax * $rate;
             $discountAmountWithoutTax = $productRow['data']['price_with_reduction_without_tax'] - $unitPriceDiscountedWithoutTax;
-            $totalPriceDiscountedWithTax = \Tools::ps_round($productRow['productPrice'], 2) - \Tools::ps_round($discountAmountWithoutTax, 2) + \Tools::ps_round($unitTaxAmountDiscounted, 2);
+            $totalPriceDiscountedWithTax = Tools::getRoundedAmount($productRow['productPrice'], $this->cartCurrencyIso) - Tools::getRoundedAmount($discountAmountWithoutTax, $this->cartCurrencyIso) + Tools::getRoundedAmount($unitTaxAmountDiscounted, $this->cartCurrencyIso);
 
-            $productRow['tax'] = \Tools::ps_round($unitTaxAmountDiscounted, 2);
-            $productRow['discountPrice'] = \Tools::ps_round($discountAmountWithoutTax, 2);
-            $productRow['totalWithTax'] = \Tools::ps_round($totalPriceDiscountedWithTax, 2);
+            $productRow['tax'] = Tools::getRoundedAmount($unitTaxAmountDiscounted, $this->cartCurrencyIso);
+            $productRow['discountPrice'] = Tools::getRoundedAmount($discountAmountWithoutTax, $this->cartCurrencyIso);
+            $productRow['totalWithTax'] = Tools::getRoundedAmount($totalPriceDiscountedWithTax, $this->cartCurrencyIso);
         }
     }
 
@@ -179,7 +230,7 @@ class ShoppingCartPresenter implements PresenterInterface
         if (abs($totalCalculated - $totalCart) < 0.001) {
             return;
         }
-        $diff = \Tools::ps_round($totalCalculated - $totalCart, 2);
+        $diff = Tools::getRoundedAmount($totalCalculated - $totalCart, $this->cartCurrencyIso);
         $productRows[0]['totalWithTax'] -= $diff;
         $productRows[0]['productPrice'] -= $diff;
     }
@@ -191,10 +242,10 @@ class ShoppingCartPresenter implements PresenterInterface
     private function formatPrices(&$productRows)
     {
         foreach ($productRows as &$productRow) {
-            $productRow['totalWithTax'] *= 100;
-            $productRow['productPrice'] *= 100;
-            $productRow['discountPrice'] *= 100;
-            $productRow['tax'] *= 100;
+            $productRow['totalWithTax'] = Tools::getAmountInCents($productRow['totalWithTax'], $this->cartCurrencyIso);
+            $productRow['productPrice'] = Tools::getAmountInCents($productRow['productPrice'], $this->cartCurrencyIso);
+            $productRow['discountPrice'] = Tools::getAmountInCents($productRow['discountPrice'], $this->cartCurrencyIso);
+            $productRow['tax'] = Tools::getAmountInCents($productRow['tax'], $this->cartCurrencyIso);
         }
     }
 }

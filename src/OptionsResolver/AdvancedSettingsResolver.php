@@ -51,6 +51,7 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'groupCardPaymentOptions',
                 'threeDSExempted',
                 'enforce3DS',
+                'surchargingEnabled',
                 'displayWhatsNew',
             ])
             ->setNormalizer(
@@ -139,6 +140,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
             )
             ->setNormalizer(
                 'enforce3DS',
+                function (Options $options, $value) {
+                    return boolval($value);
+                }
+            )
+            ->setNormalizer(
+                'surchargingEnabled',
                 function (Options $options, $value) {
                     return boolval($value);
                 }

@@ -47,8 +47,9 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
         /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
+        $pow = \WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($transaction['currencyCode']);
         $capturePaymentRequest = new CapturePaymentRequest();
-        $capturePaymentRequest->setAmount((int) Decimal::multiply((string) $transaction['amountToCapture'], '100')->getIntegerPart());
+        $capturePaymentRequest->setAmount((int) Decimal::multiply((string) $transaction['amountToCapture'], (string) pow(10, $pow))->getIntegerPart());
         try {
             $captureResponse = $merchantClient->payments()->capturePayment($transaction['id'], $capturePaymentRequest);
         } catch (ResponseException $re) {
@@ -95,7 +96,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
 
         $refundRequest = new RefundRequest();
         $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setAmount((int) Decimal::multiply((string) $transaction['amountToRefund'], '100')->getIntegerPart());
+        $amountOfMoney->setAmount(\WorldlineOP\PrestaShop\Utils\Tools::getAmountInCents($transaction['amountToRefund'], $transaction['currencyCode']));
         $amountOfMoney->setCurrencyCode($transaction['currencyCode']);
         $refundRequest->setAmountOfMoney($amountOfMoney);
         try {

@@ -13,6 +13,25 @@
  *}
 
 <div class="js-worldlineop-iframe-container">
+  <div class="alert alert-info js-worldlineop-1click-surcharge" style="display:none">
+    <p>{l s='Please note that a surcharge will be applied to the total amount:' mod='worldlineop'}</p>
+    <ul>
+      <li>
+        {l s='Initial total:' mod='worldlineop'}
+        <span class="js-wordlineop-surcharge-initial-amount"></span>
+      </li>
+      <li>
+        {l s='Surcharge amount:' mod='worldlineop'}
+        <span class="js-wordlineop-surcharge-amount"></span>
+      </li>
+      <li>
+        <b>
+          {l s='Total amount with surcharge:' mod='worldlineop'}
+          <span class="js-wordlineop-surcharge-total-amount"></span>
+        </b>
+      </li>
+    </ul>
+  </div>
   <div id="js-worldlineop-iframe" class="js-worldlineop-htp worldlineop-htp"></div>
 
   <div class="js-worldlineop-generic-error alert alert-danger" style="display: none">
@@ -38,6 +57,8 @@
     htp: "{$hostedTokenizationPageUrl|escape:'javascript':'UTF-8'|replace:'&amp;':'&'}",
     paymentController: "{$createPaymentUrl|escape:'javascript':'UTF-8'|replace:'&amp;':'&'}",
   };
+  hostedTokenizationObj.dynamicSurcharge = true;
+  hostedTokenizationObj.surchargeEnabled = {$surchargeEnabled|intval};
   hostedTokenizationObj.cartDetails = {
     totalCents: "{$totalCartCents|intval}",
     currencyCode: "{$cartCurrencyCode|escape:'javascript':'UTF-8'}",

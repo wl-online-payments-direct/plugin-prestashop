@@ -191,9 +191,10 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             }
             $amount = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
             $currency = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
+            $pow = \WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($currency);
             $this->printOrderDebug(sprintf(
                 'About to capture %s for transaction ID %s',
-                Decimal::divide((string) $amount, '100').$currency,
+                Decimal::divide((string) $amount, (string) pow(10, $pow)).$currency,
                 $paymentResponse->getId()
             ));
             $capturePaymentRequest = new CapturePaymentRequest();

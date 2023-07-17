@@ -1,6 +1,66 @@
 {
     "packages": [
         {
+            "name": "alcohol/iso4217",
+            "version": "3.1.5",
+            "version_normalized": "3.1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alcohol/iso4217.git",
+                "reference": "3a764b8d8f1d5ea7506620a21f42909a7d6a4832"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alcohol/iso4217/zipball/3a764b8d8f1d5ea7506620a21f42909a7d6a4832",
+                "reference": "3a764b8d8f1d5ea7506620a21f42909a7d6a4832",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/php-invoker": "@stable",
+                "phpunit/phpunit": "^4.8.36 || ^5.7 || ^6.5"
+            },
+            "time": "2019-10-30T10:03:42+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Alcohol\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Bast",
+                    "email": "rob.bast@gmail.com"
+                }
+            ],
+            "description": "ISO 4217 PHP Library",
+            "homepage": "http://alcohol.github.io/iso4217/",
+            "keywords": [
+                "4217",
+                "ISO 4217",
+                "currencies",
+                "iso",
+                "library"
+            ],
+            "support": {
+                "issues": "https://github.com/alcohol/iso4217/issues",
+                "source": "https://github.com/alcohol/iso4217"
+            },
+            "install-path": "../alcohol/iso4217"
+        },
+        {
             "name": "ircmaxell/random-lib",
             "version": "v1.2.0",
             "version_normalized": "1.2.0.0",
@@ -2322,17 +2382,17 @@
         },
         {
             "name": "wl-online-payments-direct/sdk-php",
-            "version": "4.5.0",
-            "version_normalized": "4.5.0.0",
+            "version": "4.6.0",
+            "version_normalized": "4.6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wl-online-payments-direct/sdk-php.git",
-                "reference": "6699d4ab364ec07a70aa8083ae52b0f7206b0bd8"
+                "reference": "7b9e803079a7973b5521467a605e22ab1e9550d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wl-online-payments-direct/sdk-php/zipball/6699d4ab364ec07a70aa8083ae52b0f7206b0bd8",
-                "reference": "6699d4ab364ec07a70aa8083ae52b0f7206b0bd8",
+                "url": "https://api.github.com/repos/wl-online-payments-direct/sdk-php/zipball/7b9e803079a7973b5521467a605e22ab1e9550d9",
+                "reference": "7b9e803079a7973b5521467a605e22ab1e9550d9",
                 "shasum": ""
             },
             "require": {
@@ -2341,7 +2401,7 @@
             "require-dev": {
                 "phpunit/phpunit": "~4"
             },
-            "time": "2022-11-10T12:57:20+00:00",
+            "time": "2023-01-19T14:40:10+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2367,7 +2427,7 @@
             ],
             "support": {
                 "issues": "https://github.com/wl-online-payments-direct/sdk-php/issues",
-                "source": "https://github.com/wl-online-payments-direct/sdk-php/tree/4.5.0"
+                "source": "https://github.com/wl-online-payments-direct/sdk-php/tree/4.6.0"
             },
             "install-path": "../wl-online-payments-direct/sdk-php"
         }

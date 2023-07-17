@@ -47,15 +47,15 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $hostedTokenizationId = Tools::getValue('hostedTokenizationId');
         $totalCartPost = new Number(Tools::getValue('worldlineopTotalCartCents'));
         $cartCurrencyCodePost = Tools::getValue('worldlineopCartCurrencyCode');
-        $totalCart = Decimal::multiply((string) $cart->getOrderTotal(), '100');
+        $totalCart = \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountInCents($cart->getOrderTotal(), \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency));
         $cartCurrencyCode = \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency);
-        if ($totalCart->getIntegerPart() !== $totalCartPost->getIntegerPart() || $cartCurrencyCode !== $cartCurrencyCodePost) {
+        if ($totalCart !== $totalCartPost->getIntegerPart() || $cartCurrencyCode !== $cartCurrencyCodePost) {
             $this->logger->error(
                 'Cart currency/amount does not match context',
                 [
                     'cartCurrency' => $cartCurrencyCode,
                     'cartCurrencyPost' => $cartCurrencyCodePost,
-                    'totalCart' => $totalCart->getIntegerPart(),
+                    'totalCart' => $totalCart,
                     'totalCartPost' => $totalCartPost->getIntegerPart(),
                 ]
             );
@@ -174,6 +174,27 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             ];
             //@formatter:on
         }
+        die(json_encode($return));
+    }
+
+    /**
+     * @return void
+     */
+    public function displayAjaxFormatSurchargeAmounts()
+    {
+        try {
+            $return = [
+                'success' => true,
+                'formattedInitialAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('initialAmount'), Tools::getValue('initialCurrency')).' '.Tools::getValue('initialCurrency'),
+                'formattedSurchargeAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('surchargeAmount'), Tools::getValue('surchargeCurrency')).' '.Tools::getValue('surchargeCurrency'),
+                'formattedTotalAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('totalAmount'), Tools::getValue('totalCurrency')).' '.Tools::getValue('totalCurrency'),
+            ];
+        } catch (Exception $e) {
+            $return = [
+                'success' => false,
+            ];
+        }
+
         die(json_encode($return));
     }
 }

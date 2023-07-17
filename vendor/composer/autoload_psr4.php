@@ -36,4 +36,5 @@ return array(
     'PrestaShop\\Decimal\\' => array($vendorDir . '/prestashop/decimal/src'),
     'OnlinePayments\\Sdk\\' => array($vendorDir . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk', $vendorDir . '/wl-online-payments-direct/sdk-php/lib/OnlinePayments/Sdk'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Alcohol\\' => array($vendorDir . '/alcohol/iso4217'),
 );

@@ -62,11 +62,15 @@ const htpPrototype = function (e) {
         hideCardholderName: false,
         validationCallback: this.validationCallback,
         storePermanently:false,
+        surchargeCallback: this.surchargeCallback,
       }
     );
     this.client.initialize();
     if (this.cartDetails.cardToken !== undefined) {
       this.client.useToken(this.cartDetails.cardToken);
+    }
+    if (true === this.dynamicSurcharge && 1 === this.surchargeEnabled) {
+      this.client.setAmount(this.cartDetails.totalCents, this.cartDetails.currencyCode);
     }
   };
 
@@ -75,10 +79,51 @@ const htpPrototype = function (e) {
     btn.querySelector('button').disabled = !result.valid;
   };
 
+  this.surchargeCallback = function (result) {
+    if (true === result.surcharge.success && 'OK' === result.surcharge.result.status) {
+      worldlineopFormatSurchargeAmounts(self.hostedTokenizationObj, result.surcharge.result).then((result) => {
+        if (result.success) {
+          document.querySelector('.js-wordlineop-surcharge-initial-amount').textContent = result.formattedInitialAmount;
+          document.querySelector('.js-wordlineop-surcharge-amount').textContent = result.formattedSurchargeAmount;
+          document.querySelector('.js-wordlineop-surcharge-total-amount').textContent = result.formattedTotalAmount;
+          document.querySelector('.js-worldlineop-1click-surcharge').style.display = 'block';
+        }
+      })
+    }
+  }
+
   this.payButtonClick = this.payButtonClick.bind(this);
   this.init = this.init.bind(this);
   e.addEventListener('click', this.payButtonClick, false);
 };
+
+async function worldlineopFormatSurchargeAmounts(htp, surchargeResult) {
+  const controller = htp.urls.paymentController.replace(/\amp;/g, '');
+
+  return new Promise(function (resolve, reject) {
+    const form = new FormData();
+
+    form.append('ajax', true);
+    form.append('action', 'formatSurchargeAmounts');
+    form.append('initialAmount', htp.cartDetails.totalCents);
+    form.append('initialCurrency', htp.cartDetails.currencyCode);
+    form.append('surchargeAmount', surchargeResult.surchargeAmount.amount);
+    form.append('surchargeCurrency', surchargeResult.surchargeAmount.currency);
+    form.append('totalAmount', surchargeResult.totalAmount.amount);
+    form.append('totalCurrency', surchargeResult.totalAmount.currency);
+    form.append('token', htp.cartDetails.customerToken);
+
+    fetch(controller, {
+      body: form,
+      method: 'post',
+    }).then((response) => {
+      resolve(response.json());
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+
+}
 
 async function worldlineopCreatePayment(hostedTokenizationId, htp) {
   const controller = htp.urls.paymentController.replace(/\amp;/g, '');

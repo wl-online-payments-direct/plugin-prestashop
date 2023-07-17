@@ -87,9 +87,14 @@ class GetRefundPresenter implements PresenterInterface
         /** @var \WorldlineopTransaction $transaction */
         $transaction = $transactionRepository->findByIdOrder($order->id);
         $merchantReference = strstr($refundResponse->getId(), '_', true);
-        if (false === $transaction ||
-            (strstr($transaction->reference, '_', true) !== $merchantReference && false !== $merchantReference)
-        ) {
+        if (false === $merchantReference) {
+            $merchantReference = $refundResponse->getId();
+        }
+        $transactionReference = strstr($transaction->reference, '_', true);
+        if (false === $transactionReference) {
+            $transactionReference = $transaction->reference;
+        }
+        if (false === $transaction || ($transactionReference !== $merchantReference && false !== $merchantReference)) {
             $this->logger->error('Could not find transaction', ['merchantReference' => $merchantReferenceFull]);
 
             return $this->presentedData;

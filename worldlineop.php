@@ -39,7 +39,7 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.3.2';
+        $this->version = '1.4.0';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
@@ -232,7 +232,7 @@ class Worldlineop extends PaymentModule
      */
     public function hookCustomerAccount($params)
     {
-        return $this->display(__FILE__, '/views/templates/front/hookCustomerAccount.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/front/hookCustomerAccount.tpl');
     }
 
     /**
@@ -264,7 +264,7 @@ class Worldlineop extends PaymentModule
             return $this->displayError($e->getMessage());
         }
 
-        return $this->display(__FILE__, '/views/templates/admin/hookAdminOrder_'.$this->theme.'.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_'.$this->theme.'.tpl');
     }
 
     /**
@@ -286,7 +286,7 @@ class Worldlineop extends PaymentModule
             'html' => $html,
         ]);
 
-        return $this->display(__FILE__, '/views/templates/admin/hookAdminOrder_container.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_container.tpl');
     }
 
     /**
@@ -308,7 +308,7 @@ class Worldlineop extends PaymentModule
             'html' => $html,
         ]);
 
-        return $this->display(__FILE__, '/views/templates/admin/hookAdminOrder_container.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_container.tpl');
     }
 
     /**
@@ -331,10 +331,50 @@ class Worldlineop extends PaymentModule
         if (false === $transaction) {
             return '';
         }
+        $transactionId = strstr($transaction->reference, '_', true);
+        if (false === $transactionId) {
+            $transactionId = $transaction->reference;
+        }
         $this->context->smarty->assign([
-            'worldlineop_transaction_id' => strstr($transaction->reference, '_', true),
+            'worldlineop_transaction_id' => $transactionId,
         ]);
 
-        return $this->display(__FILE__, '/views/templates/admin/hookDisplayPDFInvoice.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookDisplayPDFInvoice.tpl');
+    }
+
+
+
+    /**
+     * @param mixed[] $params
+     * @return void
+     */
+    public function hookDisplayAdminProductsExtra($params)
+    {
+        $idProduct = (int) $params['id_product'];
+        $this->context->smarty->assign([
+            'worldlineopGCTypeNone' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE,
+            'worldlineopGCTypeFoodDrink' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK,
+            'worldlineopGCTypeHomeGarden' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN,
+            'worldlineopGCTypeGiftFlowers' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS,
+            'worldlineopGCSelectedType' => \WorldlineOP\PrestaShop\Utils\Tools::getGiftCardTypeByIdProduct($idProduct),
+        ]);
+
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookDisplayAdminProductsExtra.tpl');
+    }
+
+    /**
+     * @param mixed[] $params
+     * @return void
+     */
+    public function hookActionProductUpdate($params)
+    {
+        if ($form = Tools::getValue('worldlineopGiftCard')) {
+            $idProduct = $params['id_product'];
+            try {
+                Db::getInstance()->insert('worldlineop_product_gift_card', ['id_product' => (int) $idProduct, 'product_type' => pSQL($form['type'])], false, true, Db::ON_DUPLICATE_KEY);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
+class ComposerStaticInit37b23532d1674a8503502344bf25eb52
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -62,6 +62,10 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'M' => 
         array (
             'Monolog\\' => 8,
+        ),
+        'A' => 
+        array (
+            'Alcohol\\' => 8,
         ),
     );
 
@@ -189,6 +193,10 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Alcohol\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alcohol/iso4217',
+        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -213,6 +221,8 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'AdminWorldlineopAjaxTransactionController' => __DIR__ . '/../..' . '/controllers/admin/AdminWorldlineopAjaxTransactionController.php',
         'AdminWorldlineopConfigurationController' => __DIR__ . '/../..' . '/controllers/admin/AdminWorldlineopConfigurationController.php',
         'AdminWorldlineopLogsController' => __DIR__ . '/../..' . '/controllers/admin/AdminWorldlineopLogsController.php',
+        'Alcohol\\ISO4217' => __DIR__ . '/..' . '/alcohol/iso4217/ISO4217.php',
+        'Alcohol\\ISO4217Test' => __DIR__ . '/..' . '/alcohol/iso4217/ISO4217Test.php',
         'ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
         'AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
@@ -350,6 +360,8 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'OnlinePayments\\Sdk\\Domain\\AmountOfMoney' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/AmountOfMoney.php',
         'OnlinePayments\\Sdk\\Domain\\BankAccountIban' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/BankAccountIban.php',
         'OnlinePayments\\Sdk\\Domain\\BrowserData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/BrowserData.php',
+        'OnlinePayments\\Sdk\\Domain\\CalculateSurchargeRequest' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CalculateSurchargeRequest.php',
+        'OnlinePayments\\Sdk\\Domain\\CalculateSurchargeResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CalculateSurchargeResponse.php',
         'OnlinePayments\\Sdk\\Domain\\CancelPaymentRequest' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CancelPaymentRequest.php',
         'OnlinePayments\\Sdk\\Domain\\CancelPaymentResponse' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CancelPaymentResponse.php',
         'OnlinePayments\\Sdk\\Domain\\Capture' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/Capture.php',
@@ -367,6 +379,7 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'OnlinePayments\\Sdk\\Domain\\CardPaymentMethodSpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CardPaymentMethodSpecificOutput.php',
         'OnlinePayments\\Sdk\\Domain\\CardPayoutMethodSpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CardPayoutMethodSpecificInput.php',
         'OnlinePayments\\Sdk\\Domain\\CardRecurrenceDetails' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CardRecurrenceDetails.php',
+        'OnlinePayments\\Sdk\\Domain\\CardSource' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CardSource.php',
         'OnlinePayments\\Sdk\\Domain\\CardWithoutCvv' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CardWithoutCvv.php',
         'OnlinePayments\\Sdk\\Domain\\CompanyInformation' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CompanyInformation.php',
         'OnlinePayments\\Sdk\\Domain\\CompletePaymentCardPaymentMethodSpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/CompletePaymentCardPaymentMethodSpecificInput.php',
@@ -455,6 +468,7 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct320SpecificData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct320SpecificData.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct5100SpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct5100SpecificInput.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct5402SpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct5402SpecificOutput.php',
+        'OnlinePayments\\Sdk\\Domain\\PaymentProduct5404' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct5404.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct5500SpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct5500SpecificOutput.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct771SpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct771SpecificOutput.php',
         'OnlinePayments\\Sdk\\Domain\\PaymentProduct840CustomerAccount' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/PaymentProduct840CustomerAccount.php',
@@ -515,6 +529,12 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
         'OnlinePayments\\Sdk\\Domain\\ShippingMethod' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ShippingMethod.php',
         'OnlinePayments\\Sdk\\Domain\\ShoppingCart' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ShoppingCart.php',
         'OnlinePayments\\Sdk\\Domain\\ShoppingCartExtension' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/lib/OnlinePayments/Sdk/Domain/ShoppingCartExtension.php',
+        'OnlinePayments\\Sdk\\Domain\\ShowFormData' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ShowFormData.php',
+        'OnlinePayments\\Sdk\\Domain\\Surcharge' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/Surcharge.php',
+        'OnlinePayments\\Sdk\\Domain\\SurchargeCalculationCard' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SurchargeCalculationCard.php',
+        'OnlinePayments\\Sdk\\Domain\\SurchargeRate' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SurchargeRate.php',
+        'OnlinePayments\\Sdk\\Domain\\SurchargeSpecificInput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SurchargeSpecificInput.php',
+        'OnlinePayments\\Sdk\\Domain\\SurchargeSpecificOutput' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/SurchargeSpecificOutput.php',
         'OnlinePayments\\Sdk\\Domain\\TestConnection' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/TestConnection.php',
         'OnlinePayments\\Sdk\\Domain\\ThreeDSecure' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ThreeDSecure.php',
         'OnlinePayments\\Sdk\\Domain\\ThreeDSecureBase' => __DIR__ . '/..' . '/wl-online-payments-direct/sdk-php/src/OnlinePayments/Sdk/Domain/ThreeDSecureBase.php',
@@ -1496,10 +1516,10 @@ class ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit60377fbf6ffba7bd89fbd0b67cdd8c94::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit37b23532d1674a8503502344bf25eb52::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit37b23532d1674a8503502344bf25eb52::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit37b23532d1674a8503502344bf25eb52::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit37b23532d1674a8503502344bf25eb52::$classMap;
 
         }, null, ClassLoader::class);
     }

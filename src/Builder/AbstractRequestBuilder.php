@@ -32,6 +32,7 @@ use OnlinePayments\Sdk\Domain\PersonalName;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\Shipping;
+use OnlinePayments\Sdk\Domain\SurchargeSpecificInput;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use Worldlineop;
@@ -53,6 +54,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 
     const PRODUCT_ID_MAESTRO = 117;
     const PRODUCT_ID_PAYPAL = 840;
+    const PRODUCT_ID_INTERSOLVE = 5700;
 
     const PHONE_NUMBER_MAX_CHARS = 15;
 
@@ -67,6 +69,9 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     const THREE_DS_AMOUNT_EUR = 30;
 
     const CHALLENGE_INDICATOR_REQUIRED = 'challenge-required';
+
+    const SURCHARGE_ON_BEHALF_OF = 'on-behalf-of';
+    const SURCHARGE_PASS_THROUGH = 'pass-through';
 
     /** @var Settings $settings */
     protected $settings;
@@ -156,11 +161,16 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     {
         $order = new Order();
         $amount = new AmountOfMoney();
-        $amount->setAmount((int) Decimal::multiply((string) $this->context->cart->getOrderTotal(), '100')->getIntegerPart());
+        $amount->setAmount(Tools::getRoundedAmountInCents($this->context->cart->getOrderTotal(), Tools::getIsoCurrencyCodeById($this->context->cart->id_currency)));
         $amount->setCurrencyCode(Tools::getIsoCurrencyCodeById($this->context->cart->id_currency));
         $order->setAmountOfMoney($amount);
         $order->setCustomer($this->buildCustomer());
         $order->setShipping($this->buildShipping());
+        if (true === $this->settings->advancedSettings->surchargingEnabled) {
+            $surchargeSpecificInput = new SurchargeSpecificInput();
+            $surchargeSpecificInput->setMode(self::SURCHARGE_ON_BEHALF_OF);
+            $order->setSurchargeSpecificInput($surchargeSpecificInput);
+        }
         $factory = new Factory();
         $generator = $factory->getGenerator(new Strength(Strength::LOW));
         $orderReferences = new OrderReferences();

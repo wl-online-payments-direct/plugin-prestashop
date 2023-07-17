@@ -49,9 +49,18 @@
       <div id="" class="col-sm-3 text-center">
         <p class="text-muted"><strong>{l s='Total' mod='worldlineop'}</strong></p>
         <strong id="">
-          {$transactionData.payment.amount|floatval|string_format:'%.2f'}
+          {$transactionData.payment.amount|escape:'htmlall':'UTF-8'}
           {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
         </strong>
+        {if $transactionData.payment.hasSurcharge}
+          <div>
+            <i>
+              {l s='(including' mod='worldlineop'}
+              {$transactionData.payment.surchargeAmount|escape:'htmlall':'UTF-8'} {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
+              {l s='surcharge)' mod='worldlineop'}
+            </i>
+          </div>
+        {/if}
       </div>
       <div id="" class="col-sm-3 text-center">
         <p class="text-muted"><strong>{l s='Payment Method' mod='worldlineop'}</strong></p>
@@ -81,17 +90,58 @@
       </ul>
     </div>
   {/if}
+  {if $transactionData.payment.psOrderAmountMatch === false}
+    <div class="alert alert-warning">
+      <p>
+        {l s='Warning: This order may not have been fully paid!' mod='worldlineop'}
+      </p>
+      <p>
+        {l s='Please review the amounts in the section above and in the "Products" section in this page.' mod='worldlineop'}<br>
+      </p>
+    </div>
+  {/if}
   <div class="row">
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
           <div class="row">
+            {if $transactionData.payment.hasSurcharge}
+              <h4>{l s='Surcharge details' mod='worldlineop'}</h4>
+              <div class="row">
+                <div class="col-xs-6 text-right">{l s='Total amount without surcharge' mod='worldlineop'}</div>
+                <div class="col-xs-6">
+                  <strong>
+                    {$transactionData.payment.amountWithoutSurcharge|escape:'htmlall':'UTF-8'}
+                    {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
+                  </strong>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 text-right">{l s='Surcharge amount' mod='worldlineop'}</div>
+                <div class="col-xs-6">
+                  <strong>
+                    {$transactionData.payment.surchargeAmount|escape:'htmlall':'UTF-8'}
+                    {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
+                  </strong>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 text-right">{l s='Total amount with surcharge' mod='worldlineop'}</div>
+                <div class="col-xs-6">
+                  <strong>
+                    {$transactionData.payment.amount|escape:'htmlall':'UTF-8'}
+                    {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
+                  </strong>
+                </div>
+              </div>
+              <hr>
+            {/if}
             <h4>{l s='Capture' mod='worldlineop'}</h4>
             <div class="row">
               <div class="col-xs-6 text-right">{l s='Amount captured' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.captures.totalCaptured|floatval|string_format:'%.2f'}
+                  {$transactionData.captures.totalCaptured|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -100,7 +150,7 @@
               <div class="col-xs-6 text-right">{l s='Amount pending capture' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.captures.totalPendingCapture|floatval|string_format:'%.2f'}
+                  {$transactionData.captures.totalPendingCapture|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -109,7 +159,7 @@
               <div class="col-xs-6 text-right">{l s='Amount that can be captured' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.captures.capturableAmount|floatval|string_format:'%.2f'}
+                  {$transactionData.captures.capturableAmount|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -129,7 +179,7 @@
                              name="transaction[amountToCapture]"
                              class="form-control"
                              onchange="this.value = parseFloat(this.value.replace(/,/g, '.')).toFixed(2) || 0"
-                             value="{$transactionData.captures.capturableAmount|floatval|string_format:'%.2f'}">
+                             value="{$transactionData.captures.capturableAmount|escape:'htmlall':'UTF-8'}">
                       <div class="input-group-addon">
                         <span class="input-group-text">{$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}</span>
                       </div>
@@ -161,7 +211,7 @@
                   <div class="col-sm">
                     <button id="worldlineop-btn-cancel"  class="btn btn-danger">
                       {l s='Cancel' mod='worldlineop'}
-                      {$transactionData.captures.capturableAmount|floatval|string_format:'%.2f'}
+                      {$transactionData.captures.capturableAmount|escape:'htmlall':'UTF-8'}
                       {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                     </button>
                   </div>
@@ -185,7 +235,7 @@
               <div class="col-xs-6 text-right">{l s='Amount refunded' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.refunds.totalRefunded|floatval|string_format:'%.2f'}
+                  {$transactionData.refunds.totalRefunded|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -194,7 +244,7 @@
               <div class="col-xs-6 text-right">{l s='Amount pending refund' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.refunds.totalPendingRefund|floatval|string_format:'%.2f'}
+                  {$transactionData.refunds.totalPendingRefund|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -203,7 +253,7 @@
               <div class="col-xs-6 text-right">{l s='Amount that can be refunded' mod='worldlineop'}</div>
               <div class="col-xs-6">
                 <strong>
-                  {$transactionData.refunds.refundableAmount|floatval|string_format:'%.2f'}
+                  {$transactionData.refunds.refundableAmount|escape:'htmlall':'UTF-8'}
                   {$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}
                 </strong>
               </div>
@@ -232,7 +282,7 @@
                              name="transaction[amountToRefund]"
                              class="form-control"
                              onchange="this.value = parseFloat(this.value.replace(/,/g, '.')).toFixed(2) || 0"
-                             value="{$transactionData.refunds.refundableAmount|floatval|string_format:'%.2f'}">
+                             value="{$transactionData.refunds.refundableAmount|escape:'htmlall':'UTF-8'}">
                       <div class="input-group-addon">
                         <span class="input-group-text">{$transactionData.payment.currencyCode|escape:'htmlall':'UTF-8'}</span>
                       </div>

@@ -14,16 +14,24 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.3.2
+  1.4.0
 </h1>
 <br>
 <ul>
-  <li>{l s='Additional information in "Worldline" box in orders' mod='worldlineop'}</li>
-  <li>{l s='Prepare extension for recurring payments' mod='worldlineop'}</li>
-  <li>{l s='Add parameter to the requests for Hosted Checkout & iFrame : order.shipping.addressIndicator' mod='worldlineop'}</li>
-  <li>{l s='Improve chances of frictionless flows' mod='worldlineop'}</li>
-  <li>{l s='Create option to manage < 30 EUR transactions exemptions' mod='worldlineop'}</li>
-  <li>{l s='Enforce 3DS challenge' mod='worldlineop'}</li>
+  <li>{l s='Add Intersolve payment method' mod='worldlineop'}</li>
+  <li>{l s='Add Meal Vouchers payment method' mod='worldlineop'}</li>
+  <li>{l s='Add amount surcharging feature' mod='worldlineop'}</li>
+  <li>{l s='Add message about paid & displayed amounts' mod='worldlineop'}</li>
+  <li>{l s='Handle AUS transaction reference format' mod='worldlineop'}</li>
+  <li>{l s='Fix currency management' mod='worldlineop'}</li>
+  <li>{l s='Fix context control for redirect payments' mod='worldlineop'}</li>
+  <li>{l s='Fix token storage logic' mod='worldlineop'}</li>
+  <li>{l s='Fix credentials length control' mod='worldlineop'}</li>
+  <li>{l s='Fix process of older webhooks' mod='worldlineop'}</li>
+  <li>{l s='Fix order reference in native table' mod='worldlineop'}</li>
+  <li>{l s='Fix session storage exception' mod='worldlineop'}</li>
+  <li>{l s='Fix LineItems & Shipping lines' mod='worldlineop'}</li>
+  <li>{l s='Fix check on amounts when validating orders' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

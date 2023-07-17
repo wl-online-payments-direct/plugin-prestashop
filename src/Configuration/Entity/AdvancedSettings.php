@@ -54,6 +54,9 @@ class AdvancedSettings
     /** @var bool $enforce3DS */
     public $enforce3DS;
 
+    /** @var bool $surchargingEnabled */
+    public $surchargingEnabled;
+
     /** @var bool $displayWhatsNew */
     public $displayWhatsNew;
 }
