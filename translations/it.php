@@ -1,7 +1,10 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'Questo modulo offre un’integrazione con 1 clic per iniziare ad accettare pagamenti con le API dirette Worldline (ex Ingenico-Ogone). Offrendo ai clienti metodi di pagamento globali e regionali, è possibile vendere i propri prodotti in tutta Europa e aumentare di conseguenza i ricavi.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Impossibile installare il modulo Worldline. Controllare i registri nella directory “logs” del modulo.';
@@ -250,20 +253,9 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Nome del file del modello';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Salvataggio';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Novità della versione';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_b9265a096fefa546e69d900d989f8170'] = 'Aggiungere il metodo di pagamento Intersolve';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_8c7af4a4fbc432acd0ec44c54a4ffd7a'] = 'Aggiungere il metodo di pagamento dei buoni pasto';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_01c95a0c750ed659e67f6925c14e459c'] = 'Aggiungere la funzione di addebito dell\'importo';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_e780f0e1ef0b278eed6ade9026f5c4fb'] = 'Aggiungere un messaggio sugli importi pagati e visualizzati';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_4d75ef95a4cce6b574b7cfc74afcb9dc'] = 'Gestire il formato di riferimento della transazione AUS';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_2765d3f58893d810cec7f03294805a37'] = 'Correggere la gestione della valuta';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_c30a349115d9cd03078e4d16c4f1f4f0'] = 'Correggere il controllo del contesto per i pagamenti di reindirizzamento';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_1e868017c1dc03a5dfbd3e0a594ae309'] = 'Correggere la logica di archiviazione dei token';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0613d329233856e851cc664807ede893'] = 'Correggere la lunghezza delle credenziali controllo';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_40d2abe09a38be6054b956ae814abb19'] = 'Risolto il processo di vecchi webhook';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0956517c4a12fe03485a275e8bf0a0b5'] = 'Risolto il riferimento dell\'ordine nella tabella nativa';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_53dbfc6d35635486a22fed277bc3f308'] = 'Risolto il problema di archiviazione della sessione';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_fb4af8bf393a43d2ffd979d4a30e2936'] = 'Risolto il problema degli articoli e delle righe di spedizione';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_7b51d3e40325f7defcaaa27141e124c9'] = 'Risolto il controllo degli importi durante la convalida degli ordini';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_0f4fe38da89264850067faac2e4f60a7'] = 'Aggiunta di nuovi loghi di pagamento';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_33bdb492d086641c85c60952f071e0a7'] = 'Aggiunta di ridondanza per la creazione degli ordini';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_e322430758268ef8207d87e0dd974b94'] = 'Correzione della verifica dell\'importo durante la validazione degli ordini';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'Non mostrare più';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Le mie carte di credito salvate';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Effettuare ordine';

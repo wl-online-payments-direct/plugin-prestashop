@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Updater;
@@ -20,21 +19,14 @@ use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
 
 /**
  * Class PaymentMethodsSettingsUpdater
- * @package WorldlineOP\PrestaShop\Configuration\Updater
  */
 class PaymentMethodsSettingsUpdater extends SettingsUpdater
 {
-    /**
-     *
-     */
     protected function serialize()
     {
         $this->json = $this->serializer->serialize($this->settings->paymentMethodsSettings, 'json');
     }
 
-    /**
-     *
-     */
     protected function save()
     {
         \Configuration::updateValue('WORLDLINEOP_PAYMENT_METHODS_SETTINGS', $this->json);
@@ -50,12 +42,13 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
 
     /**
      * @param bool $deleteLogo
+     *
      * @throws Exception
      */
     public function updateIframeLogo($deleteLogo)
     {
         if ($deleteLogo) {
-            $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$this->settings->paymentMethodsSettings->iframeLogoFilename;
+            $file = _PS_MODULE_DIR_ . $this->module->name . '/views/img/payment_logos/' . $this->settings->paymentMethodsSettings->iframeLogoFilename;
             if (realpath($file) === $file) {
                 unlink($file);
             }
@@ -95,7 +88,7 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             //@formatter:on
         }
         $filename = sprintf('%s.%s', md5(time()), array_search($fileType, $this->authorizedLogoExtensions));
-        $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$filename;
+        $file = _PS_MODULE_DIR_ . $this->module->name . '/views/img/payment_logos/' . $filename;
         if (!move_uploaded_file($source, $file)) {
             //@formatter:off
             throw new Exception($this->module->l('Cannot upload logo.', 'PaymentMethodsSettingsUpdater'));
@@ -109,12 +102,13 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
 
     /**
      * @param bool $deleteLogo
+     *
      * @throws Exception
      */
     public function updateGenericLogo($deleteLogo)
     {
         if ($deleteLogo) {
-            $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$this->settings->paymentMethodsSettings->genericLogoFilename;
+            $file = _PS_MODULE_DIR_ . $this->module->name . '/views/img/payment_logos/' . $this->settings->paymentMethodsSettings->genericLogoFilename;
             if (realpath($file) === $file) {
                 unlink($file);
             }
@@ -154,7 +148,7 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             //@formatter:on
         }
         $filename = sprintf('%s.%s', md5(time()), array_search($fileType, $this->authorizedLogoExtensions));
-        $file = _PS_MODULE_DIR_.$this->module->name.'/views/img/payment_logos/'.$filename;
+        $file = _PS_MODULE_DIR_ . $this->module->name . '/views/img/payment_logos/' . $filename;
         if (!move_uploaded_file($source, $file)) {
             //@formatter:off
             throw new Exception($this->module->l('Cannot upload logo.', 'PaymentMethodsSettingsUpdater'));

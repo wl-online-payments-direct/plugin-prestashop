@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -36,12 +35,10 @@ use WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader;
 use WorldlineOP\PrestaShop\Logger\LoggerFactory;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
 use WorldlineOP\PrestaShop\Sdk\ClientFactory;
-use WorldlineOP\PrestaShop\Utils\Decimal;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class GetPaymentPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class GetPaymentPresenter implements PresenterInterface
 {
@@ -56,30 +53,31 @@ class GetPaymentPresenter implements PresenterInterface
 
     const MAX_DELAY_BEFORE_REFUND = 7;
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var ClientFactory $merchantClient */
+    /** @var ClientFactory */
     private $merchantClientFactory;
 
-    /** @var SettingsLoader $settingsLoader */
+    /** @var SettingsLoader */
     private $settingsLoader;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     private $logger;
 
-    /** @var TransactionPresented $presentedData */
+    /** @var TransactionPresented */
     protected $presentedData;
 
-    /** @var Cart $cart */
+    /** @var Cart */
     private $cart;
 
     /**
      * GetPaymentPresenter constructor.
-     * @param Worldlineop    $module
-     * @param ClientFactory  $merchantClientFactory
+     *
+     * @param Worldlineop $module
+     * @param ClientFactory $merchantClientFactory
      * @param SettingsLoader $settingsLoader
-     * @param LoggerFactory  $loggerFactory
+     * @param LoggerFactory $loggerFactory
      */
     public function __construct(
         Worldlineop $module,
@@ -96,8 +94,10 @@ class GetPaymentPresenter implements PresenterInterface
 
     /**
      * @param PaymentResponse $paymentResponse
-     * @param int             $idShop
+     * @param int $idShop
+     *
      * @return TransactionPresented
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
@@ -139,7 +139,7 @@ class GetPaymentPresenter implements PresenterInterface
             return $this->presentedData;
         }
         $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
-        $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+        $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::BOTH, null, null, false, true), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
         if ($totalPrestaShop != $totalReceived) {
             $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
             $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
@@ -164,7 +164,9 @@ class GetPaymentPresenter implements PresenterInterface
     /**
      * @param $idOrderState
      * @param PaymentResponse $paymentResponse
+     *
      * @return void
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
@@ -186,7 +188,7 @@ class GetPaymentPresenter implements PresenterInterface
         $paymentMethodText = $this->module->l('Worldline Online Payments', 'GetPaymentPresenter');
         try {
             $paymentProduct = $merchantClient->products()->getPaymentProduct($productId, $paymentProductParams);
-            $paymentMethodText .= ' ['.$paymentProduct->getDisplayHints()->getLabel().']';
+            $paymentMethodText .= ' [' . $paymentProduct->getDisplayHints()->getLabel() . ']';
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
@@ -237,14 +239,15 @@ class GetPaymentPresenter implements PresenterInterface
         $this->presentedData->order['ids'] = Tools::getOrderIdsByIdCart($order->id_cart);
         $this->presentedData->idOrderState = $idOrderState;
         $this->presentedData->sendMail = \Configuration::getGlobalValue('WOP_AWAITING_CAPTURE_STATUS_ID') == $idOrderState;
-
     }
 
     /**
      * @param Order $order
      * @param int $idOrderState
      * @param PaymentResponse $paymentResponse
+     *
      * @return void
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
@@ -267,7 +270,7 @@ class GetPaymentPresenter implements PresenterInterface
             $transactionReference = $transaction->reference;
         }
         if (false === $transaction || ($transactionReference !== $merchantReference && false !== $merchantReference)) {
-            $this->logger->error('Cannot find transaction for order '.$order->id);
+            $this->logger->error('Cannot find transaction for order ' . $order->id);
 
             return;
         }
@@ -362,13 +365,14 @@ class GetPaymentPresenter implements PresenterInterface
             $this->presentedData->sendMail = \Configuration::getGlobalValue('WOP_AWAITING_CAPTURE_STATUS_ID') == $idOrderState;
             $this->presentedData->payments['hasPayments'] = $order->getOrderPayments();
             $this->presentedData->payments['merchantReference'] = $merchantReference;
-            $this->logger->debug('Update order state to ID '.$idOrderState);
+            $this->logger->debug('Update order state to ID ' . $idOrderState);
         }
     }
 
     /**
      * @param PaymentOutput $paymentOutput
      * @param CardPaymentMethodSpecificOutput|MobilePaymentMethodSpecificOutput|RedirectPaymentMethodSpecificOutput $paymentSpecificOutput
+     *
      * @return array
      */
     public function getTokenData($paymentOutput, $paymentSpecificOutput)
@@ -382,7 +386,7 @@ class GetPaymentPresenter implements PresenterInterface
                 try {
                     /** @var \OnlinePayments\Sdk\Domain\TokenResponse $tokenResponse */
                     $tokenResponse = $merchantClient->tokens()
-                                                    ->getToken($paymentSpecificOutput->getToken());
+                        ->getToken($paymentSpecificOutput->getToken());
                 } catch (\Exception $e) {
                     $this->logger->error(
                         'Could not fetch token',
@@ -411,8 +415,9 @@ class GetPaymentPresenter implements PresenterInterface
     }
 
     /**
-     * @param string        $paymentMethod
+     * @param string $paymentMethod
      * @param PaymentOutput $paymentOutput
+     *
      * @return CardPaymentMethodSpecificOutput|MobilePaymentMethodSpecificOutput|RedirectPaymentMethodSpecificOutput
      */
     private function getPaymentSpecificOutput($paymentMethod, PaymentOutput $paymentOutput)

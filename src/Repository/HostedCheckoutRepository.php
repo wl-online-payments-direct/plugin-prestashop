@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Repository;
@@ -19,18 +18,18 @@ use Db;
 
 /**
  * Class HostedCheckoutRepository
- * @package WorldlineOP\PrestaShop\Repository
  */
 class HostedCheckoutRepository
 {
-    /** @var Db $db */
+    /** @var Db */
     private $db;
 
-    /** @var array $cache */
+    /** @var array */
     private $cache;
 
     /**
      * HostedCheckoutRepository constructor.
+     *
      * @param Db $db
      */
     public function __construct(Db $db = null)
@@ -44,10 +43,12 @@ class HostedCheckoutRepository
 
     /**
      * @param string $checksum
-     * @param int    $idCart
-     * @param int    $idProduct
-     * @param int    $idToken
+     * @param int $idCart
+     * @param int $idProduct
+     * @param int $idToken
+     *
      * @return false|mixed|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByChecksumIdCartIdProductIdToken($checksum, $idCart, $idProduct, $idToken)
@@ -75,7 +76,9 @@ class HostedCheckoutRepository
     /**
      * @param string $returnMac
      * @param string $hostedCheckoutId
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByReturnMacHostedCheckoutId($returnMac, $hostedCheckoutId)
@@ -92,7 +95,9 @@ class HostedCheckoutRepository
 
     /**
      * @param string $merchantReference
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByMerchantReference($merchantReference)
@@ -107,6 +112,7 @@ class HostedCheckoutRepository
 
     /**
      * @param int $idCart
+     *
      * @throws \PrestaShopException
      */
     public function deleteByIdCart($idCart)
@@ -122,7 +128,9 @@ class HostedCheckoutRepository
 
     /**
      * @param \HostedCheckout $hostedCheckout
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function save(\HostedCheckout $hostedCheckout)
@@ -132,7 +140,9 @@ class HostedCheckoutRepository
 
     /**
      * @param \HostedCheckout $hostedCheckout
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function delete(\HostedCheckout $hostedCheckout)

@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Serializer;
@@ -22,11 +21,10 @@ use Symfony\Component\Serializer\Serializer;
 
 /**
  * Class SettingsSerializer
- * @package WorldlineOP\PrestaShop\Serializer
  */
 class SettingsSerializer
 {
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
     /**

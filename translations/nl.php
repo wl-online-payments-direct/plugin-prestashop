@@ -1,7 +1,10 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'In deze module biedt een 1-klik-integratie waarmee je kunt starten met het aanvaarden van betalingen met de API\'s van Worldline Direct (voorheen Ingenico-Ogone). Verhoog je inkomsten door je klanten wereldwijde en regionale betalingsmethoden te bieden waarmee je in heel Europa kunt verkopen.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Kan de Worldline-module niet installeren. Controleer de logboeken in de map \"logs\" van de module.';
@@ -138,11 +141,11 @@ $_MODULE['<{worldlineop}prestashop>_account_756d97bb256b8580d4d71ee0c547804e'] =
 $_MODULE['<{worldlineop}prestashop>_account_4d1ac2ef00e94cb525c960e630d8b5a0'] = 'Aanmeldingsgegevens Test';
 $_MODULE['<{worldlineop}prestashop>_account_d1bf49dd20ae80ebb64a27d771935a1c'] = 'PSPID Test';
 $_MODULE['<{worldlineop}prestashop>_account_ff61c96af93a74c1547953283fe3a11d'] = 'Ga als volgt te werk om de API-sleutel en het API-geheim in jouw PSPID op te halen:';
-$_MODULE['<{worldlineop}prestashop>_account_4d5affc0cf00aa4491eb8f0fcade26c8'] = '> Meld je aan bij Ingenico Back Office. Ga naar Configuratie > Technische instellingen > Ingenico Direct instellingen > Direct API sleutel';
+$_MODULE['<{worldlineop}prestashop>_account_4d5affc0cf00aa4491eb8f0fcade26c8'] = "> Meld je aan bij Ingenico\u{a0}Back Office. Ga naar Configuratie > Technische instellingen > Ingenico Direct instellingen > Direct API sleutel";
 $_MODULE['<{worldlineop}prestashop>_account_6f33c468acc3c3bafc6602b8d81a8ade'] = '> Als je nog niets hebt geconfigureerd, zie je \"Geen api-referentie gevonden.\" op je scherm. Klik op \"GENERATE\" om zowel de API-sleutel als het API-geheim te maken';
 $_MODULE['<{worldlineop}prestashop>_account_c33550a3e5e97c7f4bc6552f37e96c97'] = 'API-sleutel Test';
 $_MODULE['<{worldlineop}prestashop>_account_221660148f9358d6df141d176418e5fa'] = 'API-geheim Test';
-$_MODULE['<{worldlineop}prestashop>_account_bb29639e1609579b384863eebae33fc5'] = 'Meld je aan bij Ingenico Back Office om de webhooks-aanmeldingsgegevens op te halen.';
+$_MODULE['<{worldlineop}prestashop>_account_bb29639e1609579b384863eebae33fc5'] = "Meld je aan bij Ingenico\u{a0}Back Office om de webhooks-aanmeldingsgegevens op te halen.";
 $_MODULE['<{worldlineop}prestashop>_account_dd8b29e5934287ab100a3fc3df6e149b'] = 'Ga naar Configuration > Technical information > Ingenico Direct settings > Webhooks Configuration en voer de volgende stappen uit:';
 $_MODULE['<{worldlineop}prestashop>_account_e0b85081f49fa39715addc377d18e04a'] = '> Klik op \"GENEREER WEBHOOKS API KEY\"';
 $_MODULE['<{worldlineop}prestashop>_account_8bc6bed98203f7e05bbd83dbf8f0c898'] = '> Kopieer en plak de WebhooksKeySecret meteen';
@@ -250,20 +253,9 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Bestandsnaam sjabloon';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Opslaan';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Wat is nieuw in versie';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_b9265a096fefa546e69d900d989f8170'] = 'Betaalmethode Intersolve toevoegen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_8c7af4a4fbc432acd0ec44c54a4ffd7a'] = 'Betaalmethode maaltijdcheques toevoegen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_01c95a0c750ed659e67f6925c14e459c'] = 'Functie voor toeslag toevoegen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_e780f0e1ef0b278eed6ade9026f5c4fb'] = 'Bericht toevoegen over betaalde en getoonde bedragen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_4d75ef95a4cce6b574b7cfc74afcb9dc'] = 'AUS-transactiereferentieformaat verwerken';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_2765d3f58893d810cec7f03294805a37'] = 'Valuta beheer repareren';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_c30a349115d9cd03078e4d16c4f1f4f0'] = 'Contextcontrole voor doorstuurbetalingen verbeteren';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_1e868017c1dc03a5dfbd3e0a594ae309'] = 'Logica voor tokenopslag repareren';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0613d329233856e851cc664807ede893'] = 'Fix controle op lengte van referenties';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_40d2abe09a38be6054b956ae814abb19'] = 'Fix proces van oudere webhooks';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0956517c4a12fe03485a275e8bf0a0b5'] = 'Fix bestelreferentie in native tabel';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_53dbfc6d35635486a22fed277bc3f308'] = 'Fix uitzondering sessie opslag';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_fb4af8bf393a43d2ffd979d4a30e2936'] = 'Fix LineItems & Verzendregels';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_7b51d3e40325f7defcaaa27141e124c9'] = 'Fix controle op bedragen bij het valideren van orders';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_0f4fe38da89264850067faac2e4f60a7'] = 'Nieuwe betalingslogo\'s toevoegen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_33bdb492d086641c85c60952f071e0a7'] = 'Redundantie toevoegen voor het aanmaken van bestellingen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_e322430758268ef8207d87e0dd974b94'] = 'Fout oplossen bij het controleren van bedragen bij het valideren van bestellingen';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'Niet opnieuw weergeven';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Mijn opgeslagen kaarten';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Bestellung aufgeben';

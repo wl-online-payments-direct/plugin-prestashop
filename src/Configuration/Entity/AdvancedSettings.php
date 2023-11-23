@@ -10,53 +10,51 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class AdvancedSettings
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class AdvancedSettings
 {
-    /** @var bool $advancedSettingsEnabled */
+    /** @var bool */
     public $advancedSettingsEnabled;
 
-    /** @var bool|null $paymentFlowSettingsDisplayed */
+    /** @var bool|null */
     public $paymentFlowSettingsDisplayed;
 
-    /** @var bool $force3DsV2 */
+    /** @var bool */
     public $force3DsV2;
 
-    /** @var bool $switchEndpoint */
+    /** @var bool */
     public $switchEndpoint;
 
-    /** @var string $testEndpoint */
+    /** @var string */
     public $testEndpoint;
 
-    /** @var string $prodEndpoint */
+    /** @var string */
     public $prodEndpoint;
 
-    /** @var bool $logsEnabled */
+    /** @var bool */
     public $logsEnabled;
 
-    /** @var PaymentSettings $paymentSettings */
+    /** @var PaymentSettings */
     public $paymentSettings;
 
-    /** @var bool $groupCardPaymentOptions */
+    /** @var bool */
     public $groupCardPaymentOptions;
 
-    /** @var bool $threeDSExempted */
+    /** @var bool */
     public $threeDSExempted;
 
-    /** @var bool $enforce3DS */
+    /** @var bool */
     public $enforce3DS;
 
-    /** @var bool $surchargingEnabled */
+    /** @var bool */
     public $surchargingEnabled;
 
-    /** @var bool $displayWhatsNew */
+    /** @var bool */
     public $displayWhatsNew;
 }

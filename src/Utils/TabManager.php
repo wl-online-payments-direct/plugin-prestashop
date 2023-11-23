@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Utils;
@@ -21,16 +20,16 @@ use Tab;
 
 /**
  * Class TabManager
- * @package WorldlineOP\PrestaShop\Utils
  */
 class TabManager
 {
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
 
     /**
-     * @param array  $tabs
+     * @param array $tabs
      * @param string $moduleName
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -43,8 +42,9 @@ class TabManager
     }
 
     /**
-     * @param array  $moduleTab
+     * @param array $moduleTab
      * @param string $moduleName
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      * @throws \Exception

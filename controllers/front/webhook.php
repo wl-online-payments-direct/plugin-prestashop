@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use OnlinePayments\Sdk\Webhooks\InMemorySecretKeyStore;
 use OnlinePayments\Sdk\Webhooks\WebhooksHelper;
@@ -23,10 +25,10 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class WorldlineopWebhookModuleFrontController extends ModuleFrontController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     public $logger;
 
     /**
@@ -49,6 +51,7 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
 
     /**
      * @param $data
+     *
      * @throws Exception
      */
     public function postRequest($data)
@@ -56,7 +59,7 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         /** @var Settings $settings */
         $settings = $this->module->getService('worldlineop.settings');
 
-        $secretKeyStore = new InMemorySecretKeyStore(array($settings->credentials->webhooksKey => $settings->credentials->webhooksSecret));
+        $secretKeyStore = new InMemorySecretKeyStore([$settings->credentials->webhooksKey => $settings->credentials->webhooksSecret]);
         $helper = new WebhooksHelper($secretKeyStore);
         try {
             $event = $helper->unmarshal($data, Tools::getServerHttpHeaders());
@@ -86,9 +89,6 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         exit;
     }
 
-    /**
-     *
-     */
     public function getRequest()
     {
         if (isset($_SERVER['X-GCS-Webhooks-Endpoint-Verification'])) {

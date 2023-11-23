@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Repository;
@@ -19,18 +18,18 @@ use Db;
 
 /**
  * Class TransactionRepository
- * @package WorldlineOP\PrestaShop\Repository
  */
 class TransactionRepository
 {
-    /** @var Db $db */
+    /** @var Db */
     private $db;
 
-    /** @var array $cache */
+    /** @var array */
     private $cache;
 
     /**
      * TransactionRepository constructor.
+     *
      * @param Db $db
      */
     public function __construct(Db $db = null)
@@ -44,7 +43,9 @@ class TransactionRepository
 
     /**
      * @param int $idOrder
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByIdOrder($idOrder)
@@ -59,7 +60,9 @@ class TransactionRepository
 
     /**
      * @param \WorldlineopTransaction $transaction
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function save(\WorldlineopTransaction $transaction)

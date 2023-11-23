@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -26,27 +25,27 @@ use WorldlineOP\PrestaShop\Repository\TokenRepository;
 
 /**
  * Class StoredCardsPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class StoredCardsPresenter implements PresenterInterface
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var Context $context */
+    /** @var Context */
     private $context;
 
-    /** @var MerchantClient $merchantClient */
+    /** @var MerchantClient */
     private $merchantClient;
 
-    /** @var TokenRepository $tokenRepository */
+    /** @var TokenRepository */
     private $tokenRepository;
 
     /**
      * StoredCardsPresenter constructor.
-     * @param Worldlineop     $module
-     * @param Context         $context
-     * @param MerchantClient  $merchantClient
+     *
+     * @param Worldlineop $module
+     * @param Context $context
+     * @param MerchantClient $merchantClient
      * @param TokenRepository $tokenRepository
      */
     public function __construct(
@@ -63,13 +62,14 @@ class StoredCardsPresenter implements PresenterInterface
 
     /**
      * @return array
+     *
      * @throws \PrestaShopException
      */
     public function present()
     {
         $data = [
             'tokens' => [],
-            'img_path' => $this->module->getPathUri().'views/img/',
+            'img_path' => $this->module->getPathUri() . 'views/img/',
         ];
         /** @var \WorldlineopToken[] $tokens */
         $tokens = $this->tokenRepository->findByIdCustomerIdShop(
@@ -89,17 +89,17 @@ class StoredCardsPresenter implements PresenterInterface
                     continue;
                 }
                 $logoPath = realpath(
-                    $this->module->getLocalPath().sprintf('views/img/payment_logos/%s.svg', $token->product_id)
+                    $this->module->getLocalPath() . sprintf('views/img/payment_logos/%s.svg', $token->product_id)
                 );
                 $logoUrl = false;
                 if (false !== $logoPath) {
-                    $logoUrl = $this->module->getPathUri().sprintf('views/img/payment_logos/%s.svg', $token->product_id);
+                    $logoUrl = $this->module->getPathUri() . sprintf('views/img/payment_logos/%s.svg', $token->product_id);
                 }
 
                 $data['tokens'][] = [
                     'id' => $token->id,
                     'card_number' => chunk_split($token->card_number, 4, ' '),
-                    'expiry_date' => \Tools::substr($token->expiry_date, 0, 2).'/'.\Tools::substr($token->expiry_date, 2, 2),
+                    'expiry_date' => \Tools::substr($token->expiry_date, 0, 2) . '/' . \Tools::substr($token->expiry_date, 2, 2),
                     'card_brand' => $productDetails->getDisplayHints()->getLabel(),
                     'logo_url' => $logoUrl,
                 ];

@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -28,12 +27,10 @@ use OnlinePayments\Sdk\Domain\RefundRedirectMethodSpecificOutput;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
-use WorldlineOP\PrestaShop\Utils\Decimal;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class TransactionPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class TransactionPresenter implements PresenterInterface
 {
@@ -41,13 +38,13 @@ class TransactionPresenter implements PresenterInterface
     const STATUS_CAPTURE_REQUESTED = 'CAPTURE_REQUESTED';
     const STATUS_PAYMENT_CAPTURED = 'CAPTURED';
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var TransactionRepository $transactionRepository */
+    /** @var TransactionRepository */
     private $transactionRepository;
 
-    /** @var MerchantClient $merchantClient */
+    /** @var MerchantClient */
     private $merchantClient;
 
     public function __construct(
@@ -62,7 +59,9 @@ class TransactionPresenter implements PresenterInterface
 
     /**
      * @param false|int $idOrder
+     *
      * @return array
+     *
      * @throws \PrestaShopException
      * @throws \Exception
      */
@@ -165,17 +164,20 @@ class TransactionPresenter implements PresenterInterface
         return [
             'orderId' => $idOrder,
             'payment' => [
-                'amount' => Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAcquiredAmount()->getAmount(), $currencyCode),
+                'amount' => Tools::getRoundedAmountFromCents(
+                    $payment->getPaymentOutput()->getAcquiredAmount()->getAmount(), $currencyCode),
                 'hasSurcharge' => !($surchargeAmount === 0),
                 'surchargeAmount' => $surchargeAmount,
-                'amountWithoutSurcharge' => Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAmountOfMoney()->getAmount(), $currencyCode),
+                'amountWithoutSurcharge' => Tools::getRoundedAmountFromCents(
+                    $payment->getPaymentOutput()->getAmountOfMoney()->getAmount(), $currencyCode),
                 'psOrderAmountMatch' => $psOrderAmountMatch,
                 'currencyCode' => $currencyCode,
                 'reference' => $payment->getPaymentOutput()->getReferences()->getMerchantReference(),
                 'id' => $transaction->reference,
                 'status' => $paymentDetails->getStatus(),
                 'productId' => $paymentSpecificOutput->getPaymentProductId(),
-                'fraudResult' => $paymentSpecificOutput->getFraudResults()->getFraudServiceResult(),
+                'fraudResult' => !empty($paymentSpecificOutput->getFraudResults()) ?
+                    $paymentSpecificOutput->getFraudResults()->getFraudServiceResult() : '',
                 'liability' => $liability,
                 'errors' => $errors,
             ],
@@ -200,8 +202,9 @@ class TransactionPresenter implements PresenterInterface
     }
 
     /**
-     * @param string        $paymentMethod
+     * @param string $paymentMethod
      * @param PaymentOutput $paymentOutput
+     *
      * @return CardPaymentMethodSpecificOutput|MobilePaymentMethodSpecificOutput|RedirectPaymentMethodSpecificOutput
      */
     public function getPaymentSpecificOutput($paymentMethod, PaymentOutput $paymentOutput)
@@ -218,8 +221,9 @@ class TransactionPresenter implements PresenterInterface
     }
 
     /**
-     * @param string       $paymentMethod
+     * @param string $paymentMethod
      * @param RefundOutput $refundOutput
+     *
      * @return RefundCardMethodSpecificOutput|RefundEWalletMethodSpecificOutput|RefundMobileMethodSpecificOutput|RefundRedirectMethodSpecificOutput
      */
     public function getRefundSpecificOutput($paymentMethod, RefundOutput $refundOutput)
@@ -238,8 +242,9 @@ class TransactionPresenter implements PresenterInterface
     }
 
     /**
-     * @param string        $paymentMethod
+     * @param string $paymentMethod
      * @param CaptureOutput $captureOutput
+     *
      * @return CardPaymentMethodSpecificOutput|MobilePaymentMethodSpecificOutput|RedirectPaymentMethodSpecificOutput
      */
     public function getCaptureSpecificOutput($paymentMethod, CaptureOutput $captureOutput)

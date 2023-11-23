@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\Communicator;
@@ -31,17 +33,18 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     const TAB_ADVANCED_SETTINGS = 'advancedSettings';
     const TAB_PAYMENT_METHODS = 'paymentMethods';
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var string $activeTab */
+    /** @var string */
     private $activeTab;
 
-    /** @var array $postedData */
+    /** @var array */
     private $postedData;
 
     /**
      * AdminWorldlineopConfigurationController constructor.
+     *
      * @throws PrestaShopException
      */
     public function __construct()
@@ -57,35 +60,32 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     public function setMedia($isNewTheme = false)
     {
         parent::setMedia($isNewTheme);
-        $this->context->controller->addCSS([$this->module->getLocalPath().'/views/css/config.css']);
+        $this->context->controller->addCSS([$this->module->getLocalPath() . '/views/css/config.css']);
         /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
         $settings = $this->module->getService('worldlineop.settings');
-        //@formatter:off
+        // @formatter:off
         Media::addJsDef([
             'worldlineopAjaxToken' => Tools::getAdminTokenLite('AdminWorldlineopAjax'),
             'genericErrorMessage' => $this->module->l('An error occurred during the process, please try again', 'AdminWorldlineopConfigurationController'),
             'showWhatsNew' => $settings->advancedSettings->displayWhatsNew === true,
             'copyMessage' => $this->module->l('Copied!', 'AdminWorldlineopConfigurationController'),
         ]);
-        //@formatter:on
+        // @formatter:on
     }
 
-    /**
-     *
-     */
     public function setModals()
     {
         $this->context->smarty->assign([
-            'loader' => $this->module->getPathUri().'/views/img/icons/loader.svg',
+            'loader' => $this->module->getPathUri() . '/views/img/icons/loader.svg',
         ]);
-        //@formatter:off
+        // @formatter:off
         $this->modals[] = [
             'modal_id' => 'worldlineop-modal-whatsnew',
             'modal_class' => 'modal-lg',
             'modal_title' => $this->module->l('Latest version - What\'s new?', 'AdminWorldlineopConfigurationController'),
             'modal_content' => $this->createTemplate('modal/_loading.tpl')->fetch(),
         ];
-        //@formatter:on
+        // @formatter:on
     }
 
     /**
@@ -110,9 +110,6 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         parent::initContent();
     }
 
-    /**
-     *
-     */
     public function processSaveAccountForm()
     {
         $this->activeTab = self::TAB_ACCOUNT;
@@ -131,9 +128,6 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         }
     }
 
-    /**
-     *
-     */
     public function saveAccount()
     {
         /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater $updater */
@@ -152,9 +146,9 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
 
             return;
         }
-        //@formatter:off
+        // @formatter:off
         $this->confirmations[] = $this->module->l('Account settings saved successfully.', 'AdminWorldlineopConfigurationController');
-        //@formatter:on
+        // @formatter:on
     }
 
     /**
@@ -192,15 +186,15 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
             return false;
         }
         if ($testResponse->getResult() !== 'OK') {
-            //@formatter:off
+            // @formatter:off
             $this->errors[] = $this->module->l('Please verify your credentials', 'AdminWorldlineopConfigurationController');
-            //@formatter:on
+            // @formatter:on
 
             return false;
         } else {
-            //@formatter:off
+            // @formatter:off
             $this->confirmations[] = $this->module->l('Account credentials are valid.', 'AdminWorldlineopConfigurationController');
-            //@formatter:on
+            // @formatter:on
 
             return true;
         }
@@ -227,9 +221,6 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         }
     }
 
-    /**
-     *
-     */
     public function processSaveAdvancedSettingsForm()
     {
         $this->activeTab = self::TAB_ADVANCED_SETTINGS;
@@ -243,14 +234,11 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
 
             return;
         }
-        //@formatter:off
+        // @formatter:off
         $this->confirmations[] = $this->module->l('Advanced settings saved successfully', 'AdminWorldlineopConfigurationController');
-        //@formatter:on
+        // @formatter:on
     }
 
-    /**
-     *
-     */
     public function processSavePaymentMethodsSettingsForm()
     {
         $this->activeTab = self::TAB_PAYMENT_METHODS;
@@ -268,8 +256,8 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         } catch (Exception $e) {
             $this->errors[] = $e->getMessage();
         }
-        //@formatter:off
+        // @formatter:off
         $this->confirmations[] = $this->module->l('Payment methods settings saved successfully', 'AdminWorldlineopConfigurationController');
-        //@formatter:on
+        // @formatter:on
     }
 }

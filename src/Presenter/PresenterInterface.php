@@ -10,14 +10,12 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
 /**
  * Interface PresenterInterface
- * @package WorldlineOP\PrestaShop\Presenter
  */
 interface PresenterInterface
 {

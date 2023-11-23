@@ -10,18 +10,20 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class WorldlineopStoredCardsModuleFrontController
  */
 class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var bool $redirectStoredCards */
+    /** @var bool */
     protected $redirectStoredCards = false;
 
     /** @var \Monolog\Logger */
@@ -57,14 +59,11 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
 
         return $this->registerStylesheet(
             'worldlineop-storedcards',
-            $this->module->getPathUri().'views/css/storedcards.css',
+            $this->module->getPathUri() . 'views/css/storedcards.css',
             ['server' => 'remote']
         );
     }
 
-    /**
-     *
-     */
     public function postProcess()
     {
         if (Tools::getValue('delete')) {
@@ -76,6 +75,7 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
 
     /**
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -92,9 +92,9 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
         /** @var \WorldlineOP\PrestaShop\Repository\TokenRepository $tokenRepository */
         $tokenRepository = $this->module->getService('worldlineop.repository.token');
         $storedCard = $tokenRepository->findById((int) $idStoreCard);
-        if (false === $storedCard ||
-            $storedCard->id_customer != $this->context->customer->id ||
-            $storedCard->id_shop != $this->context->shop->id
+        if (false === $storedCard
+            || $storedCard->id_customer != $this->context->customer->id
+            || $storedCard->id_shop != $this->context->shop->id
         ) {
             $this->errors[] = $this->module->l('Could not delete stored card.', 'storedcards');
 

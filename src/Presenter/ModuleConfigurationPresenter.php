@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -24,22 +23,22 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class ModuleConfigurationPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class ModuleConfigurationPresenter implements PresenterInterface
 {
     const PENDING_CRON = '*/30 * * * * wget -O /dev/null ';
     const CAPTURE_CRON = '0 */6 * * * wget -O /dev/null ';
 
-    /** @var SettingsLoader $settingsLoader */
+    /** @var SettingsLoader */
     private $settingsLoader;
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
     /**
      * ModuleConfigurationPresenter constructor.
-     * @param Worldlineop    $module
+     *
+     * @param Worldlineop $module
      * @param SettingsLoader $settingsLoader
      */
     public function __construct(Worldlineop $module, SettingsLoader $settingsLoader)
@@ -50,6 +49,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
 
     /**
      * @return array
+     *
      * @throws \PrestaShopException
      */
     public function present()
@@ -59,16 +59,16 @@ class ModuleConfigurationPresenter implements PresenterInterface
             'moduleVersion' => $this->module->version,
             'advancedSettingsEnabled' => \Configuration::getGlobalValue('WORLDLINEOP_SHOW_ADVANCED_SETTINGS'),
             'path' => [
-                'module' => sprintf(__PS_BASE_URI__.'modules/%s/', $this->module->name),
-                'img' => sprintf(__PS_BASE_URI__.'modules/%s/views/img/', $this->module->name),
+                'module' => sprintf(__PS_BASE_URI__ . 'modules/%s/', $this->module->name),
+                'img' => sprintf(__PS_BASE_URI__ . 'modules/%s/views/img/', $this->module->name),
                 'controllers' => [
                     'webhooks' => \Context::getContext()->link->getModuleLink($this->module->name, 'webhook', []),
-                    'captureCron' => self::CAPTURE_CRON.\Context::getContext()->link->getModuleLink(
+                    'captureCron' => self::CAPTURE_CRON . \Context::getContext()->link->getModuleLink(
                         $this->module->name,
                         'croncapture',
                         ['secure_key' => Tools::hash($this->module->getLocalPath()), 'ajax' => 1, 'action' => 'runcron']
                     ),
-                    'pendingCron' => self::PENDING_CRON.\Context::getContext()->link->getModuleLink(
+                    'pendingCron' => self::PENDING_CRON . \Context::getContext()->link->getModuleLink(
                         $this->module->name,
                         'cronpending',
                         ['secure_key' => Tools::hash($this->module->getLocalPath()), 'ajax' => 1, 'action' => 'runcron']

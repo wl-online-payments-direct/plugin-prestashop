@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -26,23 +25,23 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class GetRefundPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class GetRefundPresenter implements PresenterInterface
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     private $logger;
 
-    /** @var TransactionPresented $presentedData */
+    /** @var TransactionPresented */
     protected $presentedData;
 
     /**
      * GetRefundPresenter constructor.
-     * @param Worldlineop    $module
-     * @param LoggerFactory  $loggerFactory
+     *
+     * @param Worldlineop $module
+     * @param LoggerFactory $loggerFactory
      */
     public function __construct(
         Worldlineop $module,
@@ -56,7 +55,9 @@ class GetRefundPresenter implements PresenterInterface
     /**
      * @param RefundResponse $refundResponse
      * @param int $idShop
+     *
      * @return TransactionPresented
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -106,7 +107,7 @@ class GetRefundPresenter implements PresenterInterface
         $this->presentedData->sendMail = \Configuration::getGlobalValue('WOP_AWAITING_CAPTURE_STATUS_ID') == \Configuration::get('PS_OS_REFUND');
         $this->presentedData->payments['hasPayments'] = $order->getOrderPayments();
         $this->presentedData->payments['merchantReference'] = $merchantReference;
-        $this->logger->debug('Refund event. Update order state to ID '.\Configuration::get('PS_OS_REFUND'));
+        $this->logger->debug('Refund event. Update order state to ID ' . \Configuration::get('PS_OS_REFUND'));
 
         return $this->presentedData;
     }

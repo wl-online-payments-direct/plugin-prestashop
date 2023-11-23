@@ -10,14 +10,12 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class PaymentMethodsSettings
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class PaymentMethodsSettings
 {
@@ -25,41 +23,42 @@ class PaymentMethodsSettings
     const PAYMENT_METHOD_REDIRECT = 'redirect';
     const PAYMENT_METHOD_MOBILE = 'mobile';
 
-    /** @var bool $displayGenericOption */
+    /** @var bool */
     public $displayGenericOption;
 
-    /** @var string $genericLogoFilename */
+    /** @var string */
     public $genericLogoFilename;
 
-    /** @var string $redirectTemplateFilename */
+    /** @var string */
     public $redirectTemplateFilename;
 
-    /** @var string $iframeTemplateFilename */
+    /** @var string */
     public $iframeTemplateFilename;
 
-    /** @var string[] $redirectCallToAction */
+    /** @var string[] */
     public $redirectCallToAction;
 
-    /** @var string[] $iframeCallToAction */
+    /** @var string[] */
     public $iframeCallToAction;
 
-    /** @var string $iframeLogo */
+    /** @var string */
     public $iframeLogoFilename;
 
-    /** @var bool $displayRedirectPaymentOptions */
+    /** @var bool */
     public $displayRedirectPaymentOptions;
 
-    /** @var bool $displayIframePaymentOptions */
+    /** @var bool */
     public $displayIframePaymentOptions;
 
-    /** @var PaymentMethod[] $redirectPaymentMethods */
+    /** @var PaymentMethod[] */
     public $redirectPaymentMethods;
 
-    /** @var PaymentMethod[] $iframePaymentMethods */
+    /** @var PaymentMethod[] */
     public $iframePaymentMethods;
 
     /**
      * @param int $productId
+     *
      * @return bool|PaymentMethod
      */
     public function findRedirectPMByProductId($productId)
@@ -75,6 +74,7 @@ class PaymentMethodsSettings
 
     /**
      * @param int $productId
+     *
      * @return bool|PaymentMethod
      */
     public function findIframePMByProductId($productId)

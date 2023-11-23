@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Repository;
@@ -19,18 +18,18 @@ use Db;
 
 /**
  * Class CreatedPaymentRepository
- * @package WorldlineOP\PrestaShop\Repository
  */
 class CreatedPaymentRepository
 {
-    /** @var Db $db */
+    /** @var Db */
     private $db;
 
-    /** @var array $cache */
+    /** @var array */
     private $cache;
 
     /**
      * CreatedPaymentRepository constructor.
+     *
      * @param Db $db
      */
     public function __construct(Db $db = null)
@@ -45,7 +44,9 @@ class CreatedPaymentRepository
     /**
      * @param string $returnMac
      * @param string $paymentId
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByReturnMacPaymentId($returnMac, $paymentId)
@@ -62,7 +63,9 @@ class CreatedPaymentRepository
 
     /**
      * @param string $paymentId
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByPaymentId($paymentId)
@@ -78,7 +81,9 @@ class CreatedPaymentRepository
 
     /**
      * @param string $merchantReference
+     *
      * @return false|\ObjectModel
+     *
      * @throws \PrestaShopException
      */
     public function findByMerchantReference($merchantReference)
@@ -93,7 +98,9 @@ class CreatedPaymentRepository
 
     /**
      * @param \CreatedPayment $createdPayment
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function save(\CreatedPayment $createdPayment)

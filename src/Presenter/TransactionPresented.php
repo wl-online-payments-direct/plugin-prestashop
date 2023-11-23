@@ -10,42 +10,40 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
 /**
  * Class TransactionPresented
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class TransactionPresented
 {
-    /** @var bool $validateOrder */
+    /** @var bool */
     public $validateOrder;
 
-    /** @var bool $updateStatus */
+    /** @var bool */
     public $updateStatus;
 
-    /** @var array[] $order */
+    /** @var array[] */
     public $order;
 
-    /** @var array $token */
+    /** @var array */
     public $token;
 
-    /** @var array $cardDetails */
+    /** @var array */
     public $cardDetails;
 
-    /** @var array $transaction */
+    /** @var array */
     public $transaction;
 
-    /** @var int $idOrderState */
+    /** @var int */
     public $idOrderState;
 
-    /** @var bool $sendMail */
+    /** @var bool */
     public $sendMail;
 
-    /** @var array $payments */
+    /** @var array */
     public $payments;
 
     /**

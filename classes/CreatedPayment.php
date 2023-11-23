@@ -10,36 +10,38 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class CreatedPayment
  */
 class CreatedPayment extends ObjectModel
 {
-    /** @var int $id_created_payment */
+    /** @var int */
     public $id_created_payment;
 
-    /** @var int $id_cart */
+    /** @var int */
     public $id_cart;
 
-    /** @var string $payment_id */
+    /** @var string */
     public $payment_id;
 
-    /** @var string $merchant_reference */
+    /** @var string */
     public $merchant_reference;
 
-    /** @var string $returnmac */
+    /** @var string */
     public $returnmac;
 
-    /** @var string $status */
+    /** @var string */
     public $status;
 
-    /** @var string $date_add */
+    /** @var string */
     public $date_add;
 
-    /** @var array $definition */
+    /** @var array */
     public static $definition = [
         'table' => 'worldlineop_created_payment',
         'primary' => 'id_created_payment',

@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\OptionsResolver;
@@ -20,12 +19,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AccountSettingsResolver
- * @package WorldlineOP\PrestaShop\OptionsResolver
  */
 class AccountSettingsResolver extends AbstractSettingsResolver
 {
     /**
      * @param OptionsResolver $resolver
+     *
      * @return mixed|void
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -108,6 +107,7 @@ class AccountSettingsResolver extends AbstractSettingsResolver
 
     /**
      * @param array $array
+     *
      * @return array|mixed
      */
     public function resolve($array)

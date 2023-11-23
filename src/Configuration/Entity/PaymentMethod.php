@@ -10,32 +10,30 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class PaymentMethod
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class PaymentMethod
 {
     const PM_GROUP_CARDS = 'Cards';
     const PM_TYPE_CARD = 'card';
 
-    /** @var bool $enabled */
+    /** @var bool */
     public $enabled;
 
-    /** @var int $productId */
+    /** @var int */
     public $productId;
 
-    /** @var string $identifier */
+    /** @var string */
     public $identifier;
 
-    /** @var string $type */
+    /** @var string */
     public $type;
 
-    /** @var string $logo */
+    /** @var string */
     public $logo;
 }

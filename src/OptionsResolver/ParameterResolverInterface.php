@@ -10,19 +10,18 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\OptionsResolver;
 
 /**
  * Interface ParameterResolverInterface
- * @package WorldlineOP\PrestaShop\OptionsResolver
  */
 interface ParameterResolverInterface
 {
     /**
      * @param array $parameters
+     *
      * @return mixed
      */
     public function resolve($parameters);

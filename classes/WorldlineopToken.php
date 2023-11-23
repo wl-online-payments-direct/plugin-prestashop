@@ -10,39 +10,41 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class WorldlineopToken
  */
 class WorldlineopToken extends ObjectModel
 {
-    /** @var int $id_worldlineop_token */
+    /** @var int */
     public $id_worldlineop_token;
 
-    /** @var int $id_customer */
+    /** @var int */
     public $id_customer;
 
-    /** @var int $id_shop */
+    /** @var int */
     public $id_shop;
 
-    /** @var string $product_id */
+    /** @var string */
     public $product_id;
 
-    /** @var string $card_number */
+    /** @var string */
     public $card_number;
 
-    /** @var string $expiry_date */
+    /** @var string */
     public $expiry_date;
 
-    /** @var string $value */
+    /** @var string */
     public $value;
 
-    /** @var string $secure_key */
+    /** @var string */
     public $secure_key;
 
-    /** @var array $definition */
+    /** @var array */
     public static $definition = [
         'table' => 'worldlineop_token',
         'primary' => 'id_worldlineop_token',

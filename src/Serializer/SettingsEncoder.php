@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Serializer;
@@ -19,14 +18,14 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
  * Class SettingsEncoder
- * @package WorldlineOP\PrestaShop\Serializer
  */
 class SettingsEncoder extends JsonEncoder
 {
     /**
-     * @param       $data
-     * @param       $format
+     * @param $data
+     * @param $format
      * @param array $context
+     *
      * @return bool|false|float|int|string
      */
     public function encode($data, $format, array $context = [])

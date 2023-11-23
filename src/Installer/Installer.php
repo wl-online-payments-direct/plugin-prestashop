@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Installer;
@@ -27,44 +26,44 @@ use WorldlineOP\PrestaShop\Utils\TabManager;
 
 /**
  * Class Installer
- * @package WorldlineOP\PrestaShop\Installer
  */
 class Installer
 {
-    /** @var \Worldlineop $module */
+    /** @var \Worldlineop */
     private $module;
 
-    /** @var TabManager $tabManager */
+    /** @var TabManager */
     private $tabManager;
 
-    /** @var OrderStatusManager $orderStatusManager */
+    /** @var OrderStatusManager */
     private $orderStatusManager;
 
-    /** @var AccountSettingsUpdater $accountSettingsUpdater */
+    /** @var AccountSettingsUpdater */
     private $accountSettingsUpdater;
 
-    /** @var AdvancedSettingsUpdater $advancedSettingsUpdater */
+    /** @var AdvancedSettingsUpdater */
     private $advancedSettingsUpdater;
 
-    /** @var PaymentMethodsSettingsUpdater $paymentMethodsSettingsUpdater */
+    /** @var PaymentMethodsSettingsUpdater */
     private $paymentMethodsSettingsUpdater;
 
-    /** @var string $psVersion */
+    /** @var string */
     private $psVersion;
 
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
 
     /**
      * Installer constructor.
-     * @param \Worldlineop                  $module
-     * @param TabManager                    $tabManager
-     * @param OrderStatusManager            $orderStatusManager
-     * @param AccountSettingsUpdater        $accountSettingsUpdater
-     * @param AdvancedSettingsUpdater       $advancedSettingsUpdater
+     *
+     * @param \Worldlineop $module
+     * @param TabManager $tabManager
+     * @param OrderStatusManager $orderStatusManager
+     * @param AccountSettingsUpdater $accountSettingsUpdater
+     * @param AdvancedSettingsUpdater $advancedSettingsUpdater
      * @param PaymentMethodsSettingsUpdater $paymentMethodsSettingsUpdater
-     * @param string                        $psVersion
-     * @param LoggerFactory                 $loggerFactory
+     * @param string $psVersion
+     * @param LoggerFactory $loggerFactory
      */
     public function __construct(
         \Worldlineop $module,
@@ -122,7 +121,7 @@ class Installer
     {
         $parser = new Parser();
 
-        return $parser->parse(\Tools::file_get_contents($this->module->getLocalPath().'install/defaults.yml'));
+        return $parser->parse(\Tools::file_get_contents($this->module->getLocalPath() . 'install/defaults.yml'));
     }
 
     /**
@@ -151,16 +150,13 @@ class Installer
         }
     }
 
-    /**
-     *
-     */
     public function installDb()
     {
         $sqlLoader = new SqlLoader();
         $sqlLoader->setMetaData([
             'PREFIX_' => _DB_PREFIX_,
         ]);
-        $sqlLoader->parse_file($this->module->getLocalPath().'install/install.sql');
+        $sqlLoader->parse_file($this->module->getLocalPath() . 'install/install.sql');
         $this->logger->info('Database updated');
     }
 

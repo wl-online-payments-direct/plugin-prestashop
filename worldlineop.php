@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use Monolog\Logger;
 use PrestaShop\ModuleLibServiceContainer\DependencyInjection\ServiceContainer;
@@ -21,13 +23,13 @@ use PrestaShop\ModuleLibServiceContainer\DependencyInjection\ServiceContainer;
  */
 class Worldlineop extends PaymentModule
 {
-    /** @var string $theme */
+    /** @var string */
     public $theme;
 
-    /** @var ServiceContainer $serviceContainer */
+    /** @var ServiceContainer */
     private $serviceContainer;
 
-    /** @var Logger $logger */
+    /** @var Logger */
     public $logger;
 
     /**
@@ -35,21 +37,22 @@ class Worldlineop extends PaymentModule
      */
     public function __construct()
     {
-        require_once(dirname(__FILE__).'/vendor/autoload.php');
+        require_once dirname(__FILE__) . '/vendor/autoload.php';
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.0';
+        $this->version = '1.4.1';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         parent::__construct();
         $this->bootstrap = true;
-        //@formatter:off
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.8');
+        // @formatter:off
         $this->displayName = $this->l('Worldline Online Payments');
         $this->description = $this->l('This module offers a 1-click integration to start accepting payments and grow your revenues by offering your customers with global and regional payment methods to sell across Europe.');
-        //@formatter:on
+        // @formatter:on
         $this->theme = Tools::version_compare(_PS_VERSION_, '1.7.7', '>=') ? 'new-theme' : 'legacy';
         $this->serviceContainer = new ServiceContainer($this->name, $this->getLocalPath());
         $this->logger = $this->getService('worldlineop.logger');
@@ -117,9 +120,6 @@ class Worldlineop extends PaymentModule
         Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminWorldlineopConfiguration'));
     }
 
-    /**
-     *
-     */
     public function hookActionFrontControllerSetMedia()
     {
         $controller = Tools::getValue('controller');
@@ -133,19 +133,19 @@ class Worldlineop extends PaymentModule
                 );
                 $this->context->controller->registerStylesheet(
                     'worldlineop-css-paymentOptions',
-                    $this->getPathUri().'views/css/front.css?version='.$this->version,
+                    $this->getPathUri() . 'views/css/front.css?version=' . $this->version,
                     ['server' => 'remote']
                 );
                 $this->context->controller->registerJavascript(
                     'worldlineop-js-paymentOptions',
-                    $this->getPathUri().'views/js/paymentOptions.js?version='.$this->version,
+                    $this->getPathUri() . 'views/js/paymentOptions.js?version=' . $this->version,
                     ['position' => 'head', 'priority' => 1000, 'server' => 'remote']
                 );
                 break;
             case 'redirect':
                 $this->context->controller->registerJavascript(
                     'worldlineop-redirect-javascript',
-                    $this->getPathUri().'views/js/redirect.js',
+                    $this->getPathUri() . 'views/js/redirect.js',
                     ['position' => 'bottom', 'priority' => 1000, 'server' => 'remote']
                 );
                 break;
@@ -171,21 +171,12 @@ class Worldlineop extends PaymentModule
                 'alertCancel' => $this->l('Do you confirm the cancellation of the transaction?'),
             ]);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function hookDisplayBackOfficeFooter()
-    {
         if (Tools::getValue('controller') == 'AdminWorldlineopConfiguration') {
-            return '
-                <script type="text/javascript" src="'.$this->getPathUri().'views/js/config.js"></script>
-                <script type="text/javascript" src="'.$this->getPathUri().'views/js/jquery.custom-file-input.js"></script>
-            ';
+            $this->context->controller->addJS([
+                $this->getPathUri() . 'views/js/config.js',
+                $this->getPathUri() . 'views/js/jquery.custom-file-input.js',
+            ]);
         }
-
-        return '';
     }
 
     /**
@@ -210,17 +201,18 @@ class Worldlineop extends PaymentModule
      */
     public function hookDisplayPaymentByBinaries()
     {
-        return $this->context->smarty->fetch($this->getLocalPath().'/views/templates/front/hookDisplayPaymentByBinaries.tpl');
+        return $this->context->smarty->fetch($this->getLocalPath() . '/views/templates/front/hookDisplayPaymentByBinaries.tpl');
     }
 
     /**
      * @param $params
+     *
      * @return string
      */
     public function hookDisplayPaymentTop($params)
     {
         if (Tools::getValue('worldlineopDisplayPaymentTopMessage')) {
-            return $this->context->smarty->fetch($this->getLocalPath().'/views/templates/front/hookDisplayPaymentTop.tpl');
+            return $this->context->smarty->fetch($this->getLocalPath() . '/views/templates/front/hookDisplayPaymentTop.tpl');
         }
 
         return '';
@@ -228,6 +220,7 @@ class Worldlineop extends PaymentModule
 
     /**
      * @param array $params
+     *
      * @return string
      */
     public function hookCustomerAccount($params)
@@ -237,13 +230,15 @@ class Worldlineop extends PaymentModule
 
     /**
      * @param int $idOrder
+     *
      * @return string
+     *
      * @throws Exception
      */
     public function hookAdminOrderCommon($idOrder)
     {
         $order = new Order((int) $idOrder);
-        if (!Validate::isLoadedObject($order)/* || $order->module !== $this->name*/) {
+        if (!Validate::isLoadedObject($order) /* || $order->module !== $this->name */) {
             throw new Exception('Cannot load order');
         }
 
@@ -264,11 +259,12 @@ class Worldlineop extends PaymentModule
             return $this->displayError($e->getMessage());
         }
 
-        return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_'.$this->theme.'.tpl');
+        return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_' . $this->theme . '.tpl');
     }
 
     /**
      * @param array $params
+     *
      * @return string
      */
     public function hookDisplayAdminOrderMainBottom($params)
@@ -291,6 +287,7 @@ class Worldlineop extends PaymentModule
 
     /**
      * @param array $params
+     *
      * @return string
      */
     public function hookDisplayAdminOrderLeft($params)
@@ -313,7 +310,9 @@ class Worldlineop extends PaymentModule
 
     /**
      * @param array $params
+     *
      * @return string
+     *
      * @throws PrestaShopException
      */
     public function hookDisplayPDFInvoice($params)
@@ -342,10 +341,9 @@ class Worldlineop extends PaymentModule
         return $this->display(dirname(__FILE__), 'views/templates/admin/hookDisplayPDFInvoice.tpl');
     }
 
-
-
     /**
      * @param mixed[] $params
+     *
      * @return void
      */
     public function hookDisplayAdminProductsExtra($params)
@@ -364,6 +362,7 @@ class Worldlineop extends PaymentModule
 
     /**
      * @param mixed[] $params
+     *
      * @return void
      */
     public function hookActionProductUpdate($params)

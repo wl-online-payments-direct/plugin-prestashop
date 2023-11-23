@@ -10,14 +10,12 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class PaymentSettings
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class PaymentSettings
 {
@@ -30,24 +28,24 @@ class PaymentSettings
     const SAFETY_DELAY_MIN = 6;
     const SAFETY_DELAY_MAX = 20;
 
-    /** @var string $transactionType */
+    /** @var string */
     public $transactionType;
 
-    /** @var int $captureDelay */
+    /** @var int */
     public $captureDelay;
 
-    /** @var int $retentionHours */
+    /** @var int */
     public $retentionHours;
 
-    /** @var int $successOrderStateId */
+    /** @var int */
     public $successOrderStateId;
 
-    /** @var int $pendingOrderStateId */
+    /** @var int */
     public $pendingOrderStateId;
 
-    /** @var int $safetyDelay */
+    /** @var int */
     public $safetyDelay;
 
-    /** @var int $errorOrderStateId */
+    /** @var int */
     public $errorOrderStateId;
 }

@@ -1,7 +1,10 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'This module offers a 1-click integration to start accepting payments with the Worldline Direct APIs (former Ingenico-Ogone). Grow your revenues by offering your customers with global and regional payment methods to sell across Europe.';
 $_MODULE['<{worldlineop}prestashop>advancedsettingsupdater_9a2dda2e822a0b696c747714dc396a36'] = 'Error while uploading logo';
 $_MODULE['<{worldlineop}prestashop>paymentmethodssettingsupdater_9a2dda2e822a0b696c747714dc396a36'] = 'Error while uploading the logo';

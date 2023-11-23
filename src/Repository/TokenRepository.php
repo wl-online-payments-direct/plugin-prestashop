@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Repository;
@@ -19,18 +18,18 @@ use Db;
 
 /**
  * Class TokenRepository
- * @package WorldlineOP\PrestaShop\Repository
  */
 class TokenRepository
 {
-    /** @var Db $db */
+    /** @var Db */
     private $db;
 
-    /** @var array $cache */
+    /** @var array */
     private $cache;
 
     /**
      * TokenRepository constructor.
+     *
      * @param Db $db
      */
     public function __construct(Db $db = null)
@@ -44,7 +43,9 @@ class TokenRepository
 
     /**
      * @param int $idToken
+     *
      * @return false|\WorldlineopToken
+     *
      * @throws \PrestaShopException
      */
     public function findById($idToken)
@@ -58,10 +59,12 @@ class TokenRepository
     }
 
     /**
-     * @param int    $idCustomer
+     * @param int $idCustomer
      * @param string $secureKey
-     * @param int    $idShop
+     * @param int $idShop
+     *
      * @return \PrestaShopCollection
+     *
      * @throws \PrestaShopException
      */
     public function findByIdCustomerIdShop($idCustomer, $secureKey, $idShop)
@@ -77,9 +80,11 @@ class TokenRepository
     }
 
     /**
-     * @param int    $idCustomer
+     * @param int $idCustomer
      * @param string $tokenValue
+     *
      * @return false|\WorldlineopToken
+     *
      * @throws \PrestaShopException
      */
     public function findByCustomerIdToken($idCustomer, $tokenValue)
@@ -95,6 +100,7 @@ class TokenRepository
 
     /**
      * @param int $idCustomer
+     *
      * @throws \PrestaShopException
      */
     public function deleteByIdCustomer($idCustomer)
@@ -110,7 +116,9 @@ class TokenRepository
 
     /**
      * @param \WorldlineopToken $token
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function save(\WorldlineopToken $token)
@@ -120,7 +128,9 @@ class TokenRepository
 
     /**
      * @param \WorldlineopToken $token
+     *
      * @return bool
+     *
      * @throws \PrestaShopException
      */
     public function delete(\WorldlineopToken $token)

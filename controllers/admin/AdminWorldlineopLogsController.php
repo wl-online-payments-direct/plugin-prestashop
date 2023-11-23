@@ -10,20 +10,19 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class AdminWorldlineLogsController
  */
 class AdminWorldlineopLogsController extends ModuleAdminController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /**
-     *
-     */
     public function processDownloadLogFile()
     {
         /** @var \Monolog\Logger $logger */
@@ -35,7 +34,7 @@ class AdminWorldlineopLogsController extends ModuleAdminController
                 if (realpath($file)) {
                     header('Content-Description: File Transfer');
                     header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename="'.basename($file).'"');
+                    header('Content-Disposition: attachment; filename="' . basename($file) . '"');
                     header('Expires: 0');
                     header('Cache-Control: must-revalidate');
                     header('Pragma: public');
@@ -44,10 +43,8 @@ class AdminWorldlineopLogsController extends ModuleAdminController
                 }
             }
         }
-        //@formatter:off
+        // @formatter:off
         $this->errors[] = $this->module->l('Log file not found. Make sure logs are enabled', 'AdminWorldlineopLogsController');
-        //@formatter:on
-
-        return;
+        // @formatter:on
     }
 }

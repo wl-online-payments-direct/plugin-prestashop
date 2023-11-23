@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Loader;
@@ -23,21 +22,21 @@ use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 
 /**
  * Class SettingsLoader
- * @package WorldlineOP\PrestaShop\Configuration\Loader
  */
 class SettingsLoader
 {
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     private $serializer;
 
-    /** @var null|int $idShop */
+    /** @var int|null */
     private $idShop;
 
-    /** @var null|int $idShopGroup */
+    /** @var int|null */
     private $idShopGroup;
 
     /**
      * SettingsLoader constructor.
+     *
      * @param Serializer $serializer
      */
     public function __construct(Serializer $serializer)
@@ -52,9 +51,9 @@ class SettingsLoader
      */
     public function deserialize()
     {
-        $jsonAccount = \Configuration::get('WORLDLINEOP_ACCOUNT_SETTINGS', null, $this->idShopGroup, $this->idShop) ? : '[]';
-        $jsonAdvancedSettings = \Configuration::get('WORLDLINEOP_ADVANCED_SETTINGS', null, $this->idShopGroup, $this->idShop) ? : '[]';
-        $jsonPaymentMethodsSettings = \Configuration::get('WORLDLINEOP_PAYMENT_METHODS_SETTINGS', null, $this->idShopGroup, $this->idShop) ? : '[]';
+        $jsonAccount = \Configuration::get('WORLDLINEOP_ACCOUNT_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
+        $jsonAdvancedSettings = \Configuration::get('WORLDLINEOP_ADVANCED_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
+        $jsonPaymentMethodsSettings = \Configuration::get('WORLDLINEOP_PAYMENT_METHODS_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
 
         $accountSettings = $this->serializer->deserialize($jsonAccount, AccountSettings::class, 'json');
         $advancedSettings = $this->serializer->deserialize($jsonAdvancedSettings, AdvancedSettings::class, 'json');
@@ -79,8 +78,9 @@ class SettingsLoader
     }
 
     /**
-     * @param null|int $idShop
-     * @param null|int $idShopGroup
+     * @param int|null $idShop
+     * @param int|null $idShopGroup
+     *
      * @return Settings
      */
     public function setContext($idShop = null, $idShopGroup = null)

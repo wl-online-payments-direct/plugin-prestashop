@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -21,7 +20,6 @@ use WorldlineOP\PrestaShop\Logger\LoggerFactory;
 
 /**
  * Class TransactionPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class WebhookEventPresenter implements PresenterInterface
 {
@@ -36,20 +34,21 @@ class WebhookEventPresenter implements PresenterInterface
     const EVENTS_PAYMENT_CANCELLED = ['payment.cancelled'];
     const EVENTS_PAYMENT_REJECTED = ['payment.rejected'];
 
-    /** @var GetPaymentPresenter $paymentPresenter */
+    /** @var GetPaymentPresenter */
     private $paymentPresenter;
 
-    /** @var GetRefundPresenter $refundPresenter */
+    /** @var GetRefundPresenter */
     private $refundPresenter;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     private $logger;
 
     /**
      * WebhookEventPresenter constructor.
+     *
      * @param GetPaymentPresenter $paymentPresenter
-     * @param GetRefundPresenter  $refundPresenter
-     * @param LoggerFactory       $loggerFactory
+     * @param GetRefundPresenter $refundPresenter
+     * @param LoggerFactory $loggerFactory
      */
     public function __construct(
         GetPaymentPresenter $paymentPresenter,
@@ -81,8 +80,10 @@ class WebhookEventPresenter implements PresenterInterface
 
     /**
      * @param WebhooksEvent|bool $event
-     * @param int|bool           $idShop
+     * @param int|bool $idShop
+     *
      * @return TransactionPresented
+     *
      * @throws \PrestaShopException
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */

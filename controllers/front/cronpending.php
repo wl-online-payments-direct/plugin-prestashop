@@ -10,21 +10,23 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class WorldlineopCronPendingModuleFrontController
  */
 class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var bool $verbose */
+    /** @var bool */
     private $verbose;
 
-    /** @var int $idOrder */
+    /** @var int */
     private $idOrder;
 
     /**
@@ -51,7 +53,7 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
      */
     public function printOrderDebug($data)
     {
-        $this->printDebug(sprintf("Order #%d - %s", $this->idOrder, $data));
+        $this->printDebug(sprintf('Order #%d - %s', $this->idOrder, $data));
     }
 
     /**
@@ -93,8 +95,8 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
         $dbQuery
             ->select('o.id_order')
             ->from('orders', 'o')
-            ->where('o.module = "'.pSQL($this->module->name).'"')
-            ->where('o.current_state IN ('.pSQL($implode).')');
+            ->where('o.module = "' . pSQL($this->module->name) . '"')
+            ->where('o.current_state IN (' . pSQL($implode) . ')');
 
         $rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($dbQuery);
         if (!$rows) {
@@ -110,7 +112,7 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
             },
             $rows
         );
-        $this->printDebug('Orders IDs : '.json_encode($rows).'<br>');
+        $this->printDebug('Orders IDs : ' . json_encode($rows) . '<br>');
 
         foreach ($rows as $idOrder) {
             $this->idOrder = (int) $idOrder;

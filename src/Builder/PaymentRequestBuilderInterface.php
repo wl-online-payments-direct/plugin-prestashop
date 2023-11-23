@@ -10,20 +10,22 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Builder;
 
 /**
  * Interface PaymentRequestBuilderInterface
- * @package WorldlineOP\PrestaShop\Builder
  */
 interface PaymentRequestBuilderInterface
 {
     public function buildHostedCheckoutSpecificInput();
+
     public function buildCardPaymentMethodSpecificInput();
+
     public function buildMobilePaymentMethodSpecificInput();
+
     public function buildRedirectPaymentMethodSpecificInput();
+
     public function buildOrder();
 }

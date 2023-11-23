@@ -10,13 +10,14 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use OnlinePayments\Sdk\ResponseException;
 use PrestaShop\Decimal\Number;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
-use WorldlineOP\PrestaShop\Utils\Decimal;
 
 /**
  * Class WorldlineopPaymentModuleFrontController
@@ -28,10 +29,10 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
     const TOKEN_STATUS_CREATED = 'CREATED';
     const TOKEN_STATUS_UPDATED = 'UPDATED';
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     public $logger;
 
     /**
@@ -47,7 +48,8 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $hostedTokenizationId = Tools::getValue('hostedTokenizationId');
         $totalCartPost = new Number(Tools::getValue('worldlineopTotalCartCents'));
         $cartCurrencyCodePost = Tools::getValue('worldlineopCartCurrencyCode');
-        $totalCart = \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountInCents($cart->getOrderTotal(), \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency));
+        $totalCart = \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountInCents($cart->getOrderTotal(),
+            \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency));
         $cartCurrencyCode = \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency);
         if ($totalCart !== $totalCartPost->getIntegerPart() || $cartCurrencyCode !== $cartCurrencyCodePost) {
             $this->logger->error(
@@ -59,27 +61,27 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
                     'totalCartPost' => $totalCartPost->getIntegerPart(),
                 ]
             );
-            //@formatter:off
-            die(json_encode([
+            // @formatter:off
+            exit(json_encode([
                 'success' => false,
                 'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
-            //@formatter:on
+            // @formatter:on
         }
 
         /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         try {
             $hostedTokenizationResponse = $merchantClient->hostedTokenization()
-                                                         ->getHostedTokenization($hostedTokenizationId);
+                ->getHostedTokenization($hostedTokenizationId);
         } catch (Exception $e) {
             $this->logger->error($e->getMessage(), ['hostedTokenizationId' => $hostedTokenizationId]);
-            //@formatter:off
-            die(json_encode([
+            // @formatter:off
+            exit(json_encode([
                 'success' => false,
                 'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
-            //@formatter:on
+            // @formatter:on
         }
 
         $this->logger->debug(
@@ -89,9 +91,10 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $tokenId = $hostedTokenizationResponse->getToken()->getId();
         $ccForm = Tools::getValue('ccForm');
 
-        if (false === $hostedTokenizationResponse->getToken()->getIsTemporary() && (
-                self::TOKEN_STATUS_CREATED === $hostedTokenizationResponse->getTokenStatus() ||
-                self::TOKEN_STATUS_UPDATED === $hostedTokenizationResponse->getTokenStatus())
+        if (false === $hostedTokenizationResponse->getToken()->getIsTemporary()
+            && (self::TOKEN_STATUS_CREATED === $hostedTokenizationResponse->getTokenStatus()
+                || self::TOKEN_STATUS_UPDATED === $hostedTokenizationResponse->getTokenStatus()
+            )
         ) {
             /** @var TokenRepository $tokenRepository */
             $tokenRepository = $this->module->getService('worldlineop.repository.token');
@@ -116,24 +119,25 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             $paymentRequest = $hostedCheckoutDirector->buildPaymentRequest($tokenId, $ccForm);
             $this->module->logger->debug('IframeHostedTokenizationRequest', ['json' => json_decode($paymentRequest->toJson(), true)]);
             $paymentResponse = $merchantClient->payments()
-                                              ->createPayment($paymentRequest);
+                ->createPayment($paymentRequest);
             $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($paymentResponse->toJson(), true)]);
         } catch (ResponseException $re) {
             $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($re->getResponse()->toJson(), true)]);
-            //@formatter:off
-            die(json_encode([
+            // @formatter:off
+            exit(json_encode([
                 'success' => false,
                 'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
-            //@formatter:on
+            // @formatter:on
         } catch (Exception $e) {
-            $this->logger->debug('IframeHostedTokenizationResponse', ['json' => json_decode($e->getResponse()->toJson(), true)]);
-            //@formatter:off
-            die(json_encode([
+            $this->logger->debug('IframeHostedTokenizationResponse',
+                ['json' => json_decode($e->getResponse()->toJson(), true)]);
+            // @formatter:off
+            exit(json_encode([
                 'success' => false,
                 'message' => $this->module->l('An error occurred while processing the payment.', 'payment'),
             ]));
-            //@formatter:on
+            // @formatter:on
         }
         /** @var \WorldlineOP\PrestaShop\Repository\CreatedPaymentRepository $createdPaymentRepository */
         $createdPaymentRepository = $this->module->getService('worldlineop.repository.created_payment');
@@ -142,7 +146,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $createdPayment->id_cart = (int) $cart->id;
         $createdPayment->payment_id = pSQL($paymentResponse->getPayment()->getId());
         $createdPayment->merchant_reference = pSQL($paymentResponse->getPayment()->getPaymentOutput()->getReferences()
-                                                                   ->getMerchantReference());
+            ->getMerchantReference());
         $createdPayment->status = pSQL($paymentResponse->getPayment()->getStatus());
         $merchantAction = $paymentResponse->getMerchantAction();
         if (null !== $merchantAction && $merchantAction->getActionType() === self::MERCHANT_ACTION_REDIRECT) {
@@ -167,14 +171,14 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             $createdPaymentRepository->save($createdPayment);
         } catch (Exception $e) {
             $this->logger->error('Cannot save CreatedPayment object', ['message' => $e->getMessage()]);
-            //@formatter:off
+            // @formatter:off
             $return = [
                 'success' => false,
                 'message' => $this->module->l('An unexpected error occurred. Please contact our customer service.', 'payment'),
             ];
-            //@formatter:on
+            // @formatter:on
         }
-        die(json_encode($return));
+        exit(json_encode($return));
     }
 
     /**
@@ -185,9 +189,9 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         try {
             $return = [
                 'success' => true,
-                'formattedInitialAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('initialAmount'), Tools::getValue('initialCurrency')).' '.Tools::getValue('initialCurrency'),
-                'formattedSurchargeAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('surchargeAmount'), Tools::getValue('surchargeCurrency')).' '.Tools::getValue('surchargeCurrency'),
-                'formattedTotalAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('totalAmount'), Tools::getValue('totalCurrency')).' '.Tools::getValue('totalCurrency'),
+                'formattedInitialAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('initialAmount'), Tools::getValue('initialCurrency')) . ' ' . Tools::getValue('initialCurrency'),
+                'formattedSurchargeAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('surchargeAmount'), Tools::getValue('surchargeCurrency')) . ' ' . Tools::getValue('surchargeCurrency'),
+                'formattedTotalAmount' => \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountFromCents(Tools::getValue('totalAmount'), Tools::getValue('totalCurrency')) . ' ' . Tools::getValue('totalCurrency'),
             ];
         } catch (Exception $e) {
             $return = [
@@ -195,6 +199,6 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
             ];
         }
 
-        die(json_encode($return));
+        exit(json_encode($return));
     }
 }

@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Validation;
@@ -19,12 +18,12 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * Class PaymentMethodsValidationData
- * @package WorldlineOP\PrestaShop\Configuration\Validation
  */
 class PaymentMethodsValidationData extends AbstractValidationData
 {
     /**
      * @param array $array
+     *
      * @return array
      */
     public function getValidationData($array)
@@ -33,11 +32,11 @@ class PaymentMethodsValidationData extends AbstractValidationData
         $constraints = [
             'iframeTemplateFilename' => new Regex([
                 'pattern' => '/^[a-zA-Z0-9_\-\.]+\.(?i:htm|html|shtml|xhtml){1}$/i',
-                'message' => $this->module->l('Please fill a valid iframe template filename', 'PaymentMethodsValidationData')
+                'message' => $this->module->l('Please fill a valid iframe template filename', 'PaymentMethodsValidationData'),
             ]),
             'redirectTemplateFilename' => new Regex([
                 'pattern' => '/^[a-zA-Z0-9_\-\.]+\.(?i:htm|html|shtml|xhtml){1}$/i',
-                'message' => $this->module->l('Please fill a valid redirect template filename', 'PaymentMethodsValidationData')
+                'message' => $this->module->l('Please fill a valid redirect template filename', 'PaymentMethodsValidationData'),
             ]),
         ];
         //@formatter:on

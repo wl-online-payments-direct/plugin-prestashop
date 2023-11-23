@@ -10,14 +10,12 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class Settings
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class Settings
 {
@@ -26,16 +24,16 @@ class Settings
 
     const DEFAULT_SUBDOMAIN = 'https://payment.';
 
-    /** @var AccountSettings $accountSettings */
+    /** @var AccountSettings */
     public $accountSettings;
 
-    /** @var AdvancedSettings $advancedSettings */
+    /** @var AdvancedSettings */
     public $advancedSettings;
 
-    /** @var PaymentMethodsSettings $paymentMethodsSettings */
+    /** @var PaymentMethodsSettings */
     public $paymentMethodsSettings;
 
-    /** @var \stdClass $credentials */
+    /** @var \stdClass */
     public $credentials;
 
     /**

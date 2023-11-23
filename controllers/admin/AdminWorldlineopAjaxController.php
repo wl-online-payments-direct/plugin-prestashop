@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use WorldlineOP\PrestaShop\Exception\ExceptionList;
 
@@ -20,14 +22,15 @@ use WorldlineOP\PrestaShop\Exception\ExceptionList;
  */
 class AdminWorldlineopAjaxController extends ModuleAdminController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     public $logger;
 
     /**
      * AdminWorldlineAjaxController constructor.
+     *
      * @throws PrestaShopException
      */
     public function __construct()
@@ -38,13 +41,10 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
         $this->logger = $loggerFactory->setChannel('Ajax');
     }
 
-    /**
-     *
-     */
     public function ajaxProcessToggleAdvSettings()
     {
         Configuration::updateGlobalValue('WORLDLINEOP_SHOW_ADVANCED_SETTINGS', Tools::getValue('newState'));
-        die(json_encode(['errors' => false]));
+        exit(json_encode(['errors' => false]));
     }
 
     /**
@@ -67,15 +67,15 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
         $this->context->smarty->assign([
             'data' => [
                 'paymentMethodsSettings' => [
-                    $paymentType.'PaymentMethods' => $paymentMethods,
+                    $paymentType . 'PaymentMethods' => $paymentMethods,
                 ],
             ],
             'type' => $paymentType,
-            'name' => $paymentType.'PaymentMethods',
+            'name' => $paymentType . 'PaymentMethods',
         ]);
 
         $html = $this->context->smarty->fetch(
-            $this->module->getLocalPath().'views/templates/admin/worldlineop_configuration/_paymentMethodsList.tpl'
+            $this->module->getLocalPath() . 'views/templates/admin/worldlineop_configuration/_paymentMethodsList.tpl'
         );
         $this->ajaxDie(json_encode([
             'errors' => false,
@@ -83,9 +83,6 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
         ]));
     }
 
-    /**
-     *
-     */
     public function ajaxProcessHideWhatsNew()
     {
         /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $updater */
@@ -93,45 +90,39 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
         try {
             $updater->update(['displayWhatsNew' => false]);
         } catch (ExceptionList $e) {
-            die(json_encode([
+            exit(json_encode([
                 'errors' => true,
                 'messages' => $e->getExceptionsMessages(),
             ]));
         }
 
-        die(json_encode([
+        exit(json_encode([
             'errors' => false,
         ]));
     }
 
-    /**
-     *
-     */
     public function displayAjaxWhatsNew()
     {
         $html = $this->context->smarty->fetch(
-            $this->module->getLocalPath().'views/templates/admin/worldlineop_configuration/modal/_whatsnew.tpl'
+            $this->module->getLocalPath() . 'views/templates/admin/worldlineop_configuration/modal/_whatsnew.tpl'
         );
 
-        die(json_encode([
+        exit(json_encode([
             'result_html' => $html,
             'errors' => [],
         ]));
     }
 
-    /**
-     *
-     */
     public function ajaxProcessResetModal()
     {
         $this->context->smarty->assign([
-            'loader' => $this->module->getPathUri().'/views/img/icons/loader.svg',
+            'loader' => $this->module->getPathUri() . '/views/img/icons/loader.svg',
         ]);
         $html = $this->context->smarty->fetch(
-            $this->module->getLocalPath().'views/templates/admin/worldlineop_configuration/modal/_loading.tpl'
+            $this->module->getLocalPath() . 'views/templates/admin/worldlineop_configuration/modal/_loading.tpl'
         );
 
-        die(json_encode([
+        exit(json_encode([
             'result_html' => $html,
             'errors' => [],
         ]));

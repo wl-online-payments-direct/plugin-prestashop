@@ -10,14 +10,15 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
-
-use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 use WorldlineOP\PrestaShop\Exception\ExceptionList;
 
 /**
  * @param Worldlineop $module
+ *
  * @throws PrestaShopException
  */
 function upgrade_module_1_3_1($module)
@@ -29,7 +30,7 @@ function upgrade_module_1_3_1($module)
     $settingsArray = $settingsLoader->normalize();
 
     $paymentSettings = [
-        'paymentSettings' => $settingsArray['advancedSettings']['paymentSettings']
+        'paymentSettings' => $settingsArray['advancedSettings']['paymentSettings'],
     ];
     $paymentSettings['paymentSettings']['safetyDelay'] = 12;
     $paymentMethodsSettings = [];
@@ -51,7 +52,7 @@ function upgrade_module_1_3_1($module)
         $settingsLoader->setContext((int) $shop['id_shop']);
         $settingsArray = $settingsLoader->normalize();
         $paymentSettings = [
-            'paymentSettings' => $settingsArray['advancedSettings']['paymentSettings']
+            'paymentSettings' => $settingsArray['advancedSettings']['paymentSettings'],
         ];
         $paymentSettings['paymentSettings']['safetyDelay'] = 12;
         if (Configuration::hasKey('WORLDLINEOP_ADVANCED_SETTINGS', null, null, (int) $shop['id_shop'])) {
@@ -73,7 +74,9 @@ function upgrade_module_1_3_1($module)
 /**
  * @param \WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $advancedSettingsUpdater
  * @param array $array
+ *
  * @return void
+ *
  * @throws ExceptionList
  */
 function update_advanced_settings_1_3_1($advancedSettingsUpdater, $array)

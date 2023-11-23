@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Builder;
@@ -20,11 +19,10 @@ use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 
 /**
  * Class PaymentRequestDirector
- * @package WorldlineOP\PrestaShop\Builder
  */
 class PaymentRequestDirector
 {
-    /** @var AbstractRequestBuilder $builder */
+    /** @var AbstractRequestBuilder */
     private $builder;
 
     /**
@@ -38,7 +36,9 @@ class PaymentRequestDirector
     /**
      * @param string|false $productId
      * @param string|false $tokenId
+     *
      * @return CreateHostedCheckoutRequest
+     *
      * @throws \Exception
      */
     public function buildHostedPaymentRequest($productId, $tokenId)
@@ -74,8 +74,10 @@ class PaymentRequestDirector
 
     /**
      * @param string|false $tokenId
-     * @param array|false  $ccForm
+     * @param array|false $ccForm
+     *
      * @return CreatePaymentRequest
+     *
      * @throws \Exception
      */
     public function buildPaymentRequest($tokenId, $ccForm)

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * 2021 Worldline Online Payments
  *
  * NOTICE OF LICENSE
@@ -10,10 +10,7 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
- *
  */
-
 
 namespace WorldlineOP\PrestaShop\Configuration\Product;
 
@@ -28,17 +25,16 @@ use WorldlineOP\PrestaShop\Logger\LoggerFactory;
 
 /**
  * Class GetProductsRequest
- * @package WorldlineOP\PrestaShop\Configuration\Product
  */
 class GetProductsRequest
 {
-    /** @var MerchantClient $merchantClient */
+    /** @var MerchantClient */
     private $merchantClient;
 
-    /** @var Settings $settings */
+    /** @var Settings */
     private $settings;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     private $logger;
 
     /**
@@ -53,7 +49,9 @@ class GetProductsRequest
 
     /**
      * @param string $paymentType
+     *
      * @return array
+     *
      * @throws \Exception
      */
     public function request($paymentType)

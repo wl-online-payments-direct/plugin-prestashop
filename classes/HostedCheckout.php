@@ -10,48 +10,50 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class HostedCheckout
  */
 class HostedCheckout extends ObjectModel
 {
-    /** @var int $id_hosted_checkout */
+    /** @var int */
     public $id_hosted_checkout;
 
-    /** @var int $id_cart */
+    /** @var int */
     public $id_cart;
 
-    /** @var int $id_payment_product */
+    /** @var int */
     public $id_payment_product;
 
-    /** @var int $id_token */
+    /** @var int */
     public $id_token;
 
-    /** @var string $returnmac */
+    /** @var string */
     public $returnmac;
 
-    /** @var string $session_id */
+    /** @var string */
     public $session_id;
 
-    /** @var string $merchant_reference */
+    /** @var string */
     public $merchant_reference;
 
-    /** @var string $partial_redirect_url */
+    /** @var string */
     public $partial_redirect_url;
 
-    /** @var string $checksum */
+    /** @var string */
     public $checksum;
 
-    /** @var string $date_add */
+    /** @var string */
     public $date_add;
 
-    /** @var string $date_upd */
+    /** @var string */
     public $date_upd;
 
-    /** @var array $definition */
+    /** @var array */
     public static $definition = [
         'table' => 'worldlineop_hosted_checkout',
         'primary' => 'id_hosted_checkout',

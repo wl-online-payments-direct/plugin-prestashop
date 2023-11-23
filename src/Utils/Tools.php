@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Utils;
@@ -27,17 +26,17 @@ use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 
 /**
  * Class Tools
- * @package WorldlineOP\PrestaShop\Utils
  */
 class Tools
 {
     /**
      * @param string $value
+     *
      * @return string
      */
     public static function hash($value)
     {
-        return md5(_COOKIE_IV_.$value);
+        return md5(_COOKIE_IV_ . $value);
     }
 
     /**
@@ -69,6 +68,7 @@ class Tools
 
     /**
      * @param int $idCurrency
+     *
      * @return string
      */
     public static function getIsoCurrencyCodeById($idCurrency)
@@ -83,6 +83,7 @@ class Tools
 
     /**
      * @param string $isoCode
+     *
      * @return Currency|false
      */
     public static function getCurrencyByIsoCode($isoCode)
@@ -91,7 +92,7 @@ class Tools
         $dbQuery
             ->select('id_currency')
             ->from('currency')
-            ->where('iso_code = "'.pSQL($isoCode).'"');
+            ->where('iso_code = "' . pSQL($isoCode) . '"');
 
         $idCurrency = \Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($dbQuery);
         $currency = new Currency((int) $idCurrency);
@@ -101,6 +102,7 @@ class Tools
 
     /**
      * @param string $iso
+     *
      * @return int
      */
     public static function getCurrencyDecimalByIso($iso)
@@ -126,6 +128,7 @@ class Tools
     /**
      * @param float $amount
      * @param string $isoCurrency
+     *
      * @return float|string
      */
     public static function getAmountInCents($amount, $isoCurrency)
@@ -141,6 +144,7 @@ class Tools
     /**
      * @param float $amount
      * @param string $isoCurrency
+     *
      * @return float|string
      */
     public static function getRoundedAmountInCents($amount, $isoCurrency)
@@ -154,9 +158,11 @@ class Tools
     }
 
     /**
-     * @param float  $amount
+     * @param float $amount
      * @param string $isoCurrency
+     *
      * @return float|string
+     *
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
     public static function getRoundedAmountFromCents($amount, $isoCurrency)
@@ -172,6 +178,7 @@ class Tools
     /**
      * @param float $amount
      * @param string $isoCurrency
+     *
      * @return float|mixed
      */
     public static function getRoundedAmount($amount, $isoCurrency)
@@ -186,7 +193,9 @@ class Tools
 
     /**
      * @param int $idOrder
+     *
      * @return bool|int
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -217,13 +226,15 @@ class Tools
             null,
             null,
             null,
-            _PS_MODULE_DIR_.'worldlineop/mails/'
+            _PS_MODULE_DIR_ . 'worldlineop/mails/'
         );
     }
 
     /**
      * @param int $idCart
+     *
      * @return array|false
+     *
      * @throws \PrestaShopDatabaseException
      */
     public static function getOrderIdsByIdCart($idCart)
@@ -235,7 +246,7 @@ class Tools
         $dbQuery
             ->select('id_order')
             ->from('orders')
-            ->where('id_cart = '.(int) $idCart);
+            ->where('id_cart = ' . (int) $idCart);
 
         $results = \Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($dbQuery);
         if (!$results) {
@@ -250,9 +261,11 @@ class Tools
     }
 
     /**
-     * @param float     $amount
+     * @param float $amount
      * @param \Currency $currencyFrom
+     *
      * @return float
+     *
      * @throws \Exception
      */
     public static function getAmountInEuros($amount, $currencyFrom)
@@ -268,6 +281,7 @@ class Tools
 
     /**
      * @param int $idProduct
+     *
      * @return false|string
      */
     public static function getGiftCardTypeByIdProduct($idProduct)
@@ -276,7 +290,7 @@ class Tools
         $dbQuery
             ->select('product_type')
             ->from('worldlineop_product_gift_card')
-            ->where('id_product = '.(int) $idProduct);
+            ->where('id_product = ' . (int) $idProduct);
 
         return \Db::getInstance()->getValue($dbQuery) ?: HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE;
     }

@@ -10,19 +10,18 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Validation;
 
 /**
  * Interface ValidationDataInterface
- * @package WorldlineOP\PrestaShop\Configuration\Validation
  */
 interface ValidationDataInterface
 {
     /**
      * @param array $array
+     *
      * @return array
      */
     public function getValidationData($array);

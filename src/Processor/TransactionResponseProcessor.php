@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Processor;
@@ -29,19 +28,19 @@ use WorldlineopTransaction;
 
 /**
  * Class TransactionResponseProcessor
- * @package WorldlineOP\PrestaShop\Processor
  */
 class TransactionResponseProcessor
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var \Monolog\Logger $logger */
+    /** @var \Monolog\Logger */
     private $logger;
 
     /**
      * TransactionResponseProcessor constructor.
-     * @param Worldlineop   $module
+     *
+     * @param Worldlineop $module
      * @param LoggerFactory $loggerFactory
      */
     public function __construct(Worldlineop $module, LoggerFactory $loggerFactory)
@@ -52,7 +51,9 @@ class TransactionResponseProcessor
 
     /**
      * @param TransactionPresented $presentedData
+     *
      * @return void
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -63,7 +64,7 @@ class TransactionResponseProcessor
                 $store = new FlockStore();
                 $factory = new Factory($store);
                 $lock = $factory->createLock($presentedData->payments['merchantReference']);
-                if (!$lock->acquire()) {
+                if (!$lock->acquire(true)) {
                     $this->logger->debug('Lock cannot be acquired', ['presentedData' => $presentedData]);
 
                     return;
@@ -80,6 +81,8 @@ class TransactionResponseProcessor
                     false,
                     $presentedData->cardDetails['secureKey']
                 );
+
+                $lock->release();
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), ['presentedData' => $presentedData, 'trace' => $e->getTraceAsString()]);
             }
@@ -122,7 +125,7 @@ class TransactionResponseProcessor
                         \Db::getInstance()->update(
                             'order_payment',
                             ['transaction_id' => $presentedData->payments['merchantReference']],
-                            'order_reference = "'.pSQL($order->reference).'"'
+                            'order_reference = "' . pSQL($order->reference) . '"'
                         );
                     }
                     if ($presentedData->sendMail) {

@@ -10,14 +10,12 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
 /**
  * Class AccountSettings
- * @package WorldlineOP\PrestaShop\Configuration\Entity
  */
 class AccountSettings
 {
@@ -29,36 +27,36 @@ class AccountSettings
     const WEBHOOKS_KEY_LENGTH = 30;
     const WEBHOOKS_SECRET_LENGTH = 36;
 
-    /** @var string $environment */
+    /** @var string */
     public $environment;
 
-    /** @var string $testPspid */
+    /** @var string */
     public $testPspid;
 
-    /** @var string $testApiKey */
+    /** @var string */
     public $testApiKey;
 
-    /** @var string $testApiSecret */
+    /** @var string */
     public $testApiSecret;
 
-    /** @var string $testWebhooksKey */
+    /** @var string */
     public $testWebhooksKey;
 
-    /** @var string $testWebhooksSecret */
+    /** @var string */
     public $testWebhooksSecret;
 
-    /** @var string $prodPspid */
+    /** @var string */
     public $prodPspid;
 
-    /** @var string $prodApiKey */
+    /** @var string */
     public $prodApiKey;
 
-    /** @var string $prodApiSecret */
+    /** @var string */
     public $prodApiSecret;
 
-    /** @var string $prodWebhooksKey */
+    /** @var string */
     public $prodWebhooksKey;
 
-    /** @var string $prodWebhooksSecret */
+    /** @var string */
     public $prodWebhooksSecret;
 }

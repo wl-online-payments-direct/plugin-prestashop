@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Logger;
@@ -23,18 +22,18 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class LoggerFactory
- * @package WorldlineOP\PrestaShop\Logger
  */
 class LoggerFactory
 {
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
 
-    /** @var Settings $settings */
+    /** @var Settings */
     private $settings;
 
     /**
      * Logger constructor.
+     *
      * @param Settings $settings
      */
     public function __construct(Settings $settings)
@@ -43,17 +42,18 @@ class LoggerFactory
         $this->settings = $settings;
         $level = $settings->advancedSettings->logsEnabled === true ? Logger::DEBUG : Logger::INFO;
         $fileHandler = new RotatingFileHandler(
-            _PS_MODULE_DIR_.'worldlineop/'.sprintf('logs/%s.log', Tools::hash(_PS_MODULE_DIR_)),
+            _PS_MODULE_DIR_ . 'worldlineop/' . sprintf('logs/%s.log', Tools::hash(_PS_MODULE_DIR_)),
             3,
             $level
         );
         $fileHandler->setFilenameFormat('{date}_{filename}', 'Ym');
         $this->logger->pushHandler($fileHandler)
-                     ->pushProcessor(new UidProcessor(7));
+            ->pushProcessor(new UidProcessor(7));
     }
 
     /**
      * @param $channel
+     *
      * @return Logger
      */
     public function setChannel($channel)

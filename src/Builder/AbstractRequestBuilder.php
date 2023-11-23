@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Builder;
@@ -40,12 +39,10 @@ use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Presenter\ShoppingCartPresenter;
-use WorldlineOP\PrestaShop\Utils\Decimal;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class AbstractRequestBuilder
- * @package WorldlineOP\PrestaShop\Builder
  */
 abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 {
@@ -73,32 +70,33 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     const SURCHARGE_ON_BEHALF_OF = 'on-behalf-of';
     const SURCHARGE_PASS_THROUGH = 'pass-through';
 
-    /** @var Settings $settings */
+    /** @var Settings */
     protected $settings;
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     protected $module;
 
-    /** @var Context $context */
+    /** @var Context */
     protected $context;
 
-    /** @var ShoppingCartPresenter $shoppingCartPresenter */
+    /** @var ShoppingCartPresenter */
     protected $shoppingCartPresenter;
 
-    /** @var string $idProduct */
+    /** @var string */
     protected $idProduct;
 
-    /** @var string $tokenValue */
+    /** @var string */
     protected $tokenValue;
 
-    /** @var array|false $ccForm */
+    /** @var array|false */
     protected $ccForm;
 
     /**
      * AbstractRequestBuilder constructor.
-     * @param Settings    $settings
+     *
+     * @param Settings $settings
      * @param Worldlineop $module
-     * @param Context     $context
+     * @param Context $context
      */
     public function __construct(
         Settings $settings,
@@ -115,7 +113,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     /**
      * @param string|false $idProduct
      * @param string|false $tokenValue
-     * @param array|false  $ccForm
+     * @param array|false $ccForm
      */
     public function setData($idProduct = false, $tokenValue = false, $ccForm = false)
     {
@@ -155,6 +153,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 
     /**
      * @return Order
+     *
      * @throws \Exception
      */
     public function buildOrder()
@@ -175,7 +174,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $generator = $factory->getGenerator(new Strength(Strength::LOW));
         $orderReferences = new OrderReferences();
         $orderReferences->setMerchantReference(
-            $this->context->cart->id.'-'.$generator->generateString(7, self::REFERENCE_CHARS)
+            $this->context->cart->id . '-' . $generator->generateString(7, self::REFERENCE_CHARS)
         );
         $order->setReferences($orderReferences);
 

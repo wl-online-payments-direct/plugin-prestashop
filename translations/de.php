@@ -1,7 +1,10 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'Dieses Modul bietet eine 1-Klick-Integration für den Beginn der Annahme von Zahlungen mit den Worldline Direct APIs (früher Ingenico-Ogone). Steigern Sie Ihren Umsatz, indem Sie Ihren Kunden globale und regionale Zahlungsmethoden für den europaweiten Verkauf anbieten.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Das Worldline-Modul konnte nicht installiert werden. Bitte prüfen Sie die Protokolle im Verzeichnis „logs“ des Moduls.';
@@ -250,20 +253,9 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Dateiname der Vorlage';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Speichern';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Was ist neu in Version';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_b9265a096fefa546e69d900d989f8170'] = 'Intersolve als Zahlungsmethode hinzufügen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_8c7af4a4fbc432acd0ec44c54a4ffd7a'] = 'Zahlungsmethode Essensgutscheine hinzufügen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_01c95a0c750ed659e67f6925c14e459c'] = 'Betragszuschlagsfunktion hinzufügen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_e780f0e1ef0b278eed6ade9026f5c4fb'] = 'Nachricht über gezahlte und angezeigte Beträge hinzufügen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_4d75ef95a4cce6b574b7cfc74afcb9dc'] = 'AUS-Transaktionsreferenzformat behandeln';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_2765d3f58893d810cec7f03294805a37'] = 'Währungsmanagement korrigiert';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_c30a349115d9cd03078e4d16c4f1f4f0'] = 'Korrektur der Kontextsteuerung für Umleitungszahlungen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_1e868017c1dc03a5dfbd3e0a594ae309'] = 'Logik für Tokenspeicherung korrigiert';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0613d329233856e851cc664807ede893'] = 'Fix für die Kontrolle der Länge der Credentials';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_40d2abe09a38be6054b956ae814abb19'] = 'Korrektur der Verarbeitung älterer Webhooks';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0956517c4a12fe03485a275e8bf0a0b5'] = 'Fix Auftragsreferenz in nativer Tabelle';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_53dbfc6d35635486a22fed277bc3f308'] = 'Fix Sitzungsspeicher-Ausnahme';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_fb4af8bf393a43d2ffd979d4a30e2936'] = 'Fix LineItems & Versandzeilen';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_7b51d3e40325f7defcaaa27141e124c9'] = 'Fix Prüfung auf Beträge bei der Validierung von Bestellungen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_0f4fe38da89264850067faac2e4f60a7'] = 'Neue Zahlungslogos hinzufügen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_33bdb492d086641c85c60952f071e0a7'] = 'Redundanz für die Auftragserteilung hinzufügen';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_e322430758268ef8207d87e0dd974b94'] = 'Korrigieren Sie die Überprüfung des Betrags beim Validieren von Bestellungen';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'Dies nicht mehr anzeigen';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Meine gespeicherten Karten';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Bestellung aufgeben';

@@ -10,22 +10,21 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Validation;
 
 /**
  * Class AbstractValidationData
- * @package WorldlineOP\PrestaShop\Configuration\Validation
  */
 abstract class AbstractValidationData implements ValidationDataInterface
 {
-    /** @var \Worldlineop $module */
+    /** @var \Worldlineop */
     protected $module;
 
     /**
      * AbstractValidationData constructor.
+     *
      * @param \Worldlineop $module
      */
     public function __construct(\Worldlineop $module)

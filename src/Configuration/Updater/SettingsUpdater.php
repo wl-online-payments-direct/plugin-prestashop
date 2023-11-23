@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Updater;
@@ -27,41 +26,41 @@ use WorldlineOP\PrestaShop\OptionsResolver\AbstractSettingsResolver;
 
 /**
  * Class SettingsUpdater
- * @package WorldlineOP\PrestaShop\Configuration\Updater
  */
 abstract class SettingsUpdater
 {
-    /** @var array $authorizedLogoExtensions */
+    /** @var array */
     protected $authorizedLogoExtensions = ['png' => IMAGETYPE_PNG, 'gif' => IMAGETYPE_GIF, 'jpg' => IMAGETYPE_JPEG];
 
-    /** @var Serializer $serializer */
+    /** @var Serializer */
     protected $serializer;
 
-    /** @var OptionsResolver $resolver */
+    /** @var OptionsResolver */
     protected $resolver;
 
-    /** @var Settings $settings */
+    /** @var Settings */
     protected $settings;
 
-    /** @var AbstractValidationData $validationData */
+    /** @var AbstractValidationData */
     protected $validationData;
 
-    /** @var \Worldlineop $module */
+    /** @var \Worldlineop */
     protected $module;
 
-    /** @var string $json */
+    /** @var string */
     protected $json;
 
-    /** @var ConstraintViolationList $violations */
+    /** @var ConstraintViolationList */
     private $violations;
 
     /**
      * SettingsUpdater constructor.
-     * @param Serializer               $serializer
+     *
+     * @param Serializer $serializer
      * @param AbstractSettingsResolver $resolver
-     * @param Settings                 $settings
-     * @param AbstractValidationData   $validationData
-     * @param \Worldlineop             $module
+     * @param Settings $settings
+     * @param AbstractValidationData $validationData
+     * @param \Worldlineop $module
      */
     public function __construct(
         Serializer $serializer,
@@ -79,7 +78,9 @@ abstract class SettingsUpdater
 
     /**
      * @param array $array
+     *
      * @return Settings
+     *
      * @throws ExceptionList
      */
     public function update($array)
@@ -95,7 +96,9 @@ abstract class SettingsUpdater
 
     /**
      * @param array $array
+     *
      * @return void
+     *
      * @throws ExceptionList
      */
     public function validate($array)
@@ -125,6 +128,7 @@ abstract class SettingsUpdater
 
     /**
      * @param array $array
+     *
      * @return mixed
      */
     abstract protected function denormalize($array);

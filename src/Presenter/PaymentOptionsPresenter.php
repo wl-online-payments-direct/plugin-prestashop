@@ -10,19 +10,18 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
 use Configuration;
 use Context;
+use Language;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CalculateSurchargeRequest;
 use OnlinePayments\Sdk\Domain\CalculateSurchargeResponse;
 use OnlinePayments\Sdk\Domain\CardSource;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
-use Language;
 use OnlinePayments\Sdk\ValidationException;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Worldlineop;
@@ -32,26 +31,26 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class PaymentOptionsPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class PaymentOptionsPresenter implements PresenterInterface
 {
     const NO_SURCHARGE = 'NO_SURCHARGE';
 
-    /** @var Settings $settingsLoader */
+    /** @var Settings */
     private $settings;
 
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     private $module;
 
-    /** @var Context $context */
+    /** @var Context */
     private $context;
 
     /**
      * ModuleConfigurationPresenter constructor.
+     *
      * @param Worldlineop $module
-     * @param Settings    $settings
-     * @param Context     $context
+     * @param Settings $settings
+     * @param Context $context
      */
     public function __construct(Worldlineop $module, Settings $settings, Context $context)
     {
@@ -100,6 +99,7 @@ class PaymentOptionsPresenter implements PresenterInterface
 
     /**
      * @return array
+     *
      * @throws \PrestaShopException
      */
     private function getTokenPaymentOptions()
@@ -119,7 +119,7 @@ class PaymentOptionsPresenter implements PresenterInterface
         $tokenOptions = [];
         if (false === $paymentMethodsSettings->displayIframePaymentOptions) {
             foreach ($tokens as $token) {
-                $logoPath = realpath($this->module->getLocalPath().sprintf('views/img/payment_logos/%s.svg', $token->product_id));
+                $logoPath = realpath($this->module->getLocalPath() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 $paymentOption = new PaymentOption();
                 //@formatter:off
                 $paymentOption
@@ -127,7 +127,7 @@ class PaymentOptionsPresenter implements PresenterInterface
                     ->setCallToActionText(sprintf($this->module->l('Pay with my previously saved card %s', 'PaymentOptionsPresenter'), $token->card_number));
                 //@formatter:on
                 if (false !== realpath($logoPath)) {
-                    $paymentOption->setLogo($this->module->getPathUri().sprintf('views/img/payment_logos/%s.svg', $token->product_id));
+                    $paymentOption->setLogo($this->module->getPathUri() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 }
 
                 $tokenOptions[] = $paymentOption;
@@ -145,7 +145,7 @@ class PaymentOptionsPresenter implements PresenterInterface
                 $hostedTokenizationRequest->setTokens($token->value);
                 try {
                     $hostedTokenizationResponse = $merchantClient->hostedTokenization()
-                                                                 ->createHostedTokenization($hostedTokenizationRequest);
+                        ->createHostedTokenization($hostedTokenizationRequest);
                 } catch (\Exception $e) {
                     $this->module->logger->error($e->getMessage(), ['token_id' => $token->id, 'token_value' => $token->value]);
                     continue;
@@ -202,7 +202,7 @@ class PaymentOptionsPresenter implements PresenterInterface
                     }
                 }
 
-                $redirectUrl = Settings::DEFAULT_SUBDOMAIN.$hostedTokenizationResponse->getPartialRedirectUrl();
+                $redirectUrl = Settings::DEFAULT_SUBDOMAIN . $hostedTokenizationResponse->getPartialRedirectUrl();
                 $createPaymentUrl = $this->context->link->getModuleLink($this->module->name, 'payment');
                 $this->context->smarty->assign([
                     'tokenId' => $token->id_worldlineop_token,
@@ -216,17 +216,17 @@ class PaymentOptionsPresenter implements PresenterInterface
                     'surchargeEnabled' => $this->settings->advancedSettings->surchargingEnabled,
                 ]);
 
-                $logoPath = realpath($this->module->getLocalPath().sprintf('views/img/payment_logos/%s.svg', $token->product_id));
+                $logoPath = realpath($this->module->getLocalPath() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 $paymentOption = new PaymentOption();
                 //@formatter:off
                 $paymentOption
                     ->setCallToActionText(sprintf($this->module->l('Pay with my previously saved card %s', 'PaymentOptionsPresenter'), $token->card_number))
                     ->setAdditionalInformation($this->context->smarty->fetch('module:worldlineop/views/templates/front/hostedTokenizationAdditionalInformation_1click.tpl'))
                     ->setBinary(true)
-                    ->setModuleName('worldlineop-token-htp-'.$token->id_worldlineop_token);
+                    ->setModuleName('worldlineop-token-htp-' . $token->id_worldlineop_token);
                 //@formatter:on
                 if (false !== realpath($logoPath)) {
-                    $paymentOption->setLogo($this->module->getPathUri().sprintf('views/img/payment_logos/%s.svg', $token->product_id));
+                    $paymentOption->setLogo($this->module->getPathUri() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 }
                 $tokenIds[] = ['id' => $token->id_worldlineop_token];
                 $tokenOptions[] = $paymentOption;
@@ -241,6 +241,7 @@ class PaymentOptionsPresenter implements PresenterInterface
 
     /**
      * @return array
+     *
      * @throws \Exception
      */
     private function getIframePaymentOption()
@@ -258,13 +259,13 @@ class PaymentOptionsPresenter implements PresenterInterface
         $hostedTokenizationRequest->setVariant($paymentMethodsSettings->iframeTemplateFilename);
         try {
             $hostedTokenizationResponse = $merchantClient->hostedTokenization()
-                                                         ->createHostedTokenization($hostedTokenizationRequest);
+                ->createHostedTokenization($hostedTokenizationRequest);
         } catch (\Exception $e) {
             $this->module->logger->error($e->getMessage(), ['json' => json_decode($hostedTokenizationRequest->toJson(), true)]);
 
             return [];
         }
-        $redirectUrl = Settings::DEFAULT_SUBDOMAIN.$hostedTokenizationResponse->getPartialRedirectUrl();
+        $redirectUrl = Settings::DEFAULT_SUBDOMAIN . $hostedTokenizationResponse->getPartialRedirectUrl();
         $createPaymentUrl = $this->context->link->getModuleLink($this->module->name, 'payment');
         $this->context->smarty->assign([
             'displayHTP' => true,
@@ -283,7 +284,7 @@ class PaymentOptionsPresenter implements PresenterInterface
             ->setCallToActionText(isset($cta[$cartIsoLang]) ? $cta[$cartIsoLang] : $cta[$defaultIsoLang])
             ->setAdditionalInformation($this->context->smarty->fetch('module:worldlineop/views/templates/front/hostedTokenizationAdditionalInformation.tpl'))
             ->setBinary(true)
-            ->setLogo($this->module->getPathUri().'views/img/payment_logos/'.$this->settings->paymentMethodsSettings->iframeLogoFilename)
+            ->setLogo($this->module->getPathUri() . 'views/img/payment_logos/' . $this->settings->paymentMethodsSettings->iframeLogoFilename)
             ->setModuleName('worldlineop-htp');
 
         return [$paymentOption];
@@ -300,11 +301,11 @@ class PaymentOptionsPresenter implements PresenterInterface
             $cta = $this->settings->paymentMethodsSettings->redirectCallToAction;
             if ($this->settings->paymentMethodsSettings->genericLogoFilename) {
                 $logo = sprintf(
-                    $this->module->getPathUri().'views/img/payment_logos/%s',
+                    $this->module->getPathUri() . 'views/img/payment_logos/%s',
                     $this->settings->paymentMethodsSettings->genericLogoFilename
                 );
             } else {
-                $logo = $this->module->getPathUri().'views/img/payment_logos/worldlineop_symbol.svg';
+                $logo = $this->module->getPathUri() . 'views/img/payment_logos/worldlineop_symbol.svg';
             }
             $paymentOption = new PaymentOption();
             $paymentOption
@@ -335,7 +336,7 @@ class PaymentOptionsPresenter implements PresenterInterface
             //@formatter:off
             $paymentOption
                 ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true, 'productId' => $paymentMethod->productId]))
-                ->setLogo(sprintf($this->module->getPathUri().'views/img/payment_logos/%s.svg', $paymentMethod->productId))
+                ->setLogo(sprintf($this->module->getPathUri() . 'views/img/payment_logos/%s.svg', $paymentMethod->productId))
                 ->setCallToActionText(sprintf($this->module->l('Pay with %s', 'PaymentOptionsPresenter'), $paymentMethod->identifier));
             //@formatter:off
 

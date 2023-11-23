@@ -10,9 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
-
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 use PrestaShopBundle\Install\SqlLoader;
 
 /**
@@ -27,7 +28,7 @@ function upgrade_module_1_1_0($module)
         'PREFIX_' => _DB_PREFIX_,
     ]);
     try {
-        $sqlLoader->parse_file($module->getLocalPath().'install/upgrade-1.1.0.sql', false);
+        $sqlLoader->parse_file($module->getLocalPath() . 'install/upgrade-1.1.0.sql', false);
     } catch (Exception $e) {
         $logger->error($e->getMessage());
     }

@@ -10,32 +10,23 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Updater;
 
-use Exception;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use WorldlineOP\PrestaShop\Configuration\Entity\AdvancedSettings;
 
 /**
  * Class AdvancedSettingsUpdater
- * @package WorldlineOP\PrestaShop\Configuration\Updater
  */
 class AdvancedSettingsUpdater extends SettingsUpdater
 {
-    /**
-     *
-     */
     protected function serialize()
     {
         $this->json = $this->serializer->serialize($this->settings->advancedSettings, 'json');
     }
 
-    /**
-     *
-     */
     protected function save()
     {
         \Configuration::updateValue('WORLDLINEOP_ADVANCED_SETTINGS', $this->json);

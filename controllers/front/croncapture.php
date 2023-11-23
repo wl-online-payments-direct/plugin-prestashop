@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
@@ -22,13 +24,13 @@ use WorldlineOP\PrestaShop\Utils\Decimal;
  */
 class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /** @var bool $verbose */
+    /** @var bool */
     private $verbose;
 
-    /** @var int $idOrder */
+    /** @var int */
     private $idOrder;
 
     /**
@@ -55,7 +57,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
      */
     public function printOrderDebug($data)
     {
-        $this->printDebug(sprintf("Order #%d - %s", $this->idOrder, $data));
+        $this->printDebug(sprintf('Order #%d - %s', $this->idOrder, $data));
     }
 
     /**
@@ -92,7 +94,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
         $subQuery1
             ->select('oh.id_order')
             ->from('order_history', 'oh')
-            ->where('oh.id_order_state IN('.pSQL($implode1).')');
+            ->where('oh.id_order_state IN(' . pSQL($implode1) . ')');
         $implode2 = implode(
             ',',
             array_map(
@@ -106,15 +108,15 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
         $subQuery2
             ->select('oh.id_order')
             ->from('order_history', 'oh')
-            ->where('oh.id_order_state IN('.pSQL($implode2).')');
+            ->where('oh.id_order_state IN(' . pSQL($implode2) . ')');
         $dbQuery = new DbQuery();
         $dbQuery
             ->select('o.id_order')
             ->from('orders', 'o')
             ->leftJoin('worldlineop_transaction', 'wt', 'wt.id_order = o.id_order')
-            ->where('o.module = "'.pSQL($this->module->name).'"')
+            ->where('o.module = "' . pSQL($this->module->name) . '"')
             ->where('wt.id_order IS NOT NULL')
-            ->having('o.id_order NOT IN('.$subQuery1->build().') AND o.id_order IN('.$subQuery2->build().')');
+            ->having('o.id_order NOT IN(' . $subQuery1->build() . ') AND o.id_order IN(' . $subQuery2->build() . ')');
 
         $rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($dbQuery);
         if (!$rows) {
@@ -131,7 +133,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             },
             $rows
         );
-        $this->printDebug('Orders IDs : '.json_encode($rows).'<br>');
+        $this->printDebug('Orders IDs : ' . json_encode($rows) . '<br>');
         foreach ($rows as $idOrder) {
             $this->idOrder = (int) $idOrder;
             try {
@@ -145,8 +147,8 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             }
             /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
             $settings = $shopsSettings[$order->id_shop];
-            if (PaymentSettings::TRANSACTION_TYPE_IMMEDIATE === $settings->advancedSettings->paymentSettings->transactionType ||
-                0 === $settings->advancedSettings->paymentSettings->captureDelay
+            if (PaymentSettings::TRANSACTION_TYPE_IMMEDIATE === $settings->advancedSettings->paymentSettings->transactionType
+                || 0 === $settings->advancedSettings->paymentSettings->captureDelay
             ) {
                 $this->printOrderDebug('Capture does not need or cannot be made');
                 continue;
@@ -186,7 +188,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
                 continue;
             }
             if (!$paymentResponse->getStatusOutput()->getIsAuthorized()) {
-                $this->printOrderDebug('Capture is not offered for transaction '.$paymentResponse->getId());
+                $this->printOrderDebug('Capture is not offered for transaction ' . $paymentResponse->getId());
                 continue;
             }
             $amount = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
@@ -194,19 +196,19 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             $pow = \WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($currency);
             $this->printOrderDebug(sprintf(
                 'About to capture %s for transaction ID %s',
-                Decimal::divide((string) $amount, (string) pow(10, $pow)).$currency,
+                Decimal::divide((string) $amount, (string) pow(10, $pow)) . $currency,
                 $paymentResponse->getId()
             ));
             $capturePaymentRequest = new CapturePaymentRequest();
             $capturePaymentRequest->setAmount($amount);
             try {
                 $captureResponse = $merchantClient->payments()
-                                                  ->capturePayment($transaction->reference, $capturePaymentRequest);
+                    ->capturePayment($transaction->reference, $capturePaymentRequest);
             } catch (Exception $e) {
                 $this->printOrderDebug($e->getMessage());
                 continue;
             }
-            $this->printOrderDebug('Capture done. Status '.$captureResponse->getStatus());
+            $this->printOrderDebug('Capture done. Status ' . $captureResponse->getStatus());
         }
         if ($this->verbose) {
             $this->printDebug('End of process');

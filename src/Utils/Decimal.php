@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Utils;
@@ -20,13 +19,13 @@ use PrestaShop\Decimal\Number;
 
 /**
  * Class Decimal
- * @package WorldlineOP\PrestaShop\Utils
  */
 class Decimal
 {
     /**
      * @param $a
      * @param $b
+     *
      * @return DecimalNumber
      */
     public static function multiply($a, $b)
@@ -40,7 +39,9 @@ class Decimal
     /**
      * @param string $a
      * @param string $b
+     *
      * @return DecimalNumber
+     *
      * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
      */
     public static function divide($a, $b)

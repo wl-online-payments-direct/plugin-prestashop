@@ -10,11 +10,11 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Builder;
 
+use Language;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInputForHostedCheckout;
@@ -28,7 +28,6 @@ use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
-use Language;
 use RandomLib\Factory;
 use SecurityLib\Strength;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
@@ -37,7 +36,6 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class HostedPaymentRequestBuilder
- * @package WorldlineOP\PrestaShop\Builder
  */
 class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 {
@@ -48,6 +46,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * @return HostedCheckoutSpecificInput|null
+     *
      * @throws \Exception
      */
     public function buildHostedCheckoutSpecificInput()
@@ -82,6 +81,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * @return CardPaymentMethodSpecificInput|false
+     *
      * @throws \Exception
      */
     public function buildCardPaymentMethodSpecificInput()
@@ -159,6 +159,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * @return Order
+     *
      * @throws \Exception
      */
     public function buildOrder()
@@ -169,7 +170,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $generator = $factory->getGenerator(new Strength(Strength::LOW));
         $orderReferences = new OrderReferences();
         $orderReferences->setMerchantReference(
-            $this->context->cart->id.'-'.$generator->generateString(7, self::REFERENCE_CHARS)
+            $this->context->cart->id . '-' . $generator->generateString(7, self::REFERENCE_CHARS)
         );
         $order->setReferences($orderReferences);
         try {
@@ -182,33 +183,33 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         foreach ($shoppingCartPresented['products'] as $product) {
             $item = new LineItem();
             $itemAmount = new AmountOfMoney();
-            $itemAmount->setAmount((int)(string) $product['totalWithTax']);
+            $itemAmount->setAmount((int) (string) $product['totalWithTax']);
             $itemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
             $item->setAmountOfMoney($itemAmount);
             $itemLineDetails = new OrderLineDetails();
-            $itemLineDetails->setProductPrice((int)(string) $product['productPrice']);
-            $itemLineDetails->setDiscountAmount((int)(string) $product['discountPrice']);
+            $itemLineDetails->setProductPrice((int) (string) $product['productPrice']);
+            $itemLineDetails->setDiscountAmount((int) (string) $product['discountPrice']);
             $itemLineDetails->setProductCode($product['productCode']);
             $itemLineDetails->setProductName($product['productName']);
             $itemLineDetails->setProductType($product['productType']);
             $itemLineDetails->setQuantity($product['quantity']);
-            $itemLineDetails->setTaxAmount((int)(string) $product['tax']);
+            $itemLineDetails->setTaxAmount((int) (string) $product['tax']);
             $itemLineDetails->setUnit('piece');
             $item->setOrderLineDetails($itemLineDetails);
             $items[] = $item;
         }
         $shippingItem = new LineItem();
         $shippingItemAmount = new AmountOfMoney();
-        $shippingItemAmount->setAmount((int)(string) $shoppingCartPresented['shipping']['priceWithTax']);
+        $shippingItemAmount->setAmount((int) (string) $shoppingCartPresented['shipping']['priceWithTax']);
         $shippingItemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
         $shippingItem->setAmountOfMoney($shippingItemAmount);
         $shippingItemLineDetails = new OrderLineDetails();
-        $shippingItemLineDetails->setProductPrice((int)(string) $shoppingCartPresented['shipping']['priceWithoutTax']);
-        $shippingItemLineDetails->setDiscountAmount((int)(string) $shoppingCartPresented['shipping']['discountPrice']);
+        $shippingItemLineDetails->setProductPrice((int) (string) $shoppingCartPresented['shipping']['priceWithoutTax']);
+        $shippingItemLineDetails->setDiscountAmount((int) (string) $shoppingCartPresented['shipping']['discountPrice']);
         $shippingItemLineDetails->setProductCode('SHIPPING');
         $shippingItemLineDetails->setProductName($this->module->l('Shipping cost'));
         $shippingItemLineDetails->setQuantity(1);
-        $shippingItemLineDetails->setTaxAmount((int)(string) $shoppingCartPresented['shipping']['tax']);
+        $shippingItemLineDetails->setTaxAmount((int) (string) $shoppingCartPresented['shipping']['tax']);
         $shippingItemLineDetails->setUnit('piece');
         $shippingItemLineDetails->setProductType($shoppingCartPresented['shipping']['type']);
         $shippingItem->setOrderLineDetails($shippingItemLineDetails);

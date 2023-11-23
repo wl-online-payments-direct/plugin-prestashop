@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Presenter;
@@ -21,40 +20,41 @@ use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
  * Class ShoppingCartPresenter
- * @package WorldlineOP\PrestaShop\Presenter
  */
 class ShoppingCartPresenter implements PresenterInterface
 {
-    /** @var Cart $cart */
+    /** @var Cart */
     private $cart;
 
-    /** @var mixed[] $products */
+    /** @var mixed[] */
     private $products;
 
-    /** @var mixed[] $productsType */
+    /** @var mixed[] */
     private $productsType;
 
-    /** @var mixed[] $cartRules */
+    /** @var mixed[] */
     private $cartRules;
 
-    /** @var float $discountShippingWithoutTax */
+    /** @var float */
     private $discountShippingWithoutTax;
 
-    /** @var float $discountShippingWithTax */
+    /** @var float */
     private $discountShippingWithTax;
 
-    /** @var float $discountProductsWithTax */
+    /** @var float */
     private $discountProductsWithTax;
 
-    /** @var float $orderDiscountPercent */
+    /** @var float */
     private $orderDiscountPercent;
 
-    /** @var string $cartCurrencyIso */
+    /** @var string */
     private $cartCurrencyIso;
 
     /**
      * @param Cart|false $cart
+     *
      * @return array
+     *
      * @throws \PrestaShopException|\Exception
      */
     public function present($cart = false)
@@ -84,6 +84,7 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /**
      * @return void
+     *
      * @throws \Exception
      */
     private function separateDiscount()
@@ -106,6 +107,7 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /**
      * @return array
+     *
      * @throws \Exception
      */
     private function getShippingRow()
@@ -152,7 +154,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $productsTypes['SHIPPING'] = '';
         foreach ($types as $type => $ids) {
             foreach ($ids as $id) {
-                $productsTypes[$id] = ($type == HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE ? '' :  $type);
+                $productsTypes[$id] = ($type == HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE ? '' : $type);
             }
             if ($type != HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE && false === $shippingTypeNone) {
                 $productsTypes['SHIPPING'] = $type;
@@ -181,12 +183,12 @@ class ShoppingCartPresenter implements PresenterInterface
                     'quantity' => 1,
                     'productCode' => $product['reference'] ?: $product['unique_id'],
                     'productName' => $product['name'],
-                    'productType' => $this->productsType[$product['id_product']],
+                    'productType' => !empty($this->productsType[$product['id_product']]) ? $this->productsType[$product['id_product']] : '',
                     'data' => $product,
                 ];
 
                 $rows[] = $row;
-                $i++;
+                ++$i;
             }
         }
 
@@ -195,7 +197,9 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /**
      * @param array $productRows
+     *
      * @return void
+     *
      * @throws \Exception
      */
     private function applyProductDiscounts(&$productRows)
@@ -218,12 +222,14 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /**
      * @param array $productRows
+     *
      * @return void
+     *
      * @throws \Exception
      */
     private function fixTotalsRounding(&$productRows)
     {
-        $totalCalculated = array_sum(array_map(function($row) {
+        $totalCalculated = array_sum(array_map(function ($row) {
             return $row['totalWithTax'];
         }, $productRows));
         $totalCart = $this->cart->getOrderTotal() - $this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING) + $this->discountShippingWithTax;
@@ -237,6 +243,7 @@ class ShoppingCartPresenter implements PresenterInterface
 
     /**
      * @param array $productRows
+     *
      * @return void
      */
     private function formatPrices(&$productRows)

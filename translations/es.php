@@ -1,7 +1,10 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'Este módulo ofrece una integración en un clic para empezar a aceptar pagos con las API directas de Worldline (anteriormente, Ingenico-Ogone). Al ofrecer a tus clientes métodos de pago globales y regionales, podrás vender por toda Europa, lo que te permitirá aumentar los ingresos.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'No se ha podido instalar el módulo de Worldline. Comprueba los registros en el directorio “logs” del módulo.';
@@ -44,8 +47,8 @@ $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_c8df548b33fb6e
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_49e6ebea55684182973cfe5e3043c950'] = 'El host del punto final de prueba no pudo resolverse';
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_bb661e59143135e047a2432693532996'] = 'El valor del punto final de producción debe ser una dirección URL http válida';
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_7c7af5cbe700d31a63aff086928265d6'] = 'El host del punto final de producción no pudo resolverse';
-$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_7f11141dcf0805c283ec31580c13c6f0'] = 'Introduce un nombre de archivo válido para la plantilla de iframes (p. ej., Nombredearchivo.html)';
-$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_807287a94a5b9c2acad32e32fa7966f9'] = 'Introduce un nombre de archivo válido para la plantilla de iframes (p. ej., Nombredearchivo.html)';
+$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_7f11141dcf0805c283ec31580c13c6f0'] = "Introduce un nombre de archivo válido para la plantilla de iframes (p.\u{a0}ej., Nombredearchivo.html)";
+$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_807287a94a5b9c2acad32e32fa7966f9'] = "Introduce un nombre de archivo válido para la plantilla de iframes (p.\u{a0}ej., Nombredearchivo.html)";
 $_MODULE['<{worldlineop}prestashop>installer_3f501d96438cf202a1607f1caf6714f5'] = 'Para usar este módulo, tienes que habilitar la extensión cURL.';
 $_MODULE['<{worldlineop}prestashop>getpaymentpresenter_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_6294b8b61ea3540661e970803ddc382c'] = 'Pagar con mi tarjeta previamente almacenada %s';
@@ -173,7 +176,7 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_628b7db04235f228d40adc67141
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_44fdec47036f482b68b748f9d786801b'] = 'días';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_ab7e50ec4b34b206207018988d0603b6'] = 'Número de días antes de activar una captura automática de pago';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_5be544d8d5807eb5580f3d765d8c0546'] = 'Trabajo cronológico de captura';
-$_MODULE['<{worldlineop}prestashop>_advancedsettings_5b2126f4af19b13fb4005ccfd5feb780'] = 'Ejemplo de comando cronológico para ejecutar un proceso de captura 4 veces al día:';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_5b2126f4af19b13fb4005ccfd5feb780'] = "Ejemplo de comando cronológico para ejecutar un proceso de captura 4\u{a0}veces al día:";
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_d414ec4b3cc0a2692667b4d8a0d10cc2'] = 'Habilitar registro avanzado';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_93cba07454f06a4a960172bbd6e2a435'] = 'Sí';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
@@ -232,7 +235,7 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ffaaab40fc54c578836d4
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_91412465ea9169dfd901dd5e7c96dd99'] = 'Cargar';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_8de30aa607e33f41413c50be107e0c6c'] = 'Eliminar el logotipo actual';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb70646ed7b6d'] = 'Aquí puedes cargar un logotipo nuevo (los únicos tipos de archivo admitidos para los logotipos son .png, .gif y .jpg)';
-$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'Recomendamos utilizar imágenes con un tamaño máximo de 20 píxeles de altura por 120 píxeles de anchura';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = "Recomendamos utilizar imágenes con un tamaño máximo de 20\u{a0}píxeles de altura por 120\u{a0}píxeles de anchura";
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Título del botón de pago';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6f1ad8444a503e36d821da11b4b1fe57'] = 'Título del botón de selección de pago situado en tu página de pago';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_55e58b9f475a7a98a03b777f4e0a2ec7'] = 'Selección del método de pago antes del redireccionamiento';
@@ -250,20 +253,9 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Nombre de archivo de la plantilla';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Novedades de la versión';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_b9265a096fefa546e69d900d989f8170'] = 'Añadir forma de pago Intersolve';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_8c7af4a4fbc432acd0ec44c54a4ffd7a'] = 'Añadir el método de pago Meal Vouchers';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_01c95a0c750ed659e67f6925c14e459c'] = 'Añadir recargo por importe';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_e780f0e1ef0b278eed6ade9026f5c4fb'] = 'Añadir mensaje sobre importes pagados y mostrados';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_4d75ef95a4cce6b574b7cfc74afcb9dc'] = 'Manejar el formato de referencia de transacción AUS';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_2765d3f58893d810cec7f03294805a37'] = 'Corrección de la gestión de divisas';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_c30a349115d9cd03078e4d16c4f1f4f0'] = 'Arreglar el control de contexto para redirigir pagos';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_1e868017c1dc03a5dfbd3e0a594ae309'] = 'Corregir la lógica de almacenamiento de tokens';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0613d329233856e851cc664807ede893'] = 'Control de la longitud de las credenciales';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_40d2abe09a38be6054b956ae814abb19'] = 'Arreglar proceso de webhooks antiguos';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0956517c4a12fe03485a275e8bf0a0b5'] = 'Arreglar referencia de orden en tabla nativa';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_53dbfc6d35635486a22fed277bc3f308'] = 'Fix session storage exception';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_fb4af8bf393a43d2ffd979d4a30e2936'] = 'Fix LineItems & Shipping lines';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_7b51d3e40325f7defcaaa27141e124c9'] = 'Fix check on amounts when validating orders';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_0f4fe38da89264850067faac2e4f60a7'] = 'Agregar nuevos logos de pago';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_33bdb492d086641c85c60952f071e0a7'] = 'Agregar redundancia para crear ordenes';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_e322430758268ef8207d87e0dd974b94'] = 'Corregir la verificación de la cantidad al validar las órdenes';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'No volver a mostrar esto';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Mis tarjetas almacenadas';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Hacer pedido';

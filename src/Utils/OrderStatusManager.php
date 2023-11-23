@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Utils;
@@ -23,16 +22,16 @@ use Validate;
 
 /**
  * Class OrderStatusManager
- * @package WorldlineOP\PrestaShop\Utils
  */
 class OrderStatusManager
 {
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
 
     /**
-     * @param array  $orderStatuses
+     * @param array $orderStatuses
      * @param string $moduleName
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -44,8 +43,9 @@ class OrderStatusManager
     }
 
     /**
-     * @param array  $orderStatus
+     * @param array $orderStatus
      * @param string $moduleName
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -65,8 +65,8 @@ class OrderStatusManager
             }
             if ($orderState->save()) {
                 if ($orderStatus['logo']) {
-                    $source = realpath(_PS_MODULE_DIR_.$moduleName.'/views/img/icons/'.$orderStatus['logo']);
-                    $destination = _PS_ROOT_DIR_.'/img/os/'.(int) $orderState->id.'.gif';
+                    $source = realpath(_PS_MODULE_DIR_ . $moduleName . '/views/img/icons/' . $orderStatus['logo']);
+                    $destination = _PS_ROOT_DIR_ . '/img/os/' . (int) $orderState->id . '.gif';
                     Tools::copy($source, $destination);
                 }
                 Configuration::updateGlobalValue($orderStatus['configKey'], (int) $orderState->id);

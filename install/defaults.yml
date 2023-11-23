@@ -28,7 +28,6 @@ hooks:
   - 'displayPaymentByBinaries'
   - 'displayPaymentTop'
   - 'actionOrderStatusPostUpdate'
-  - 'displayBackOfficeFooter'
   - 'actionFrontControllerSetMedia'
   - 'actionAdminControllerSetMedia'
   - 'customerAccount'

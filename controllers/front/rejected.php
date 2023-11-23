@@ -10,20 +10,19 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class WorldlineopRejectedModuleFrontController
  */
 class WorldlineopRejectedModuleFrontController extends ModuleFrontController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
-    /**
-     *
-     */
     public function __construct()
     {
         parent::__construct();

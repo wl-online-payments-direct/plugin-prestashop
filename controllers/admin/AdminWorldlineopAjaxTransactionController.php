@@ -10,8 +10,10 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
@@ -24,7 +26,7 @@ use WorldlineOP\PrestaShop\Utils\Decimal;
  */
 class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
 {
-    /** @var Worldlineop $module */
+    /** @var Worldlineop */
     public $module;
 
     /**
@@ -34,12 +36,12 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
     {
         $transaction = Tools::getValue('transaction');
         if (!$this->access('edit')) {
-            //@formatter:off
+            // @formatter:off
             $this->context->smarty->assign([
                 'worldlineopAjaxTransactionError' => $this->module->l('You do not have permission to capture funds.', 'AdminWorldlineopAjaxTransactionController'),
             ]);
-            //@formatter:on
-            die(json_encode([
+            // @formatter:on
+            exit(json_encode([
                 'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
             ]));
         }
@@ -64,15 +66,15 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             if (in_array($captureResponse->getStatus(), ['CAPTURED', 'CAPTURE_REQUESTED'])) {
                 $this->context->smarty->assign('captureConfirmation', true);
             } else {
-                //@formatter:off
-                $this->context->smarty->assign('worldlineopAjaxTransactionError', $this->module->l('Capture of funds failed with status ', 'AdminWorldlineopAjaxTransactionController').$captureResponse->getStatus());
-                //@formatter:on
+                // @formatter:off
+                $this->context->smarty->assign('worldlineopAjaxTransactionError', $this->module->l('Capture of funds failed with status ', 'AdminWorldlineopAjaxTransactionController') . $captureResponse->getStatus());
+                // @formatter:on
             }
         }
 
         $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
 
-        die(json_encode(['result_html' => $html, 'success' => true]));
+        exit(json_encode(['result_html' => $html, 'success' => true]));
     }
 
     /**
@@ -82,12 +84,12 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
     {
         $transaction = Tools::getValue('transaction');
         if (!$this->access('edit')) {
-            //@formatter:off
+            // @formatter:off
             $this->context->smarty->assign([
                 'worldlineopAjaxTransactionError' => $this->module->l('You do not have permission to refund funds.', 'AdminWorldlineopAjaxTransactionController'),
             ]);
-            //@formatter:on
-            die(json_encode([
+            // @formatter:on
+            exit(json_encode([
                 'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
             ]));
         }
@@ -113,15 +115,15 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             if (in_array($refundResponse->getStatus(), ['REFUNDED', 'REFUND_REQUESTED'])) {
                 $this->context->smarty->assign('refundConfirmation', true);
             } else {
-                //@formatter:off
-                $this->context->smarty->assign('worldlineopAjaxTransactionError', $this->module->l('Refund of funds failed with status ', 'AdminWorldlineopAjaxTransactionController').$refundResponse->getStatus());
-                //@formatter:on
+                // @formatter:off
+                $this->context->smarty->assign('worldlineopAjaxTransactionError', $this->module->l('Refund of funds failed with status ', 'AdminWorldlineopAjaxTransactionController') . $refundResponse->getStatus());
+                // @formatter:on
             }
         }
 
         $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
 
-        die(json_encode(['result_html' => $html, 'success' => true]));
+        exit(json_encode(['result_html' => $html, 'success' => true]));
     }
 
     /**
@@ -131,12 +133,12 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
     {
         $transaction = Tools::getValue('transaction');
         if (!$this->access('edit')) {
-            //@formatter:off
+            // @formatter:off
             $this->context->smarty->assign([
                 'worldlineopAjaxTransactionError' => $this->module->l('You do not have permission to cancel transactions.', 'AdminWorldlineopAjaxTransactionController'),
             ]);
-            //@formatter:on
-            die(json_encode([
+            // @formatter:on
+            exit(json_encode([
                 'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
             ]));
         }
@@ -160,6 +162,6 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
 
         $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
 
-        die(json_encode(['result_html' => $html, 'success' => true]));
+        exit(json_encode(['result_html' => $html, 'success' => true]));
     }
 }

@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Configuration\Validation;
@@ -19,12 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class AdvancedSettingsValidationData
- * @package WorldlineOP\PrestaShop\Configuration\Validation
  */
 class AdvancedSettingsValidationData extends AbstractValidationData
 {
     /**
      * @param array $array
+     *
      * @return array
      */
     public function getValidationData($array)

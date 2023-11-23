@@ -10,7 +10,6 @@
  * @author    PrestaShop partner
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- *
  */
 
 namespace WorldlineOP\PrestaShop\Sdk;
@@ -21,20 +20,20 @@ use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 
 /**
  * Class ClientFactory
- * @package WorldlineOP\PrestaShop\Sdk
  */
 class ClientFactory
 {
-    /** @var Communicator $communicator */
+    /** @var Communicator */
     private $communicator;
 
-    /** @var Settings $settings */
+    /** @var Settings */
     private $settings;
 
     /**
      * ClientFactory constructor.
+     *
      * @param Communicator $communicator
-     * @param Settings     $settings
+     * @param Settings $settings
      */
     public function __construct(Communicator $communicator, Settings $settings)
     {
