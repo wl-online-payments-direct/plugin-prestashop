@@ -14,13 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.1
+  1.4.2
 </h1>
 <br>
 <ul>
-  <li>{l s='Add new payment logos' mod='worldlineop'}</li>
-  <li>{l s='Add redundancy for order creation' mod='worldlineop'}</li>
-  <li>{l s='Fix on amount check when validating orders' mod='worldlineop'}</li>
+  <li>{l s='Improvement to webhook response time' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

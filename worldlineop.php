@@ -41,14 +41,14 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.1';
+        $this->version = '1.4.2';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         parent::__construct();
         $this->bootstrap = true;
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.8');
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.8.99');
         // @formatter:off
         $this->displayName = $this->l('Worldline Online Payments');
         $this->description = $this->l('This module offers a 1-click integration to start accepting payments and grow your revenues by offering your customers with global and regional payment methods to sell across Europe.');

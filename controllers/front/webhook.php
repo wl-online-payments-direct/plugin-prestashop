@@ -69,7 +69,8 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
             exit;
         }
         $this->logger->debug('Webhook call', ['event' => json_decode($event->toJson(), true)]);
-        header('HTTP/1.1 200 OK');
+        //header('HTTP/1.1 200 OK');
+        $this->respondOK();
 
         /** @var \WorldlineOP\PrestaShop\Presenter\WebhookEventPresenter $eventPresenter */
         $eventPresenter = $this->module->getService('worldlineop.event.presenter');
@@ -97,4 +98,30 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         header('HTTP/1.1 200 OK');
         exit;
     }
+
+    /**
+     * respondOK.
+     */
+    public function respondOK()
+    {
+        // check if fastcgi_finish_request is callable
+        if (is_callable('fastcgi_finish_request')) {
+            /*
+             * This works in Nginx but the next approach not
+             */
+            session_write_close();
+            fastcgi_finish_request();
+            return;
+        }
+        ignore_user_abort(true);
+        ob_start();
+        header('HTTP/1.1 200 OK');
+        header('Content-Encoding: none');
+        header('Content-Length: '.ob_get_length());
+        header('Connection: close');
+        ob_end_flush();
+        ob_flush();
+        flush();
+    }
+
 }

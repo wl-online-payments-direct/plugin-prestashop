@@ -253,9 +253,7 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_63c567428fa993f1649be
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_28a4dcfab772504ae578db5c93c184b0'] = 'Nombre de archivo de la plantilla';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_c9cc8cce247e49bae79f15173ce97354'] = 'Guardar';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_e3b61e1cdb07433bfc5caab27eda2ad4'] = 'Novedades de la versión';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_0f4fe38da89264850067faac2e4f60a7'] = 'Agregar nuevos logos de pago';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_33bdb492d086641c85c60952f071e0a7'] = 'Agregar redundancia para crear ordenes';
-$_MODULE['<{worldlineop}prestashop>_whatsnew_e322430758268ef8207d87e0dd974b94'] = 'Corregir la verificación de la cantidad al validar las órdenes';
+$_MODULE['<{worldlineop}prestashop>_whatsnew_76d717f3c45475b33e6c0eb395b5c947'] = 'Mejora del tiempo de respuesta de los webhooks';
 $_MODULE['<{worldlineop}prestashop>_whatsnew_3f7b06ae82da9e3b427030e37e4fc323'] = 'No volver a mostrar esto';
 $_MODULE['<{worldlineop}prestashop>hookcustomeraccount_bed08ab6659bd5368cccc34b86780f12'] = 'Mis tarjetas almacenadas';
 $_MODULE['<{worldlineop}prestashop>hookdisplaypaymentbybinaries_e7965ae5942a09b8778af5a9fd481460'] = 'Hacer pedido';
