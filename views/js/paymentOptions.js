@@ -14,7 +14,66 @@
 
 var hostedTokenizationObj;
 
+
 const htpPrototype = function (e) {
+  var invalidOptionsMap = new Map();
+
+//adding this code to make sure that submit button stays disabled in case when credit card information is not valid
+  function setWorldLineSubmitButton (buttonId) {
+    document.addEventListener('DOMContentLoaded', function (){
+      const wlPayments = document.querySelectorAll('input[type="radio"][data-module-name*="worldlineop-"]');
+      wlPayments.forEach(function (el) {
+        el.addEventListener('change', function (event) {
+          const submitBtn = document.querySelector('#'+ buttonId);
+
+          let wlPayment = getSelectedWorldLineHtpPaymentMethod();
+          toggleSubmitButton(submitBtn, !!invalidOptionsMap.get(wlPayment.id)?.valid);
+        });
+      })
+
+      // enables/disables submit button for WorldLine payment methods based on their validity
+      document.getElementById('conditions_to_approve[terms-and-conditions]')
+          .addEventListener('change', function (event) {
+            let wlPayment = getSelectedWorldLineHtpPaymentMethod();
+
+            if (wlPayment) {
+              const submitBtn = document.querySelector('#'+ buttonId);
+
+              if (!event.target.checked) {
+                disableSubmitButton(submitBtn);
+              } else {
+                toggleSubmitButton(submitBtn, invalidOptionsMap.get(wlPayment.id)?.valid);
+              }
+            }
+          });
+    });
+  }
+
+  function getSelectedWorldLineHtpPaymentMethod() {
+    return document.querySelector('input[type="radio"][data-module-name*="worldlineop-"]:checked');
+  }
+
+  function toggleSubmitButton(submitBtn, isPaymentValid) {
+    if (submitBtn) {
+      submitBtn.parentElement.classList.remove('disabled');
+      isPaymentValid && document.getElementById('conditions_to_approve[terms-and-conditions]').checked ?
+          enableSubmitButton(submitBtn) : disableSubmitButton(submitBtn);
+    }
+  }
+
+  function disableSubmitButton(submitBtn) {
+    submitBtn.parentElement.classList.remove('disabled');
+    submitBtn.setAttribute('disabled', 'disabled');
+    submitBtn.classList.add('disabled');
+    submitBtn.style.pointerEvents = 'none';
+  }
+
+  function enableSubmitButton(submitBtn) {
+    submitBtn.removeAttribute('disabled');
+    submitBtn.classList.remove('disabled');
+    submitBtn.style.pointerEvents = 'auto';
+  }
+
   this.payButtonClick = function (event) {
     if (!event.target.matches('#' + this.elems.payBtnId)) {
       return;
@@ -56,14 +115,14 @@ const htpPrototype = function (e) {
 
   this.init = function () {
     this.client = new Tokenizer(
-      this.urls.htp,
-      this.elems.iframeContainer.querySelector('.js-worldlineop-htp').id,
-      {
-        hideCardholderName: false,
-        validationCallback: this.validationCallback,
-        storePermanently:false,
-        surchargeCallback: this.surchargeCallback,
-      }
+        this.urls.htp,
+        this.elems.iframeContainer.querySelector('.js-worldlineop-htp').id,
+        {
+          hideCardholderName: false,
+          validationCallback: this.validationCallback,
+          storePermanently: false,
+          surchargeCallback: this.surchargeCallback,
+        }
     );
     this.client.initialize();
     if (this.cartDetails.cardToken !== undefined) {
@@ -72,11 +131,21 @@ const htpPrototype = function (e) {
     if (true === this.dynamicSurcharge && 1 === this.surchargeEnabled) {
       this.client.setAmount(this.cartDetails.totalCents, this.cartDetails.currencyCode);
     }
+
+    setWorldLineSubmitButton(this.elems.payBtnId);
   };
 
   this.validationCallback = function (result) {
-    var btn = document.querySelector('.js-payment-binary:not([style*="display: none"]):not([style*="display:none"])');
-    btn.querySelector('button').disabled = !result.valid;
+    const btnContainer = document.querySelector('.js-payment-binary:not([style*="display: none"]):not([style*="display:none"])');
+    const submitBtn = btnContainer.querySelector('button');
+    result.valid && document.getElementById('conditions_to_approve[terms-and-conditions]').checked
+        ? enableSubmitButton(submitBtn) : disableSubmitButton(submitBtn);
+
+    let wlPayment = getSelectedWorldLineHtpPaymentMethod();
+
+    if (wlPayment) {
+      invalidOptionsMap.set(wlPayment.id, {"valid": result.valid});
+    }
   };
 
   this.surchargeCallback = function (result) {

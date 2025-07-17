@@ -14,7 +14,7 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.2
+  1.4.3
 </h1>
 <br>
 <ul>
