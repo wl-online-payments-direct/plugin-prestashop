@@ -41,7 +41,7 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.6';
+        $this->version = '1.4.7';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
@@ -170,6 +170,7 @@ class Worldlineop extends PaymentModule
                 'alertCapture' => $this->l('Do you confirm the capture of the transaction?'),
                 'alertCancel' => $this->l('Do you confirm the cancellation of the transaction?'),
             ]);
+            $this->context->controller->addCSS($this->getPathUri() . 'views/css/admin_order.css');
         }
         if (Tools::getValue('controller') == 'AdminWorldlineopConfiguration') {
             $this->context->controller->addJS([
@@ -252,7 +253,7 @@ class Worldlineop extends PaymentModule
             $settingsPresenter = $this->getService('worldlineop.settings.presenter');
 
             $this->context->smarty->assign([
-                'transactionData' => $transactionPresenter->present($idOrder),
+                'transactionsData' => $transactionPresenter->present($idOrder),
                 'settingsData' => $settingsPresenter->present(),
             ]);
         } catch (Exception $e) {

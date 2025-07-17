@@ -23,6 +23,8 @@ use WorldlineOP\PrestaShop\Logger\LoggerFactory;
  */
 class WebhookEventPresenter implements PresenterInterface
 {
+    const MEALVOUCHER_PRODUCT_ID = 5402;
+    const CVCO_PRODUCT_ID = 5403;
     const EVENTS_PAYMENT_AUTHORIZED = [
         'payment.pending_approval',
         'payment.pending_completion',
@@ -98,7 +100,7 @@ class WebhookEventPresenter implements PresenterInterface
         );
         if (in_array($event->getType(), self::EVENTS_REFUNDED)) {
             $presentedData = $this->refundPresenter->present($event->getRefund(), $idShop);
-        } elseif (in_array($event->getType(), $paymentEvents)) {
+        } elseif (in_array($event->getType(), $paymentEvents) && $this->shouldHandleEvent($event)) {
             $presentedData = $this->paymentPresenter->present($event->getPayment(), $idShop);
         } else {
             $presentedData = new TransactionPresented();
@@ -106,5 +108,26 @@ class WebhookEventPresenter implements PresenterInterface
         $this->logger->debug('Returning data', ['data' => $presentedData]);
 
         return $presentedData;
+    }
+
+    /**
+     * @param WebhooksEvent $event
+     *
+     * @return bool
+     */
+    private function shouldHandleEvent($event)
+    {
+        $payment = $event->getPayment() ?: null;
+        $paymentOutput = $payment ? $payment->getPaymentOutput() : null;
+        $redirectMethodSpecificInput = $paymentOutput ? $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null;
+        $paymentProductId = $redirectMethodSpecificInput ? $redirectMethodSpecificInput->getPaymentProductId() : null;
+        $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null;
+        $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null;
+
+        if ($paymentProductId === self::MEALVOUCHER_PRODUCT_ID || $paymentProductId === self::CVCO_PRODUCT_ID) {
+            return $amountOfMoney && $acquiredAmount && ($amountOfMoney === $acquiredAmount);
+        }
+
+        return true;
     }
 }
