@@ -206,6 +206,13 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_d03e321b4a8c6beccfd5b01b188
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_bad95bf162a0d9bbbb8b35b81927d07d'] = '3DsV2 erzwingen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_f03e80fcfec07f4794f12c6ee8c43c5a'] = 'In Europa ist die Durchsetzung von 3DsV2 obligatorisch, kann aber für andere Regionen ausgeschaltet werden';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_e2eb83238842525caefb6b4c136b918e'] = '\"challenge\" für alle Kartentransaktionen an';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_ce3d3c0cd0c2ba544cffa5367d72393d'] = 'Transaktionen von 3DS befreien';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_8539ec683f30848aad6e2dfc5e460c51'] = 'Wenn aktiviert, werden Transaktionen mit einem Bestellwert < 30 EUR von 3DS ausgenommen';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d099970a8ae4e2d89248bca9283ad6e9'] = 'Ausnahmetyp';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d603a80ea8ed8e63015e3493a43bd19c'] = 'Bitte wählen Sie den Ausnahmetyp aus.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c42a9f9d363900415c6847c2c37d287d'] = 'Ausnahmegrenze';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c99dbefa9c76524d9de6e96539d02a7f'] = 'Bitte geben Sie das Betragslimit ein (0 bis 30 EUR).';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_00e8a916addd267204d7dbbd444dfecb'] = 'Bitte geben Sie das Betragslimit ein (0 bis 100 EUR).';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_40fe70f7db685ba29906ccf4b77769e4'] = 'Ausgenommene Transaktionen von 3DS';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_8539ec683f30848aad6e2dfc5e460c51'] = 'Wenn aktiviert, werden Transaktionen mit einem Bestellwert < 30 EUR von 3DS ausgenommen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_f55b783954871a9fb5ee8624a9d27008'] = 'Nicht UE-spezifische Einstellungen';

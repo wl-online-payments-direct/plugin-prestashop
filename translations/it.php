@@ -208,6 +208,11 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_f03e80fcfec07f4794f12c6ee8c
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_e2eb83238842525caefb6b4c136b918e'] = 'Richiedi contestazione su tutte le transazioni con carte';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_40fe70f7db685ba29906ccf4b77769e4'] = 'Transazioni esenti da 3DS';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_8539ec683f30848aad6e2dfc5e460c51'] = 'Se abilitato, le transazioni con un importo dell\'ordine < 30 EUR saranno esentate da 3DS';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d099970a8ae4e2d89248bca9283ad6e9'] = 'Tipo di esenzione';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d603a80ea8ed8e63015e3493a43bd19c'] = 'Si prega di selezionare il tipo di esenzione.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c42a9f9d363900415c6847c2c37d287d'] = 'Limite di esenzione';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c99dbefa9c76524d9de6e96539d02a7f'] = 'Si prega di inserire il limite di importo (da 0 a 30 EUR).';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_00e8a916addd267204d7dbbd444dfecb'] = 'Si prega di inserire il limite di importo (da 0 a 100 EUR).';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_f55b783954871a9fb5ee8624a9d27008'] = 'Impostazioni non specifiche UE';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_222baa40e57ce8498baf0c2a8070e047'] = 'Abilita sovrattassa';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_448a90e6f3b94c06da2e74a44cde13d6'] = 'Quando la sovrattassa è abilitata, costi aggiuntivi relative alle organizzazioni di carte di credito saranno supportate dai tuoi clienti';
