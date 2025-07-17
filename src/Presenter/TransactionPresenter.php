@@ -143,8 +143,12 @@ class TransactionPresenter implements PresenterInterface
                 'code' => $apiError->getCode(),
             ];
         }
-        $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
-        $exemptionType = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getAppliedExemption() : '';
+        $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() &&
+        null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults() ?
+            $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
+        $exemptionType = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() &&
+        null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults() ?
+            $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getAppliedExemption() : '';
         $order = new \Order((int) $idOrder);
         $psOrderAmountMatch = true;
         if ($order->total_paid_tax_incl) {
