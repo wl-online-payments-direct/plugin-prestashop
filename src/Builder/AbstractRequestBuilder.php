@@ -46,11 +46,7 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 {
-    const METHOD_HOSTED = 'hosted';
-    const METHOD_HTP = 'htp';
-
     const PRODUCT_ID_MAESTRO = 117;
-    const PRODUCT_ID_PAYPAL = 840;
     const PRODUCT_ID_INTERSOLVE = 5700;
 
     const PHONE_NUMBER_MAX_CHARS = 15;
@@ -62,13 +58,12 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     const CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST = 'first';
     const CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT = 'subsequent';
 
-    const THREE_DS_LOW_VALUE = 'low-value';
-    const THREE_DS_AMOUNT_EUR = 30;
-
     const CHALLENGE_INDICATOR_REQUIRED = 'challenge-required';
+    const CHALLENGE_INDICATOR_NO_PREFERENCE = 'no-preference';
 
     const SURCHARGE_ON_BEHALF_OF = 'on-behalf-of';
-    const SURCHARGE_PASS_THROUGH = 'pass-through';
+
+    const MAX_NUMBER_OF_ITEMS = 99;
 
     /** @var Settings */
     protected $settings;
@@ -97,6 +92,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
      * @param Settings $settings
      * @param Worldlineop $module
      * @param Context $context
+     * @param ShoppingCartPresenter $shoppingCartPresenter
      */
     public function __construct(
         Settings $settings,
