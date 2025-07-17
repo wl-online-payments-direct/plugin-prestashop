@@ -208,6 +208,11 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_f03e80fcfec07f4794f12c6ee8c
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_e2eb83238842525caefb6b4c136b918e'] = '\"Challenge\" op alle card betaligen aanvragen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_40fe70f7db685ba29906ccf4b77769e4'] = 'Betaligen van 3DS vrijstellen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_8539ec683f30848aad6e2dfc5e460c51'] = 'Indien ingeschakeld, worden transacties met een orderbedrag < 30 EUR vrijgesteld van 3DS';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d099970a8ae4e2d89248bca9283ad6e9'] = 'Vrijstellingstype';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d603a80ea8ed8e63015e3493a43bd19c'] = 'Selecteer het vrijstellingstype.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c42a9f9d363900415c6847c2c37d287d'] = 'Vrijstellingslimiet';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_c99dbefa9c76524d9de6e96539d02a7f'] = 'Voer de bedraglimiet in (0 tot 30 EUR).';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_00e8a916addd267204d7dbbd444dfecb'] = 'Voer de bedraglimiet in (0 tot 100 EUR).';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_f55b783954871a9fb5ee8624a9d27008'] = 'Niet UE-specifieke instellingen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_222baa40e57ce8498baf0c2a8070e047'] = 'Toeslagen inschakelen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_448a90e6f3b94c06da2e74a44cde13d6'] = 'Als toeslag is ingeschakeld, worden extra kosten in verband met creditcardorganisaties ondersteund door je klanten';
