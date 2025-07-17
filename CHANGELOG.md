@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.6] - 2025-13-06
+### Fixed
+- Fix issue when order is paid using GooglePay and fails to render in the backoffice
+
 ## [1.4.5] - 2025-14-04
 ### Added
 - Update plugin translations
