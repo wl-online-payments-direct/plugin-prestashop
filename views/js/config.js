@@ -35,6 +35,8 @@ $(document).ready(function () {
         paymentFlowSwitch: $('.js-worldlineop-payment-flow-modifications-switch'),
         paymentFlowSettingsBlock: $('.js-worldlineop-payment-flow-modifications-settings-block'),
 
+        select3DSExemptionType: $('.js-worldlineop-select-3ds-exemption-type-list'),
+        input3DSExemption: $('.js-worldlineop-select-3ds-exemption-limit-input'),
         force3DSBlock: $('.js-worldlineop-switch-force-3ds-block'),
         force3DSSwitch: $('.js-worldlineop-switch-force-3ds-switch'),
         force3DSDisabledBlock: $('.js-worldlineop-force-3ds-disabled-block'),
@@ -42,10 +44,13 @@ $(document).ready(function () {
         enforceChallengeBlock: $('.js-worldlineop-enforce-challenge-block'),
         enforceChallengeSwitch: $('.js-worldlineop-enforce-challenge-switch'),
         threeDSExemptionBlock: $('.js-worldlineop-3ds-exemption-block'),
+        threeDSExemptionParams: $('.js-worldlineop-3ds-exemption-params'),
+        threeDSExemptedTypeHiddenInput: $('#wl-selectedExemptedType'),
 
         endpointSwitchBlock: $('.js-worldlineop-switch-endpoint-block'),
         endpointSwitchSwitch: $('.js-worldlineop-switch-endpoint-switch'),
         endpointSwitchSettingsBlock: $('.js-worldlineop-switch-endpoint-settings-block'),
+        submitFormButton: $('.js-worldlineop-submit-advanced-settings-form'),
 
         redirectPaymentDisplayBlock: $('.js-worldlineop-display-redirect-pm-block'),
         redirectPaymentDisplaySwitch: $('.js-worldlineop-display-redirect-pm-switch'),
@@ -84,8 +89,13 @@ $(document).ready(function () {
         this.toggleRedirectPaymentDisplay();
         el.enforceChallengeBlock.on('click', el.enforceChallengeSwitch, this.toggle3DSExemption);
         this.toggle3DSExemption();
+        el.threeDSExemptionBlock.on('click', el.enforceChallengeSwitch, this.toggle3DSExemptionParams);
+        this.toggle3DSExemptionParams();
+        el.select3DSExemptionType.on('click', this.toggle3DSExemptionType);
+        el.input3DSExemption.on('input', this.enter3DSExemptionValue);
         el.force3DSBlock.on('click', el.force3DSSwitch, this.toggle3DSBlock);
         this.toggle3DSBlock();
+        this.setExemptionMessage();
         el.iframePaymentDisplayBlock.on('click', el.iframePaymentDisplaySwitch, this.toggleIframePaymentDisplay);
         this.toggleIframePaymentDisplay();
         el.refreshRedirectPaymentMethodsBtn.on('click', this.refreshRedirectPaymentMethods);
@@ -156,6 +166,136 @@ $(document).ready(function () {
           WorldlineOP.el.threeDSExemptionBlock.hide(200);
         } else {
           WorldlineOP.el.threeDSExemptionBlock.show(400);
+        }
+      },
+      toggle3DSExemptionParams: function () {
+        if ($('#worldlineopAdvancedSettings_threeDSExempted_on').prop('checked')) {
+          WorldlineOP.el.threeDSExemptionParams.show(400);
+        } else {
+          WorldlineOP.el.threeDSExemptionParams.hide(200);
+        }
+      },
+      toggle3DSExemptionType: function (event) {
+        var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
+        var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
+        var helpTextExemptionLimit100 = $('#js-worldlineop-select-3ds-exemption-limit-100');
+
+        if (exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
+          exemptionTypeButtonTextEl[0].innerText = event.target.innerText;
+          exemptionTypeButtonTextEl[0].setAttribute('value', event.target.getAttribute('value'));
+        }
+
+        if (event.target.getAttribute('value') === 'low-value') {
+          WorldlineOP.showElement(helpTextExemptionLimit30);
+          WorldlineOP.hideElement(helpTextExemptionLimit100);
+        }
+        if (event.target.getAttribute('value') === 'transaction-risk-analysis') {
+          WorldlineOP.hideElement(helpTextExemptionLimit30);
+          WorldlineOP.showElement(helpTextExemptionLimit100);
+        }
+
+        WorldlineOP.validate3DSExemptionValue(WorldlineOP.el.input3DSExemption[0], event);
+      },
+      enter3DSExemptionValue: function (event) {
+        if (this.value < 0) {
+          this.value = 0;
+        }
+
+        WorldlineOP.validate3DSExemptionValue(this, event);
+      },
+      setExemptionMessage: function() {
+        var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
+        var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
+        var helpTextExemptionLimit100 = $('#js-worldlineop-select-3ds-exemption-limit-100');
+
+        if (exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
+          if (exemptionTypeButtonTextEl[0].getAttribute('value').includes('transaction-risk-analysis')) {
+            if (WorldlineOP.el.input3DSExemption && WorldlineOP.el.input3DSExemption[0] &&
+                WorldlineOP.el.input3DSExemption[0].getAttribute('value') &&
+                WorldlineOP.el.input3DSExemption[0].getAttribute('value') > 0) {
+              WorldlineOP.hideElement(helpTextExemptionLimit30);
+              WorldlineOP.showElement(helpTextExemptionLimit100);
+            }
+          }
+        }
+      },
+      validate3DSExemptionValue: function (inputElement, event) {
+        var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
+        var helpTextExemptionLimit100 = $('#js-worldlineop-select-3ds-exemption-limit-100');
+        var helpTextExemptionLimitInvalid = $('#js-worldlineop-select-3ds-exemption-limit-invalid-amount');
+        var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
+        var exemptionLimitAmount = 30;
+        var isLimit30Selected = true;
+        var shownErrorMessage = null;
+
+        // setting value to be sent when form is submitted.
+        if (WorldlineOP.el.threeDSExemptedTypeHiddenInput && WorldlineOP.el.threeDSExemptedTypeHiddenInput[0] && exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
+          var exemptionTypeButtonValue = exemptionTypeButtonTextEl[0].getAttribute('value') !== '' ?
+              exemptionTypeButtonTextEl[0].getAttribute('value') : 'low-value';
+          isLimit30Selected = (exemptionTypeButtonValue === 'low-value');
+          WorldlineOP.el.threeDSExemptedTypeHiddenInput[0].value = exemptionTypeButtonValue;
+        }
+
+        // setting appropriate error message text
+        if (helpTextExemptionLimit30 && helpTextExemptionLimit100) {
+          exemptionLimitAmount = !isLimit30Selected ? 100 : exemptionLimitAmount;
+          if (!helpTextExemptionLimitInvalid[0].innerText.includes(exemptionLimitAmount)) {
+            helpTextExemptionLimitInvalid[0].innerText = 'The amount entered is not within the allowed range of 0-' + exemptionLimitAmount + ' EUR.';
+          }
+          shownErrorMessage = !isLimit30Selected ? helpTextExemptionLimit100 : helpTextExemptionLimit30;
+        }
+
+        // first check if exempted type and value are already saved
+        let storedExemptedType = document.getElementById('databaseStoredExemptedType')?.value;
+        let storedExemptedValue = document.getElementById('databaseStoredExemptedValue')?.value;
+
+        if (storedExemptedType && storedExemptedType === exemptionTypeButtonValue && event.target.tagName.toLowerCase() === 'li') {
+          inputElement.value = storedExemptedValue;
+          WorldlineOP.disableSaveForExemptionParams(helpTextExemptionLimitInvalid, shownErrorMessage, inputElement);
+          return;
+        }
+
+        // showing error in case when entered value is greater then limit
+        if (inputElement.value > exemptionLimitAmount) {
+          if (event.target.tagName.toLowerCase() === 'input') {
+            WorldlineOP.enableSaveForExemptionParams(helpTextExemptionLimitInvalid, shownErrorMessage, inputElement);
+            return;
+          }
+          inputElement.value = exemptionLimitAmount;
+        }
+
+        WorldlineOP.disableSaveForExemptionParams(helpTextExemptionLimitInvalid, shownErrorMessage, inputElement);
+      },
+      enableSaveForExemptionParams: function (helpTextExemptionLimitInvalid, shownErrorMessage, inputElement) {
+        WorldlineOP.showElement(helpTextExemptionLimitInvalid);
+        WorldlineOP.hideElement(shownErrorMessage);
+        WorldlineOP.disableElement(WorldlineOP.el.submitFormButton);
+        inputElement.classList.add('wl-invalid-input');
+      },
+      disableSaveForExemptionParams: function (helpTextExemptionLimitInvalid, shownErrorMessage, inputElement) {
+        WorldlineOP.hideElement(helpTextExemptionLimitInvalid);
+        WorldlineOP.showElement(shownErrorMessage);
+        WorldlineOP.enableElement(WorldlineOP.el.submitFormButton);
+        inputElement.classList.remove('wl-invalid-input');
+      },
+      hideElement: function (element) {
+        if (element && element[0]) {
+          element[0].classList.add('wl-hidden-element');
+        }
+      },
+      showElement: function (element) {
+        if (element && element[0]) {
+          element[0].classList.remove('wl-hidden-element');
+        }
+      },
+      disableElement: function (element) {
+        if (element && element[0]) {
+          element[0].setAttribute('disabled', 'disabled');
+        }
+      },
+      enableElement: function (element) {
+        if (element && element[0]) {
+          element[0].removeAttribute('disabled');
         }
       },
       toggleIframePaymentDisplay: function () {

@@ -1,1 +1,218 @@
-#worldlineop-configuration .flex{display:flex}#worldlineop-configuration .worldlineop-header{justify-content:space-between}#worldlineop-configuration .worldlineop-header .worldlineop-logo{align-items:center}#worldlineop-configuration .worldlineop-header .worldlineop-logo img{height:50px}#worldlineop-configuration .worldlineop-header .worldlineop-support .contact i{align-items:center;font-size:50px}#worldlineop-configuration .worldlineop-header .worldlineop-support .contact>div{flex-direction:column;padding-left:15px;margin-left:15px;margin-right:15px;border-left:1px solid;justify-content:center}#worldlineop-configuration .worldlineop-header .worldlineop-support .cta-buttons{flex-direction:column;justify-content:space-around}#worldlineop-configuration .worldlineop-webhooks-block i{cursor:pointer}#worldlineop-configuration .worldlineop-advanced-settings-block div{margin-left:15px;padding-top:8px}#worldlineop-configuration .worldlineop-advanced-settings-block span{display:inline-block;vertical-align:middle;margin-left:20px;margin-top:0}#worldlineop-configuration .worldlineop-advanced-settings .form-group-h2{margin-top:20px;margin-bottom:30px}#worldlineop-configuration .worldlineop-advanced-settings .form-group-h2 h2{margin:0;text-align:right}#worldlineop-configuration .worldlineop-advanced-settings .preview-logo{vertical-align:baseline;max-width:120px;max-height:30px}#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload{width:.1px;height:.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload+label{width:120px;font-weight:700;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;display:inline-block;overflow:hidden;color:#009597;padding-top:5px;padding-left:5px}#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload:focus+label,#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload.has-focus+label{outline:1px dotted #000;outline:-webkit-focus-ring-color auto 5px}#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload:focus+label,#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload.has-focus+label,#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload+label:hover{color:#005f61}#worldlineop-configuration .worldlineop-payment-methods-settings h3.title{margin-top:30px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list{padding-top:50px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products{display:flex;flex-wrap:wrap}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product{margin-right:20px;text-align:center;width:165px;display:flex;flex-direction:column}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .logo{height:50px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .logo img{height:100%}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .title{font-weight:bold;font-size:16px;border-bottom:1px solid #ddd;padding-bottom:10px;margin-bottom:20px;height:60px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .enable-title{display:block;text-align:center}#worldlineop-configuration .worldlineop-payment-methods-settings .preview-logo{vertical-align:baseline;max-width:120px;max-height:30px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload{width:.1px;height:.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload+label{width:120px;font-weight:700;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;display:inline-block;overflow:hidden;color:#009597;padding-top:5px;padding-left:5px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload:focus+label,#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload.has-focus+label{outline:1px dotted #000;outline:-webkit-focus-ring-color auto 5px}#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload:focus+label,#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload.has-focus+label,#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload+label:hover{color:#005f61}
+#worldlineop-configuration .flex {
+    display: flex
+}
+
+#worldlineop-configuration .worldlineop-header {
+    justify-content: space-between
+}
+
+#worldlineop-configuration .worldlineop-header .worldlineop-logo {
+    align-items: center
+}
+
+#worldlineop-configuration .worldlineop-header .worldlineop-logo img {
+    height: 50px
+}
+
+#worldlineop-configuration .worldlineop-header .worldlineop-support .contact i {
+    align-items: center;
+    font-size: 50px
+}
+
+#worldlineop-configuration .worldlineop-header .worldlineop-support .contact > div {
+    flex-direction: column;
+    padding-left: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    border-left: 1px solid;
+    justify-content: center
+}
+
+#worldlineop-configuration .worldlineop-header .worldlineop-support .cta-buttons {
+    flex-direction: column;
+    justify-content: space-around
+}
+
+#worldlineop-configuration .worldlineop-webhooks-block i {
+    cursor: pointer
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings-block div {
+    margin-left: 15px;
+    padding-top: 8px
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings-block span {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 20px;
+    margin-top: 0
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .form-group-h2 {
+    margin-top: 20px;
+    margin-bottom: 30px
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .form-group-h2 h2 {
+    margin: 0;
+    text-align: right
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .preview-logo {
+    vertical-align: baseline;
+    max-width: 120px;
+    max-height: 30px
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload {
+    width: .1px;
+    height: .1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload + label {
+    width: 120px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    color: #009597;
+    padding-top: 5px;
+    padding-left: 5px
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload:focus + label, #worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px
+}
+
+#worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload:focus + label, #worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload.has-focus + label, #worldlineop-configuration .worldlineop-advanced-settings .worldlineop-upload + label:hover {
+    color: #005f61
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings h3.title {
+    margin-top: 30px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list {
+    padding-top: 50px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products {
+    display: flex;
+    flex-wrap: wrap
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product {
+    margin-right: 20px;
+    text-align: center;
+    width: 165px;
+    display: flex;
+    flex-direction: column
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .logo {
+    height: 50px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .logo img {
+    height: 100%
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .title {
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    height: 60px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-payment-methods-list .payment-products .payment-product .enable-title {
+    display: block;
+    text-align: center
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .preview-logo {
+    vertical-align: baseline;
+    max-width: 120px;
+    max-height: 30px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload {
+    width: .1px;
+    height: .1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload + label {
+    width: 120px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    color: #009597;
+    padding-top: 5px;
+    padding-left: 5px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload:focus + label, #worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px
+}
+
+#worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload:focus + label, #worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload.has-focus + label, #worldlineop-configuration .worldlineop-payment-methods-settings .worldlineop-upload + label:hover {
+    color: #005f61
+}
+
+.wl-margin-bottom-15 {
+    margin-bottom: 15px;
+}
+
+.exemption-types-list li {
+    transition: background 0.1s ease-in-out;
+    padding-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 400;
+    height: 20px;
+}
+
+.exemption-types-list li:hover {
+    background: #25b9d7;
+    color: white;
+}
+
+.wl-dropdown-toggle {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    width: 210px;
+}
+
+.wl-exempt-type-input {
+    width: 210px !important;
+    border: 1px solid #bbcdd2;
+    padding-left: 10px;
+    height: 30px;
+}
+
+.wl-hidden-element {
+    display: none !important;
+}
+
+.wl-invalid-input {
+    border: 1px solid red;
+}
+

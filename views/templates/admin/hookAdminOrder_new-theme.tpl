@@ -83,6 +83,12 @@
                 {$transactionData.payment.liability|escape:'htmlall':'UTF-8'}
               </strong>
             </div>
+            <div id="" class="col-sm text-center">
+              <p class="text-muted mb-0"><strong>{l s='Exemption type' mod='worldlineop'}</strong></p>
+              <strong id="">
+                {$transactionData.payment.exemptionType|escape:'htmlall':'UTF-8'}
+              </strong>
+            </div>
           </div>
         </div>
       </div>
