@@ -144,6 +144,7 @@ class TransactionPresenter implements PresenterInterface
             ];
         }
         $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
+        $exemptionType = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getAppliedExemption() : '';
         $order = new \Order((int) $idOrder);
         $psOrderAmountMatch = true;
         if ($order->total_paid_tax_incl) {
@@ -179,6 +180,7 @@ class TransactionPresenter implements PresenterInterface
                 'fraudResult' => !empty($paymentSpecificOutput->getFraudResults()) ?
                     $paymentSpecificOutput->getFraudResults()->getFraudServiceResult() : '',
                 'liability' => $liability,
+                'exemptionType' => $exemptionType,
                 'errors' => $errors,
             ],
             'actions' => [

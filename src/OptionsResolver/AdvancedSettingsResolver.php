@@ -49,6 +49,8 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'errorOrderStateId',
                 'groupCardPaymentOptions',
                 'threeDSExempted',
+                'threeDSExemptedType',
+                'threeDSExemptedValue',
                 'enforce3DS',
                 'surchargingEnabled',
                 'displayWhatsNew',
@@ -135,6 +137,18 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'threeDSExempted',
                 function (Options $options, $value) {
                     return (bool) $value;
+                }
+            )
+            ->setNormalizer(
+                'threeDSExemptedType',
+                function (Options $options, $value) {
+                    return (string) $value;
+                }
+            )
+            ->setNormalizer(
+                'threeDSExemptedValue',
+                function (Options $options, $value) {
+                    return (string) $value;
                 }
             )
             ->setNormalizer(

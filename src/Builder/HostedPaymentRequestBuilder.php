@@ -18,14 +18,19 @@ use Language;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInputForHostedCheckout;
+use OnlinePayments\Sdk\Domain\GPayThreeDSecure;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\LineItem;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodHostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\MobilePaymentProduct320SpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\OrderLineDetails;
 use OnlinePayments\Sdk\Domain\OrderReferences;
+use OnlinePayments\Sdk\Domain\PaymentProduct130SpecificInput;
+use OnlinePayments\Sdk\Domain\PaymentProduct130SpecificThreeDSecure;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
+use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use RandomLib\Factory;
@@ -116,13 +121,38 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $threeDSecure->setSkipAuthentication(false);
         }
         $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(), new \Currency($this->context->cart->id_currency));
-        if (true === $this->settings->advancedSettings->threeDSExempted && self::THREE_DS_AMOUNT_EUR > $orderTotalInEuros) {
-            $threeDSecure->setExemptionRequest(self::THREE_DS_LOW_VALUE);
+        $threeDSExemptedValue = $this->settings->advancedSettings->threeDSExemptedValue;
+        $threeDSExemptedType = $this->settings->advancedSettings->threeDSExemptedType;
+        if (true === $this->settings->advancedSettings->threeDSExempted && $threeDSExemptedValue >= $orderTotalInEuros) {
+            $threeDSecure->setSkipAuthentication(true);
+            $threeDSecure->setExemptionRequest($threeDSExemptedType);
+            $threeDSecure->setSkipSoftDecline(false);
         }
         if (true === $this->settings->advancedSettings->enforce3DS) {
             $threeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
         }
         $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
+
+        $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
+        $numberOfItems = min(count($shoppingCartPresented['products']), self::MAX_NUMBER_OF_ITEMS);
+
+        if (true === $this->settings->advancedSettings->force3DsV2) {
+            $paymentProduct130SpecificInput = new PaymentProduct130SpecificInput();
+            $paymentProduct130ThreeDSecure = new PaymentProduct130SpecificThreeDSecure();
+            $paymentProduct130ThreeDSecure->setUsecase('single-amount');
+            $paymentProduct130ThreeDSecure->setNumberOfItems($numberOfItems);
+
+            if (!$this->settings->advancedSettings->threeDSExempted) {
+                $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
+            } elseif ($this->settings->advancedSettings->threeDSExempted) {
+                $this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros ?
+                    $paymentProduct130ThreeDSecure->setAcquirerExemption(true) :
+                    $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
+            }
+            $paymentProduct130SpecificInput->setThreeDSecure($paymentProduct130ThreeDSecure);
+            $cardPaymentMethodSpecificInput->setPaymentProduct130SpecificInput($paymentProduct130SpecificInput);
+        }
+
         if (false === $this->tokenValue) {
             $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileRequestor(self::CARD_ON_FILE_REQUESTOR_FIRST);
             $cardPaymentMethodSpecificInput->setUnscheduledCardOnFileSequenceIndicator(self::CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST);
@@ -136,6 +166,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * @return MobilePaymentMethodHostedCheckoutSpecificInput|false
+     * @throws \Exception
      */
     public function buildMobilePaymentMethodSpecificInput()
     {
@@ -148,11 +179,45 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
         $mobilePaymentMethodSpecificInput = new MobilePaymentMethodHostedCheckoutSpecificInput();
         if (false !== $this->idProduct) {
-            $mobilePaymentMethodSpecificInput->setPaymentProductId((int) $this->idProduct);
+            $mobilePaymentMethodSpecificInput->setPaymentProductId((int)$this->idProduct);
         }
         $mobilePaymentMethodSpecificInput->setAuthorizationMode(
             $this->settings->advancedSettings->paymentSettings->transactionType
         );
+
+        $paymentProduct320SpecificInput = new MobilePaymentProduct320SpecificInput();
+        $gPayThreeDSecure = new GPayThreeDSecure();
+
+        if (!$this->settings->advancedSettings->force3DsV2) {
+            $gPayThreeDSecure->setSkipAuthentication(true);
+        } else {
+            if (!$this->settings->advancedSettings->enforce3DS && !$this->settings->advancedSettings->threeDSExempted) {
+                $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_NO_PREFERENCE);
+                $gPayThreeDSecure->setSkipAuthentication(false);
+            } elseif ($this->settings->advancedSettings->enforce3DS) {
+                $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
+                $gPayThreeDSecure->setSkipAuthentication(false);
+            } elseif ($this->settings->advancedSettings->threeDSExempted) {
+                $threeDSExemptionType = $this->settings->advancedSettings->threeDSExemptedType;
+                $threeDSExemptionValue = $this->settings->advancedSettings->threeDSExemptedValue;
+                $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(),
+                    new \Currency($this->context->cart->id_currency));
+                if ($threeDSExemptionValue >= $orderTotalInEuros) {
+                    $gPayThreeDSecure->setSkipAuthentication(true);
+                    $gPayThreeDSecure->setExemptionRequest($threeDSExemptionType);
+                } else {
+                    $gPayThreeDSecure->setSkipAuthentication(false);
+                }
+            }
+            $gPayRedirectionData = new RedirectionData();
+            $gPayRedirectionData->setReturnUrl($this->context->link->getModuleLink(
+                $this->module->name, 'redirect', ['action' => 'redirectReturnHosted']));
+            $gPayThreeDSecure->setRedirectionData($gPayRedirectionData);
+        }
+
+        $paymentProduct320SpecificInput->setThreeDSecure($gPayThreeDSecure);
+        $mobilePaymentMethodSpecificInput->setPaymentProduct320SpecificInput($paymentProduct320SpecificInput);
+
 
         return $mobilePaymentMethodSpecificInput;
     }
