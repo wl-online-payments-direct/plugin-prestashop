@@ -36,8 +36,9 @@
       <p class="text-success">{l s='Cancellation requested successfully' mod='worldlineop'}</p>
     </div>
   {/if}
+  {foreach $transactionsData as $transactionData}
   <div class="well">
-    <div class="row">
+    <div class="row row-margin">
       <div class="col-sm-3 text-center">
         <p class="text-muted"><strong>{l s='Status' mod='worldlineop'}</strong></p>
         <strong id="">{$transactionData.payment.status|escape:'htmlall':'UTF-8'}</strong>
@@ -81,6 +82,7 @@
       </div>
     </div>
   </div>
+  {/foreach}
   {if !empty($transactionData.payment.errors)}
     <div class="alert alert-danger">
       <ul>

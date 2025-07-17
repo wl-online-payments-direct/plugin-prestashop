@@ -48,6 +48,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
     const GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN = 'HomeAndGarden';
     const GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS = 'GiftAndFlowers';
     const GIFT_CARD_PRODUCT_TYPE_NONE = 'none';
+    const MEALVOUCHER_PRODUCT_ID = 5402;
 
     /**
      * @return HostedCheckoutSpecificInput|null
@@ -65,11 +66,17 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $hostedCheckoutSpecificInput->setReturnUrl(
             $this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectReturnHosted'])
         );
-        if (false !== $this->idProduct) {
+        if ($this->idProduct) {
             $productFilter = new PaymentProductFilter();
-            $productFilter->setProducts([(int) $this->idProduct]);
+            $productFilter->setProducts([(int)$this->idProduct]);
             $productFilterHostedCheckout = new PaymentProductFiltersHostedCheckout();
             $productFilterHostedCheckout->setRestrictTo($productFilter);
+
+            // exclude meal vouchers
+            $excludeMealVoucherFilter = new PaymentProductFilter();
+            $excludeMealVoucherFilter->setProducts([self::MEALVOUCHER_PRODUCT_ID]);
+            $productFilterHostedCheckout->setExclude($excludeMealVoucherFilter);
+
             $hostedCheckoutSpecificInput->setPaymentProductFilters($productFilterHostedCheckout);
         }
         if (false !== $this->tokenValue) {
@@ -239,20 +246,32 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         );
         $order->setReferences($orderReferences);
         try {
-            $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
+            $productId = (int)$this->idProduct === self::MEALVOUCHER_PRODUCT_ID ? self::MEALVOUCHER_PRODUCT_ID : null;
+            $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart, $productId);
         } catch (\Exception $e) {
             return $order;
         }
         $shoppingCart = new ShoppingCart();
+
         $items = [];
         foreach ($shoppingCartPresented['products'] as $product) {
             $item = new LineItem();
             $itemAmount = new AmountOfMoney();
-            $itemAmount->setAmount((int) (string) $product['totalWithTax']);
+            $amount = (int) (string) $product['totalWithTax'];
+            if ((int)$this->idProduct === self::MEALVOUCHER_PRODUCT_ID) {
+                // adding shipping price to the product price for meal vouchers
+                $amount += (int) (string) $shoppingCartPresented['shipping']['priceWithTax'];
+            }
+            $itemAmount->setAmount($amount);
             $itemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
             $item->setAmountOfMoney($itemAmount);
             $itemLineDetails = new OrderLineDetails();
-            $itemLineDetails->setProductPrice((int) (string) $product['productPrice']);
+            $price = (int) (string) $product['productPrice'];
+            if ((int)$this->idProduct === self::MEALVOUCHER_PRODUCT_ID) {
+                // adding shipping price to the product price for meal vouchers
+                $price += (int) (string) $shoppingCartPresented['shipping']['priceWithTax'];
+            }
+            $itemLineDetails->setProductPrice($price);
             $itemLineDetails->setDiscountAmount((int) (string) $product['discountPrice']);
             $itemLineDetails->setProductCode($product['productCode']);
             $itemLineDetails->setProductName($product['productName']);
@@ -263,22 +282,24 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $item->setOrderLineDetails($itemLineDetails);
             $items[] = $item;
         }
-        $shippingItem = new LineItem();
-        $shippingItemAmount = new AmountOfMoney();
-        $shippingItemAmount->setAmount((int) (string) $shoppingCartPresented['shipping']['priceWithTax']);
-        $shippingItemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
-        $shippingItem->setAmountOfMoney($shippingItemAmount);
-        $shippingItemLineDetails = new OrderLineDetails();
-        $shippingItemLineDetails->setProductPrice((int) (string) $shoppingCartPresented['shipping']['priceWithoutTax']);
-        $shippingItemLineDetails->setDiscountAmount((int) (string) $shoppingCartPresented['shipping']['discountPrice']);
-        $shippingItemLineDetails->setProductCode('SHIPPING');
-        $shippingItemLineDetails->setProductName($this->module->l('Shipping cost'));
-        $shippingItemLineDetails->setQuantity(1);
-        $shippingItemLineDetails->setTaxAmount((int) (string) $shoppingCartPresented['shipping']['tax']);
-        $shippingItemLineDetails->setUnit('piece');
-        $shippingItemLineDetails->setProductType($shoppingCartPresented['shipping']['type']);
-        $shippingItem->setOrderLineDetails($shippingItemLineDetails);
-        $items[] = $shippingItem;
+        if ((int)$this->idProduct !== self::MEALVOUCHER_PRODUCT_ID) {
+            $shippingItem = new LineItem();
+            $shippingItemAmount = new AmountOfMoney();
+            $shippingItemAmount->setAmount((int) (string) $shoppingCartPresented['shipping']['priceWithTax']);
+            $shippingItemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
+            $shippingItem->setAmountOfMoney($shippingItemAmount);
+            $shippingItemLineDetails = new OrderLineDetails();
+            $shippingItemLineDetails->setProductPrice((int) (string) $shoppingCartPresented['shipping']['priceWithoutTax']);
+            $shippingItemLineDetails->setDiscountAmount((int) (string) $shoppingCartPresented['shipping']['discountPrice']);
+            $shippingItemLineDetails->setProductCode('SHIPPING');
+            $shippingItemLineDetails->setProductName($this->module->l('Shipping cost'));
+            $shippingItemLineDetails->setQuantity(1);
+            $shippingItemLineDetails->setTaxAmount((int) (string) $shoppingCartPresented['shipping']['tax']);
+            $shippingItemLineDetails->setUnit('piece');
+            $shippingItemLineDetails->setProductType($shoppingCartPresented['shipping']['type']);
+            $shippingItem->setOrderLineDetails($shippingItemLineDetails);
+            $items[] = $shippingItem;
+        }
         $shoppingCart->setItems($items);
         $order->setShoppingCart($shoppingCart);
 

@@ -57,7 +57,7 @@ class ShoppingCartPresenter implements PresenterInterface
      *
      * @throws \PrestaShopException|\Exception
      */
-    public function present($cart = false)
+    public function present($cart = false, $productId = null)
     {
         if (!$cart) {
             throw new \Exception('Cart is not valid');
@@ -73,7 +73,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $this->separateDiscount();
         $this->assignProductsType();
         $rows['shipping'] = $this->getShippingRow();
-        $rows['products'] = $this->getProductRows();
+        $rows['products'] = $productId === null ? $this->getProductRows() : $this->buildMergedProduct();
         $rows['cart'] = $cart;
         $this->applyProductDiscounts($rows['products']);
         $this->fixTotalsRounding($rows['products']);
@@ -193,6 +193,122 @@ class ShoppingCartPresenter implements PresenterInterface
         }
 
         return $rows;
+    }
+
+    /**
+     * @return array
+     */
+    private function buildMergedProduct()
+    {
+        $amounts = $this->getMergedProductAmounts($this->products);
+        $productType = $this->getMergedProductType($this->products);
+        $productName = $this->getMergedProductName($this->products);
+
+        return array(
+            array(
+                'totalWithTax' => $amounts['productPrice'] + $amounts['tax'],
+                'productPrice' => $amounts['productPrice'],
+                'discountPrice' => $amounts['discountPrice'],
+                'tax' => $amounts['tax'],
+                'quantity' => 1,
+                'productName' => $productName,
+                'productType' => $productType,
+                'productCode' => 'Merged item'
+            ));
+    }
+
+    /**
+     * @param array $products
+     *
+     * @return array
+     */
+    private function getMergedProductAmounts($products)
+    {
+        $productPrice = 0;
+        $tax = 0;
+        $totalWithTax = 0;
+
+        foreach ($products as $product) {
+            $totalWithTax += Tools::getRoundedAmount($product['price_with_reduction'], $this->cartCurrencyIso);
+            $productPrice += Tools::getRoundedAmount($product['price_with_reduction_without_tax'], $this->cartCurrencyIso);
+            $tax += Tools::getRoundedAmount($totalWithTax - $productPrice, $this->cartCurrencyIso);
+        }
+
+        return array(
+            'discountPrice' => 0,
+            'productPrice' => $productPrice,
+            'tax' => $tax,
+            'totalWithTax' => $totalWithTax
+        );
+    }
+
+    /**
+     * Determines the merged product type based on priority:
+     * - FoodAndDrink > HomeAndGarden > GiftAndFlowers
+     *
+     * @param array $products
+     * @return string
+     */
+    private function getMergedProductType($products)
+    {
+        $hasHomeAndGarden = false;
+
+        foreach ($products as $product) {
+            $type = Tools::getGiftCardTypeByIdProduct($product['id_product']);
+
+            if ($type === HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK) {
+                return HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK;
+            }
+
+            if ($type === HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN) {
+                $hasHomeAndGarden = true;
+            }
+        }
+
+        // If no FoodAndDrink but at least one HomeAndGarden
+        if ($hasHomeAndGarden) {
+            return HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN;
+        }
+
+        // Default fallback (GiftAndFlowers or others)
+        return HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS;
+    }
+
+    /**
+     * @param array $products
+     *
+     * @return string
+     */
+    private function getMergedProductName(array $products)
+    {
+        $typeCounts = [];
+        $names = [];
+
+        foreach ($products as $product) {
+            $type = Tools::getGiftCardTypeByIdProduct($product['id_product']);
+            if (!isset($typeCounts[$type])) {
+                $typeCounts[$type] = 0;
+            }
+            $typeCounts[$type]++;
+            $names[] = $product['name'];
+        }
+
+        // Create a string like "Product A + Product B + Product C"
+        $nameString = implode(' + ', $names);
+
+        if (mb_strlen($nameString) <= 50) {
+            return $nameString;
+        }
+
+        $parts = [];
+        foreach ($typeCounts as $type => $count) {
+            $parts[] = "{$count} {$type}";
+        }
+
+        $result = implode(' & ', $parts);
+
+        // Truncate if needed
+        return mb_strlen($result) > 50 ? mb_substr($result, 0, 50) : $result;
     }
 
     /**
