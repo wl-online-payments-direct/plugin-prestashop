@@ -31,11 +31,11 @@ class PaymentMethodsValidationData extends AbstractValidationData
         //@formatter:off
         $constraints = [
             'iframeTemplateFilename' => new Regex([
-                'pattern' => '/^[a-zA-Z0-9_\-\.]+\.(?i:htm|html|shtml|xhtml){1}$/i',
+                'pattern' => '/^[a-zA-Z0-9_\-\.]+$/i',
                 'message' => $this->module->l('Please fill a valid iframe template filename', 'PaymentMethodsValidationData'),
             ]),
             'redirectTemplateFilename' => new Regex([
-                'pattern' => '/^[a-zA-Z0-9_\-\.]+\.(?i:htm|html|shtml|xhtml){1}$/i',
+                'pattern' => '/^[a-zA-Z0-9_\-\.]+$/i',
                 'message' => $this->module->l('Please fill a valid redirect template filename', 'PaymentMethodsValidationData'),
             ]),
         ];

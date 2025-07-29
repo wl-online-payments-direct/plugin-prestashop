@@ -95,6 +95,7 @@ configuration:
       safetyDelay: 12
       errorOrderStateId: 0
     groupCardPaymentOptions: 0
+    omitOrderItemDetails: 0
     threeDSExempted: 0
     enforce3DS: 0
     threeDSExemptedType: ''

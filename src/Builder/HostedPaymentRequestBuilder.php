@@ -301,7 +301,9 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $items[] = $shippingItem;
         }
         $shoppingCart->setItems($items);
-        $order->setShoppingCart($shoppingCart);
+        if (!$this->settings->advancedSettings->omitOrderItemDetails) {
+            $order->setShoppingCart($shoppingCart);
+        }
 
         return $order;
     }

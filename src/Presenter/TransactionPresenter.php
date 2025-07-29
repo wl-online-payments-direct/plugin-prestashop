@@ -181,7 +181,7 @@ class TransactionPresenter implements PresenterInterface
                         'orderId' => $idOrder,
                         'payment' => [
                             'amount' => Tools::getRoundedAmountFromCents(
-                                $payment->getPaymentOutput()->getAcquiredAmount()->getAmount(), $currencyCode),
+                                $paymentDetail->getAmountOfMoney()->getAmount(), $currencyCode),
                             'hasSurcharge' => !($surchargeAmount === 0),
                             'surchargeAmount' => $surchargeAmount,
                             'amountWithoutSurcharge' => Tools::getRoundedAmountFromCents(
