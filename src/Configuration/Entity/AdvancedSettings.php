@@ -47,6 +47,9 @@ class AdvancedSettings
     public $groupCardPaymentOptions;
 
     /** @var bool */
+    public $omitOrderItemDetails;
+
+    /** @var bool */
     public $threeDSExempted;
 
     /** @var bool */

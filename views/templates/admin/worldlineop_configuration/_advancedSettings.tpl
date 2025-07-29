@@ -375,6 +375,39 @@
             </div>
           </div>
         </div>
+        <!-- Omit item details -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+            <span class="label-tooltip"
+                  data-toggle="tooltip"
+                  data-html="true"
+                  data-original-title="{l s='When enabled, customers\' order item details—such as product names, prices, and quantities—are omitted from payment requests. This may be useful to enhance order privacy or address compatibility issues with third-party plugins affecting order details. However, be aware that excluding item details may hinder certain risk assessments done by financial institutions, and payment methods that require them (e.g., Klarna) may not be presented to your customers.' mod='worldlineop'}">
+            {l s='Omit order item details' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[omitOrderItemDetails]"
+                     id="worldlineopAdvancedSettings_omitOrderItemDetails_on"
+                     {if $data.advancedSettings.omitOrderItemDetails === true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_omitOrderItemDetails_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[omitOrderItemDetails]"
+                     id="worldlineopAdvancedSettings_omitOrderItemDetails_off"
+                     {if $data.advancedSettings.omitOrderItemDetails != true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_omitOrderItemDetails_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s='When enabled, order item details will not be included in payment requests. Only the total order amount will be transmitted.' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
         <!-- /Group cards -->
         <div class="form-group form-group-h2">
           <div class="col-lg-3"></div>
