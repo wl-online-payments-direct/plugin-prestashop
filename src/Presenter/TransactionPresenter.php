@@ -159,8 +159,26 @@ class TransactionPresenter implements PresenterInterface
                             'code' => $apiError->getCode(),
                         ];
                     }
-                    $liability = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getLiability() : '';
-                    $exemptionType = null !== $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput() ? $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getThreeDSecureResults()->getAppliedExemption() : '';
+
+                    $liability = '';
+                    $exemptionType = '';
+                    $paymentOutput = $paymentDetails->getPaymentOutput();
+
+                    $specificOutput = null;
+                    if (null !== $paymentOutput) {
+                        $specificOutput = $paymentOutput->getCardPaymentMethodSpecificOutput();
+                    }
+
+                    $threeDSecureResults = null;
+                    if (null !== $specificOutput) {
+                        $threeDSecureResults = $specificOutput->getThreeDSecureResults();
+                    }
+
+                    if (null !== $threeDSecureResults) {
+                        $liability = $threeDSecureResults->getLiability();
+                        $exemptionType = $threeDSecureResults->getAppliedExemption();
+                    }
+
                     $order = new \Order((int)$idOrder);
                     $psOrderAmountMatch = true;
                     if ($order->total_paid_tax_incl) {

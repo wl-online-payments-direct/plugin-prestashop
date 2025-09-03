@@ -14,11 +14,12 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.9
+  1.4.10
 </h1>
 <br>
 <ul>
-    <li>{l s='Fix issue when order is paid using GooglePay and fails to render in the backoffice' mod='worldlineop'}</li></ul>
+  <li>{l s='Fix issue when order is paid using GooglePay and fails to render in the backoffice' mod='worldlineop'}</li>
+</ul>
 <br>
 <hr>
 <a href="#" class="btn btn-primary js-worldlineop-hide-whatsnew worldlineop-btn-hide-whatsnew">
