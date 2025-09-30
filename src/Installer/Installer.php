@@ -101,6 +101,8 @@ class Installer
         $this->installDb();
         $this->orderStatusManager->installOrderStatuses($defaults['orderStatuses'], $this->module->name);
         $this->logger->info('Applying account default configuration');
+        $defaults['configuration']['accountSettings']['webhookMode'] = 'automatic';
+        $defaults['configuration']['accountSettings']['additionalWebhookUrls'] = [];
         $this->accountSettingsUpdater->update($defaults['configuration']['accountSettings']);
         $this->logger->info('Applying advanced default configuration');
         $defaults['configuration']['advancedSettings']['paymentSettings']['successOrderStateId'] = \Configuration::get('PS_OS_PAYMENT');

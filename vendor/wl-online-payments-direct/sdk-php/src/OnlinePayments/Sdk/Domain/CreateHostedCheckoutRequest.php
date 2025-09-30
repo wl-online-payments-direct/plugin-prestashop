@@ -7,6 +7,7 @@ namespace OnlinePayments\Sdk\Domain;
 
 use OnlinePayments\Sdk\DataObject;
 use UnexpectedValueException;
+use WorldlineOP\PrestaShop\Sdk\Feedbacks;
 
 /**
  * @package OnlinePayments\Sdk\Domain
@@ -38,6 +39,9 @@ class CreateHostedCheckoutRequest extends DataObject
      * @var Order
      */
     private $order;
+
+    /** @var Feedbacks|null */
+    private $feedbacks;
 
     /**
      * @var RedirectPaymentMethodSpecificInput
@@ -126,6 +130,22 @@ class CreateHostedCheckoutRequest extends DataObject
     }
 
     /**
+     * @param Feedbacks $feedbacks
+     */
+    public function setFeedbacks(Feedbacks $feedbacks)
+    {
+        $this->feedbacks = $feedbacks;
+    }
+
+    /**
+     * @return Feedbacks|null
+     */
+    public function getFeedbacks()
+    {
+        return $this->feedbacks;
+    }
+
+    /**
      * @return RedirectPaymentMethodSpecificInput
      */
     public function getRedirectPaymentMethodSpecificInput()
@@ -175,6 +195,9 @@ class CreateHostedCheckoutRequest extends DataObject
         }
         if ($this->order !== null) {
             $object->order = $this->order->toObject();
+        }
+        if ($this->feedbacks !== null) {
+            $object->feedbacks = $this->feedbacks->toObject();
         }
         if ($this->redirectPaymentMethodSpecificInput !== null) {
             $object->redirectPaymentMethodSpecificInput = $this->redirectPaymentMethodSpecificInput->toObject();
@@ -227,6 +250,13 @@ class CreateHostedCheckoutRequest extends DataObject
             }
             $value = new Order();
             $this->order = $value->fromObject($object->order);
+        }
+        if (property_exists($object, 'feedbacks')) {
+            if (!is_object($object->feedbacks)) {
+                throw new UnexpectedValueException('value \'' . print_r($object->feedbacks, true) . '\' is not an object');
+            }
+            $value = new Feedbacks();
+            $this->feedbacks = $value->fromObject($object->feedbacks);
         }
         if (property_exists($object, 'redirectPaymentMethodSpecificInput')) {
             if (!is_object($object->redirectPaymentMethodSpecificInput)) {

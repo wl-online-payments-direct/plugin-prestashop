@@ -16,6 +16,7 @@ namespace WorldlineOP\PrestaShop\Builder;
 
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
+use WorldlineOP\PrestaShop\Sdk\Feedbacks;
 
 /**
  * Class PaymentRequestDirector
@@ -68,6 +69,7 @@ class PaymentRequestDirector
             );
         }
         $hostedCheckoutRequest->setOrder($this->builder->buildOrder());
+        $hostedCheckoutRequest->setFeedbacks($this->builder->buildFeedbacks());
 
         return $hostedCheckoutRequest;
     }
@@ -89,6 +91,7 @@ class PaymentRequestDirector
             $this->builder->buildCardPaymentMethodSpecificInput()
         );
         $paymentRequest->setOrder($this->builder->buildOrder());
+        $paymentRequest->setFeedbacks($this->builder->buildFeedbacks());
 
         return $paymentRequest;
     }

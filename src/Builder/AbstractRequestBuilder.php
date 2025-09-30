@@ -41,6 +41,7 @@ use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Presenter\ShoppingCartPresenter;
+use WorldlineOP\PrestaShop\Sdk\Feedbacks;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
@@ -277,5 +278,38 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $shipping->setAddressIndicator($this->context->cart->id_address_delivery === $this->context->cart->id_address_invoice ? 'same-as-billing' : 'different-than-billing');
 
         return $shipping;
+    }
+
+    /**
+     * Build feedbacks object for payment requests.
+     *
+     * @return Feedbacks
+     */
+    public function buildFeedbacks()
+    {
+        $feedbacks = new Feedbacks();
+        $webhookMode = $this->settings->accountSettings->webhookMode ?? 'manual';
+        if ($webhookMode !== 'automatic') {
+            return $feedbacks;
+        }
+
+        $webhookUrls = [];
+
+        $mainWebhookUrl = $this->context->link->getModuleLink(
+            $this->module->name,
+            'webhook',
+            [],
+            true
+        );
+        $webhookUrls[] = $mainWebhookUrl;
+
+        $additionalWebhooks = $this->settings->accountSettings->additionalWebhookUrls ?? [];
+        if (!empty($additionalWebhooks) && is_array($additionalWebhooks)) {
+            $webhookUrls = array_merge($webhookUrls, $additionalWebhooks);
+        }
+
+        $feedbacks->setWebhooksUrls($webhookUrls);
+
+        return $feedbacks;
     }
 }

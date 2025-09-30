@@ -1,0 +1,45 @@
+name: Trigger deployment to staging env
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - hotfix
+
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide deploy target
+        id: decide
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          
+          if [[ "$BRANCH" == "master" ]]; then
+            DEPLOY_TO="prerelease-1-7"
+          elif [[ "$BRANCH" == "hotfix" ]]; then
+            DEPLOY_TO="staging-hotfix-1-7"
+          elif [[ "$BRANCH" == "develop" ]]; then
+            DEPLOY_TO="staging-1-7"
+          else
+            echo "Unsupported branch: $BRANCH"; exit 1
+          fi
+          
+          echo "deploy_to=$DEPLOY_TO" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger target deploy with inputs
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          DEPLOY_TO: ${{ steps.decide.outputs.deploy_to }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg ref "main" \
+            --arg deploy_to "$DEPLOY_TO" \
+            '{ref:$ref, inputs:{"deploy-to":$deploy_to}}')
+
+          curl -sS -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/Worldline-Plugins/deployment-prestashop/actions/workflows/deployer-wld.yml/dispatches \
+            -d "$PAYLOAD"
