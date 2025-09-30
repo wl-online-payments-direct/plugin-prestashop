@@ -106,6 +106,15 @@ class WorldlineopCartChecksum implements ChecksumInterface
             $uniqId .= $this->separator;
         }
 
+        $uniqId .= $cart->id_carrier;
+        $uniqId .= $this->subseparator;
+        $uniqId .= $cart->getTotalShippingCost();
+        $uniqId .= $this->subseparator;
+        $uniqId .= $cart->id_address_delivery;
+        $uniqId .= $this->subseparator;
+        $uniqId .= $cart->getTotalWeight();
+        $uniqId .= $this->separator;
+
         $uniqId = rtrim($uniqId, $this->separator);
         $uniqId = rtrim($uniqId, $this->subseparator);
 
