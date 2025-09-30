@@ -7,6 +7,7 @@ namespace OnlinePayments\Sdk\Domain;
 
 use OnlinePayments\Sdk\DataObject;
 use UnexpectedValueException;
+use WorldlineOP\PrestaShop\Sdk\Feedbacks;
 
 /**
  * @package OnlinePayments\Sdk\Domain
@@ -53,6 +54,11 @@ class CreatePaymentRequest extends DataObject
      * @var SepaDirectDebitPaymentMethodSpecificInput
      */
     private $sepaDirectDebitPaymentMethodSpecificInput;
+
+    /**
+     * @var Feedbacks
+     */
+    private $feedbacks;
 
     // Methods
     /**
@@ -175,6 +181,19 @@ class CreatePaymentRequest extends DataObject
         $this->sepaDirectDebitPaymentMethodSpecificInput = $value;
     }
 
+    public function getFeedbacks()
+    {
+        return $this->feedbacks;
+    }
+
+    /**
+     * @param Feedbacks $value
+     */
+    public function setFeedbacks($value)
+    {
+        $this->feedbacks = $value;
+    }
+
     /**
      * @return object
      */
@@ -204,6 +223,9 @@ class CreatePaymentRequest extends DataObject
         }
         if ($this->sepaDirectDebitPaymentMethodSpecificInput !== null) {
             $object->sepaDirectDebitPaymentMethodSpecificInput = $this->sepaDirectDebitPaymentMethodSpecificInput->toObject();
+        }
+        if ($this->feedbacks !== null) {
+            $object->feedbacks = $this->feedbacks->toObject();
         }
         return $object;
     }
@@ -263,6 +285,13 @@ class CreatePaymentRequest extends DataObject
             }
             $value = new SepaDirectDebitPaymentMethodSpecificInput();
             $this->sepaDirectDebitPaymentMethodSpecificInput = $value->fromObject($object->sepaDirectDebitPaymentMethodSpecificInput);
+        }
+        if (property_exists($object, 'feedbacks')) {
+            if (!is_object($object->feedbacks)) {
+                throw new UnexpectedValueException('value \'' . print_r($object->feedbacks, true) . '\' is not an object');
+            }
+            $value = new Feedbacks();
+            $this->feedbacks = $value->fromObject($object->feedbacks);
         }
         return $this;
     }

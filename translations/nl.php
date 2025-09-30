@@ -1,10 +1,7 @@
 <?php
 
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
 global $_MODULE;
-$_MODULE = [];
+$_MODULE = array();
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'In deze module biedt een 1-klik-integratie waarmee je kunt starten met het aanvaarden van betalingen met de API\'s van Worldline Direct (voorheen Ingenico-Ogone). Verhoog je inkomsten door je klanten wereldwijde en regionale betalingsmethoden te bieden waarmee je in heel Europa kunt verkopen.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Kan de Worldline-module niet installeren. Controleer de logboeken in de map \"logs\" van de module.';
@@ -184,8 +181,25 @@ $_MODULE['<{worldlineop}prestashop>_account_b232ac8275cdc806dca23adb7c5b12a7'] =
 $_MODULE['<{worldlineop}prestashop>_account_b10dd6ea1a32fb6f635fb218dde2b8d7'] = 'API-geheim Productie';
 $_MODULE['<{worldlineop}prestashop>_account_708ce17caa0e0ddf0223b5ccf3b86ff2'] = 'Webhooks-sleutel Productie';
 $_MODULE['<{worldlineop}prestashop>_account_a85cd91c822649f170d1bcfdfc8b05db'] = 'Webhooks-geheim Productie';
-$_MODULE['<{worldlineop}prestashop>_account_aaa2404d7b1b8fa0655b59ad4e5ebe94'] = 'URL Webhooks';
-$_MODULE['<{worldlineop}prestashop>_account_29a0d059c6b89ad88830e8f38c47b4f6'] = 'Gebruik de knop \"kopiëren\" om de URL te kopiëren om problemen met kopiëren en plakken te voorkomen';
+$_MODULE['<{worldlineop}prestashop>_account_829ad0dd56f780b533e5b7312c49ce1b'] = 'Configuratie van webhook-URL';
+$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = 'Webhooks zijn de primaire methode die uw winkel gebruikt om real-time betalingsmeldingen te ontvangen (bv. betaald, mislukt, terugbetaald), die essentieel zijn voor het aanmaken en bijwerken van uw bestellingen. Uitleg Automatische Modus: De plug-in verstuurt de webhook-URL van de winkel automatisch bij elk betalingsverzoek, wat de veiligste en meest betrouwbare optie is. Deze modus stelt u ook in staat om tot 4 extra URL\'s toe te voegen om meldingen naar externe diensten te sturen, zoals boekhouding of abonnementsbeheer. Let op: in deze modus worden alle webhook-URL\'s die in uw handelaarsportaal zijn geconfigureerd, genegeerd voor transacties afkomstig uit deze specifieke winkel. Uitleg Handmatige Modus: U dient de Webhook-URL van de winkel handmatig te kopiëren en in de webhook-configuratie van uw handelaarsportaal te plakken. Cruciaal voor multishop-gebruikers: deze URL is uniek voor elke winkel, en dit proces moet voor elke winkel worden herhaald.';
+$_MODULE['<{worldlineop}prestashop>_account_be318d7806111428185ad35d86c12305'] = 'Automatisch (Aanbevolen)';
+$_MODULE['<{worldlineop}prestashop>_account_e1ba155a9f2e8c3be94020eef32a0301'] = 'Handmatig';
+$_MODULE['<{worldlineop}prestashop>_account_81df417c2942e97e8527167cacfd094a'] = 'Automatisch:';
+$_MODULE['<{worldlineop}prestashop>_account_1f66738c8be987b2a2a8a5de0ccddab1'] = 'De plug-in verstuurt de webhook-URL(\'s) automatisch bij elke transactie.';
+$_MODULE['<{worldlineop}prestashop>_account_4c0942bd34c3a6dee1a430fe7acec09d'] = 'Handmatig:';
+$_MODULE['<{worldlineop}prestashop>_account_7b7909ac3d9d3f897745dab6ac6b4791'] = 'U moet de webhook-URL van uw winkel toevoegen in het handelaarsportaal.';
+$_MODULE['<{worldlineop}prestashop>_account_7686f2acb31d5d32faac85d3b911bd27'] = 'De onderstaande URL(\'s) worden gebruikt voor transacties uit deze winkel,   alle webhook-URL\'s die in het handelaarsportaal zijn geconfigureerd, worden genegeerd.';
+$_MODULE['<{worldlineop}prestashop>_account_70b6adcaed75bc898fe1533adefc62bf'] = 'U bent volledig verantwoordelijk voor het toevoegen van de webhook-URL van uw winkel in het handelaarsportaal.';
+$_MODULE['<{worldlineop}prestashop>_account_5d9f2d97184b006eceaf37a551a50a2b'] = 'Indien u dit niet doet, kan dit leiden tot ontbrekende of onvolledige bestellingen! ';
+$_MODULE['<{worldlineop}prestashop>_account_0f0783f2416a677cbce4e3a81fe89f20'] = 'Webhook-URL van de winkel';
+$_MODULE['<{worldlineop}prestashop>_account_334183355b1daeda1186c12f174c8da2'] = 'Dit is het unieke adres van uw winkel voor het ontvangen van betalingsmeldingen. De plug-in luistert op deze URL naar real-time statusupdates om uw bestellingen dienovereenkomstig aan te maken en bij te werken.';
+$_MODULE['<{worldlineop}prestashop>_account_902e40b8a1fd8d997397f8262048a084'] = 'Dit is de webhook-URL van uw winkel, deze wordt bij elke transactie meegestuurd.';
+$_MODULE['<{worldlineop}prestashop>_account_65b97cf9a1329fb0b30cb9adc1dcc084'] = 'Dit is de webhook-URL van uw winkel, u moet deze toevoegen in het handelaarsportaal. Gebruik het \"kopieer\"-icoon om fouten te vermijden.';
+$_MODULE['<{worldlineop}prestashop>_account_c535d4a1c3de661627148a68d77cbacd'] = 'Extra Webhook-URL\'s';
+$_MODULE['<{worldlineop}prestashop>_account_2ab2f3863455f4418d8f27d67e2c93c9'] = 'Geef tot vier extra URL\'s op om een kopie van elk webhook-evenement te ontvangen. Dit is een geavanceerde functie voor het synchroniseren van betalingsgegevens over meerdere platforms (bv. boekhoudsoftware, fulfillmentdiensten). Elke URL moet een geldige en toegankelijke HTTPS-URL zijn die POST-verzoeken kan ontvangen.';
+$_MODULE['<{worldlineop}prestashop>_account_ebb061953c0454b2c8ee7b0ac615ebcd'] = 'Optioneel';
+$_MODULE['<{worldlineop}prestashop>_account_ed65cd7b3fc26832f73d62fe6fbc9de2'] = 'U kunt tot 4 extra webhook-URL\'s toevoegen';
 $_MODULE['<{worldlineop}prestashop>_account_c9cc8cce247e49bae79f15173ce97354'] = 'Opslaan';
 $_MODULE['<{worldlineop}prestashop>_account_a0a3752003ee536d18e8fba990b29f02'] = 'Opslaan een aanmeldingsgegevens controleren';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_d5815623c49bc79327917762848902f0'] = 'Betalingsinstellingen';
