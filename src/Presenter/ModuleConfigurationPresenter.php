@@ -29,6 +29,14 @@ class ModuleConfigurationPresenter implements PresenterInterface
     const PENDING_CRON = '*/30 * * * * wget -O /dev/null ';
     const CAPTURE_CRON = '0 */6 * * * wget -O /dev/null ';
 
+    /** @var string[] */
+    private const HIDDEN_FIELDS = [
+        'testApiSecret',
+        'testWebhooksSecret',
+        'prodApiSecret',
+        'prodWebhooksSecret',
+    ];
+
     /** @var SettingsLoader */
     private $settingsLoader;
 
@@ -55,6 +63,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
     public function present()
     {
         $settings = $this->settingsLoader->normalize();
+        $this->hideSecrets($settings);
         $settings['extra'] = [
             'moduleVersion' => $this->module->version,
             'advancedSettingsEnabled' => \Configuration::getGlobalValue('WORLDLINEOP_SHOW_ADVANCED_SETTINGS'),
@@ -96,5 +105,37 @@ class ModuleConfigurationPresenter implements PresenterInterface
         ];
 
         return $settings;
+    }
+
+    /**
+     * @param array $settings
+     * @return void
+     */
+    private function hideSecrets(array &$settings): void
+    {
+        if (!array_key_exists('accountSettings', $settings)) {
+            return;
+        }
+
+        foreach (self::HIDDEN_FIELDS as $field) {
+            if (array_key_exists($field, $settings['accountSettings'])) {
+                $settings['accountSettings'][$field] = $this->maskString($settings['accountSettings'][$field]);
+            }
+        }
+    }
+
+    /**
+     * Mask a secret field
+     *
+     * @param string $input
+     * @return string
+     */
+    private function maskString(string $input): string
+    {
+        if (empty($input)) {
+            return '';
+        }
+
+        return substr($input, 0, 6) . str_repeat('*', 10);
     }
 }

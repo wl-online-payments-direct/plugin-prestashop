@@ -21,6 +21,13 @@ use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
  */
 class AccountSettingsUpdater extends SettingsUpdater
 {
+    private const HIDDEN_FIELDS = [
+        'testApiSecret',
+        'testWebhooksSecret',
+        'prodApiSecret',
+        'prodWebhooksSecret',
+    ];
+
     protected function serialize()
     {
         $this->json = $this->serializer->serialize($this->settings->accountSettings, 'json');
@@ -57,6 +64,30 @@ class AccountSettingsUpdater extends SettingsUpdater
      */
     public function forceResolve($array)
     {
-        return $this->resolver->resolve($array);
+        return $this->resolver->resolve($this->resolveMaskedValues($array));
+    }
+
+    /**
+     * Resolve masked values in input form with values already saved in the database.
+     *
+     * @param array $form
+     *
+     * @return array
+     */
+    private function resolveMaskedValues(array $form): array
+    {
+        foreach (self::HIDDEN_FIELDS as $field) {
+            if (isset($form[$field])) {
+                $formValue = $form[$field];
+                if (preg_match('/\*{10}$/', $formValue)) {
+                    // Compare first 6 characters
+                    if (substr($formValue, 0, 6) === substr($this->settings->accountSettings->$field, 0, 6)) {
+                        $form[$field] = $this->settings->accountSettings->$field; // keep old value
+                    }
+                }
+            }
+        }
+
+        return $form; // use new form value
     }
 }

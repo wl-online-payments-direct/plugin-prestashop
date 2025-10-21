@@ -83,7 +83,7 @@ class TransactionResponseProcessor
                 );
 
                 $lock->release();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage(), ['presentedData' => $presentedData, 'trace' => $e->getTraceAsString()]);
             }
             if (false !== ($orderIds = Tools::getOrderIdsByIdCart($presentedData->cardDetails['idCart']))) {

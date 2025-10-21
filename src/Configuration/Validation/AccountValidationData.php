@@ -40,16 +40,16 @@ class AccountValidationData extends AbstractValidationData
                 new Regex(['pattern' => '/^[a-f0-9]+$/i', 'message' => $this->module->l('Please enter a valid test Webhooks key', 'AccountValidationData')]),
             ],
             'testWebhooksSecret' => [
-                new Regex(['pattern' => '/^[a-f0-9\-]+$/i', 'message' => $this->module->l('Please enter a valid test API secret', 'AccountValidationData')]),
+                new Regex(['pattern' => '/^[a-f0-9\-]+$/i', 'message' => $this->module->l('Please enter a valid test Webhooks secret', 'AccountValidationData')]),
             ],
             'prodApiKey' => [
                 new Regex(['pattern' => '/^[a-zA-Z0-9]+$/i', 'message' => $this->module->l('Please enter a valid prod API key', 'AccountValidationData')]),
             ],
             'prodWebhooksKey' => [
-                new Regex(['pattern' => '/^[a-f0-9]+$/i', 'message' => $this->module->l('Please enter a valid test Webhooks key', 'AccountValidationData')]),
+                new Regex(['pattern' => '/^[a-f0-9]+$/i', 'message' => $this->module->l('Please enter a valid prod Webhooks key', 'AccountValidationData')]),
             ],
             'prodWebhooksSecret' => [
-                new Regex(['pattern' => '/^[a-f0-9\-]+$/i', 'message' => $this->module->l('Please enter a valid test Webhooks secret', 'AccountValidationData')]),
+                new Regex(['pattern' => '/^[a-f0-9\-]+$/i', 'message' => $this->module->l('Please enter a valid prod Webhooks secret', 'AccountValidationData')]),
             ],
         ];
         //@formatter:on
