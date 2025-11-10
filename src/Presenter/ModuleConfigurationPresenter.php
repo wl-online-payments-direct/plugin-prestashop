@@ -37,6 +37,22 @@ class ModuleConfigurationPresenter implements PresenterInterface
         'prodWebhooksSecret',
     ];
 
+    private const TEST_FIELDS = [
+        'testPspid',
+        'testApiKey',
+        'testApiSecret',
+        'testWebhooksKey',
+        'testWebhooksSecret'
+    ];
+
+    private const PROD_FIELDS = [
+        'prodPspid',
+        'prodApiKey',
+        'prodApiSecret',
+        'prodWebhooksKey',
+        'prodWebhooksSecret'
+    ];
+
     /** @var SettingsLoader */
     private $settingsLoader;
 
@@ -105,6 +121,44 @@ class ModuleConfigurationPresenter implements PresenterInterface
         ];
 
         return $settings;
+    }
+
+    /**
+     * @param array $postedData
+     *
+     * @return array
+     *
+     * @throws \PrestaShopException
+     */
+    public function presentWithPostedData(array $postedData): array
+    {
+        $settings = $this->present();
+        $settings = array_replace_recursive($settings, $postedData);
+        if (!$this->areFieldsEmpty($settings)) {
+            $this->hideSecrets($settings);
+        }
+
+        return $settings;
+    }
+
+    /**
+     * @param array $settings
+     *
+     * @return bool
+     */
+    private function areFieldsEmpty(array $settings): bool
+    {
+        $fields = $settings['accountSettings']['environment'] === 'test'
+            ? self::TEST_FIELDS
+            : self::PROD_FIELDS;
+
+        foreach ($fields as $field) {
+            if (empty($settings['accountSettings'][$field])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

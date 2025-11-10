@@ -96,11 +96,10 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
         $this->setModals();
         /** @var \WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter $presenter */
         $presenter = $this->module->getService('worldlineop.settings.presenter');
-        $data = $presenter->present();
+        $data = empty($this->postedData)
+            ? $presenter->present()
+            : $presenter->presentWithPostedData($this->postedData);
         $data['activeTab'] = $this->activeTab;
-        if (!empty($this->postedData)) {
-            $data = array_replace_recursive($data, $this->postedData);
-        }
         $this->context->smarty->assign([
             'data' => $data,
             'languages' => $this->getLanguages(),

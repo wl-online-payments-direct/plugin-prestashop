@@ -208,7 +208,7 @@ class TransactionPresenter implements PresenterInterface
                             'currencyCode' => $currencyCode,
                             'reference' => $payment->getPaymentOutput()->getReferences()->getMerchantReference(),
                             'id' => $paymentDetail->getId(),
-                            'status' => $paymentDetails->getStatus(),
+                            'status' => $paymentDetail->getStatus(),
                             'productId' => $paymentSpecificOutput->getPaymentProductId(),
                             'fraudResult' => !empty($paymentSpecificOutput->getFraudResults()) ?
                                 $paymentSpecificOutput->getFraudResults()->getFraudServiceResult() : '',

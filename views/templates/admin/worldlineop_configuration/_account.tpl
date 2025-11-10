@@ -69,11 +69,11 @@
           <!-- /Test PSPID -->
           <div class="alert alert-info">
             <p class="text-info">
-              {l s='To retrieve the API Key and API secret in your PSPID, follow these steps:' mod='worldlineop'}
+              {l s='To retrieve the API Key and API secret in your account, follow these steps:' mod='worldlineop'}
             </p>
             <p class="text-info">
-              {l s='> Login to the Back Office. Go to Configuration > Technical information > Ingenico Direct Settings > Direct API Key' mod='worldlineop'}<br>
-              {l s='> If you have not configured anything yet, the screen shows "No API credentials found". To create both API Key and API Secret click on "GENERATE"' mod='worldlineop'}
+              {l s='> Login to the Worldline Merchant Portal. Go to Developer > Payment API' mod='worldlineop'}<br>
+              {l s='> Click on "Add API key"' mod='worldlineop'}
             </p>
           </div>
           <!-- Test API Key -->
@@ -108,14 +108,14 @@
           <!-- /Test API Secret -->
           <div class="alert alert-info">
             <p class="text-info">
-              {l s='To retrieve the webhooks credentials, login to the Back Office.' mod='worldlineop'}<br>
-              {l s='Go to Configuration > Technical information > Ingenico Direct settings > Webhooks Configuration and perform the following steps:' mod='worldlineop'}
+              {l s='To retrieve the webhooks credentials, follow these steps:' mod='worldlineop'}<br>
             </p>
             <p class="text-info">
-              {l s='> Click on "GENERATE WEBHOOKS API KEY"' mod='worldlineop'}<br>
-              {l s='> Copy & Paste the WebhooksKeySecret immediately' mod='worldlineop'}<br>
-              {l s='> In "Endpoints URLs", paste the Webhooks URL of your store - see below' mod='worldlineop'}<br>
-              {l s='> Click on "SAVE" to confirm your settings' mod='worldlineop'}
+              {l s='> Go to Developer > Webhooks' mod='worldlineop'}<br>
+              {l s='> Click on "Generate webhooks keys"' mod='worldlineop'}<br>
+              {l s='> Copy & Paste the WebhooksKey & Secret immediately' mod='worldlineop'}<br>
+              {l s='> Click on "Add webhook endpoint"' mod='worldlineop'}<br>
+              {l s='> In "Endpoints URLs", paste the Webhooks URL of your store - see below' mod='worldlineop'}
             </p>
             <p>
               <i class="icon icon-warning"></i>
@@ -172,11 +172,11 @@
           <!-- /Prod PSPID -->
           <div class="alert alert-info">
             <p class="text-info">
-              {l s='To retrieve the API Key and API secret in your PSPID, follow these steps:' mod='worldlineop'}
+              {l s='To retrieve the API Key and API secret in your account, follow these steps:' mod='worldlineop'}
             </p>
             <p class="text-info">
-              {l s='> Login to the Back Office. Go to Configuration > Technical information > Ingenico Direct Settings > Direct API Key' mod='worldlineop'}<br>
-              {l s='> If you have not configured anything yet, the screen shows "No API credentials found". To create both API Key and API Secret click on "GENERATE"' mod='worldlineop'}
+              {l s='> Login to the Worldline Merchant Portal. Go to Developer > Payment API' mod='worldlineop'}<br>
+              {l s='> Click on "Add API key"' mod='worldlineop'}
             </p>
           </div>
           <!-- Prod API Key -->
@@ -211,16 +211,16 @@
           <!-- /Prod API Secret -->
           <div class="alert alert-info">
             <p class="text-info">
-              {l s='To retrieve the webhooks credentials, login to the Back Office.' mod='worldlineop'}<br>
-              {l s='Go to Configuration > Technical information > Ingenico Direct settings > Webhooks Configuration and perform the following steps:' mod='worldlineop'}
+              {l s='To retrieve the webhooks credentials, follow these steps:' mod='worldlineop'}<br>
             </p>
             <p class="text-info">
-              {l s='> Click on "GENERATE WEBHOOKS API KEY"' mod='worldlineop'}<br>
-              {l s='> Copy & Paste the WebhooksKeySecret immediately' mod='worldlineop'}<br>
-              {l s='> In "Endpoints URLs", paste the Webhooks URL of your store - see below' mod='worldlineop'}<br>
-              {l s='> Click on "SAVE" to confirm your settings' mod='worldlineop'}
+              {l s='> Go to Developer > Webhooks' mod='worldlineop'}<br>
+              {l s='> Click on "Generate webhooks keys"' mod='worldlineop'}<br>
+              {l s='> Copy & Paste the WebhooksKey & Secret immediately' mod='worldlineop'}<br>
+              {l s='> Click on "Add webhook endpoint"' mod='worldlineop'}<br>
+              {l s='> In "Endpoints URLs", paste the Webhooks URL of your store - see below' mod='worldlineop'}
             </p>
-            <p class="text-info">
+            <p>
               <i class="icon icon-warning"></i>
               {l s='If you have several shops & different credentials, please configure your Worldline portals for each shops/accounts.' mod='worldlineop'}
             </p>
