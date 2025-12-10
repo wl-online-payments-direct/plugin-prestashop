@@ -136,7 +136,7 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_bafd7322c6e97d25b6299
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_002c18d9b9b0bcb5eb2888cdfeb6373a'] = 'Un tasto di pagamento unico per reindirizzare al pagamento su una pagina ospitata di Worldline';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ffaaab40fc54c578836d4ae92238718c'] = 'Logo generico visualizzato sulla tua pagina di pagamento';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_91412465ea9169dfd901dd5e7c96dd99'] = 'Caricare';
-$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_8de30aa607e33f41413c50be107e0c6c'] = 'Eliminare logo attuale';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0a7aa3e6a43a0a1406e4169ae2be963a'] = 'Ripristina il logo predefinito';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb70646ed7b6d'] = 'È possibile caricare un nuovo logo qui (i tipi di file accettati per i loghi sono solo .png .gif .jpg)';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'Si consiglia di utilizzare immagini di massimo 20 px di altezza e 120 px di lunghezza';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Titolo del tasto di pagamento';

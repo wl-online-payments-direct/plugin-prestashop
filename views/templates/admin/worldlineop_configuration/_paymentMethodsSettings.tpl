@@ -90,9 +90,9 @@
             </label>
           </div>
           <div class="col-lg-9 col-lg-offset-3">
-              {if $data.paymentMethodsSettings.genericLogoFilename}
+              {if !$data.paymentMethodsSettings.isDefaultGenericLogo}
                 <input type="checkbox" id="worldlineopPaymentMethodsSettings[deleteGenericLogo]" name="worldlineopPaymentMethodsSettings[deleteGenericLogo]" />
-                <label for="worldlineopPaymentMethodsSettings[deleteGenericLogo]">{l s='Delete current logo' mod='worldlineop'}</label>
+                <label for="worldlineopPaymentMethodsSettings[deleteGenericLogo]">{l s='Revert to default logo' mod='worldlineop'}</label>
               {/if}
             <div class="help-block">
                 {l s='You can upload here a new logo (file types accepted for logos are: .png .gif .jpg only)' mod='worldlineop'}<br/>
@@ -321,9 +321,9 @@
               </label>
             </div>
             <div class="col-lg-9 col-lg-offset-3">
-              {if $data.paymentMethodsSettings.iframeLogoFilename}
+              {if !$data.paymentMethodsSettings.isDefaultIframeLogo}
                 <input type="checkbox" id="worldlineopPaymentMethodsSettings[deleteLogo]" name="worldlineopPaymentMethodsSettings[deleteLogo]" />
-                <label for="worldlineopPaymentMethodsSettings[deleteLogo]">{l s='Delete current logo' mod='worldlineop'}</label>
+                <label for="worldlineopPaymentMethodsSettings[deleteLogo]">{l s='Revert to default logo' mod='worldlineop'}</label>
               {/if}
               <div class="help-block">
                 {l s='You can upload here a new logo (file types accepted for logos are: .png .gif .jpg only)' mod='worldlineop'}<br/>

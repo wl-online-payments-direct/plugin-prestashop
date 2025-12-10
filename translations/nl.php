@@ -136,7 +136,7 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_bafd7322c6e97d25b6299
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_002c18d9b9b0bcb5eb2888cdfeb6373a'] = 'Een unieke betalingsknop voor omleiding voor betaling op een door Worldline gehoste pagina';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ffaaab40fc54c578836d4ae92238718c'] = 'Generiek logo weergegeven op uw betalingspagina';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_91412465ea9169dfd901dd5e7c96dd99'] = 'Uploaden';
-$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_8de30aa607e33f41413c50be107e0c6c'] = 'Huidig logo verwijderen';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0a7aa3e6a43a0a1406e4169ae2be963a'] = 'Standaardlogo herstellen';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb70646ed7b6d'] = 'Je kunt hier een nieuw logo uploaden (geaccepteerde bestandstypes voor logo\'s zijn: .png, .gif en .jpg)';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'We bevelen aan dat je afbeeldingen van maximaal 20px hoog bij 120px lang gebruikt';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Naam betalingsknop';

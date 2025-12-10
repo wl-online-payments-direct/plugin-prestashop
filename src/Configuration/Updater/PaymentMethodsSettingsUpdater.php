@@ -52,7 +52,10 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             if (realpath($file) === $file) {
                 unlink($file);
             }
-            $this->denormalize(['iframeLogoFilename' => '']);
+
+            $defaultFile = $this->settings->paymentMethodsSettings::DEFAULT_IFRAME_LOGO_FILENAME;
+
+            $this->denormalize(['iframeLogoFilename' => $defaultFile, 'isDefaultIframeLogo' => true]);
             $this->serialize();
             $this->save();
 
@@ -95,7 +98,7 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             //@formatter:on
         }
 
-        $this->denormalize(['iframeLogoFilename' => $filename]);
+        $this->denormalize(['iframeLogoFilename' => $filename, 'isDefaultIframeLogo' => false]);
         $this->serialize();
         $this->save();
     }
@@ -112,7 +115,10 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             if (realpath($file) === $file) {
                 unlink($file);
             }
-            $this->denormalize(['genericLogoFilename' => '']);
+
+            $defaultFile = $this->settings->paymentMethodsSettings::DEFAULT_GENERIC_LOGO_FILENAME;
+
+            $this->denormalize(['genericLogoFilename' => $defaultFile, 'isDefaultGenericLogo' => true]);
             $this->serialize();
             $this->save();
 
@@ -155,7 +161,7 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
             //@formatter:on
         }
 
-        $this->denormalize(['genericLogoFilename' => $filename]);
+        $this->denormalize(['genericLogoFilename' => $filename, 'isDefaultGenericLogo' => false]);
         $this->serialize();
         $this->save();
     }

@@ -113,6 +113,8 @@ configuration:
       it: 'Pagare con Worldline Online Payments'
       nl: 'Betaal met Worldline Online Payments'
       de: 'Bezahlen mit Worldline Online Payments'
+    isDefaultGenericLogo: 1
+    isDefaultIframeLogo: 1
     iframeTemplateFilename: ''
     iframeCallToAction:
       fr: 'Payer avec une carte de crédit'
