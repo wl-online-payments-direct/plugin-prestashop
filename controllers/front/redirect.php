@@ -151,15 +151,8 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                     $this->logger->error($e->getMessage());
                 }
                 if (isset($existingHostedCheckoutResponse)) {
-                    if (self::HC_STATUS_CANCELLED === $existingHostedCheckoutResponse->getStatus()
-                        || self::PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED === $existingHostedCheckoutResponse->getCreatedPaymentOutput()
-                            ->getPaymentStatusCategory()
-                    ) {
-                        $this->hostedCheckoutRepository->delete($hostedCheckout);
-                        $hostedCheckout = new HostedCheckout();
-                    } else {
-                        Tools::redirect(Settings::DEFAULT_SUBDOMAIN . $hostedCheckout->partial_redirect_url);
-                    }
+                    $this->hostedCheckoutRepository->delete($hostedCheckout);
+                    $hostedCheckout = new HostedCheckout();
                 }
             }
         } else {

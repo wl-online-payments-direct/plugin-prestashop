@@ -60,15 +60,22 @@ class PaymentRequestDirector
         }
         if (false !== $mobilePaymentMethodSpecificInput) {
             $hostedCheckoutRequest->setMobilePaymentMethodSpecificInput(
-                $this->builder->buildMobilePaymentMethodSpecificInput()
+                $mobilePaymentMethodSpecificInput
             );
         }
         if (false !== $redirectPaymentMethodSpecificInput) {
             $hostedCheckoutRequest->setRedirectPaymentMethodSpecificInput(
-                $this->builder->buildRedirectPaymentMethodSpecificInput()
+                $redirectPaymentMethodSpecificInput
             );
         }
         $hostedCheckoutRequest->setOrder($this->builder->buildOrder());
+
+        if ($hostedCheckoutRequest->getOrder()->getCustomer()->getLocale() === null) {
+            $hostedCheckoutRequest->getOrder()->getCustomer()->setLocale(
+                $hostedCheckoutRequest->getHostedCheckoutSpecificInput()->getLocale()
+            );
+        }
+
         $hostedCheckoutRequest->setFeedbacks($this->builder->buildFeedbacks());
 
         return $hostedCheckoutRequest;

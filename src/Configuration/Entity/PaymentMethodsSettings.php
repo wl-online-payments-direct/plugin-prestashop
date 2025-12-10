@@ -64,6 +64,9 @@ class PaymentMethodsSettings
     /** @var PaymentMethod[] */
     public $iframePaymentMethods;
 
+    /** @var string */
+    public $fixedSoftDescriptor;
+
     /**
      * @param int $productId
      *

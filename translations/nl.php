@@ -141,6 +141,8 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'We bevelen aan dat je afbeeldingen van maximaal 20px hoog bij 120px lang gebruikt';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Naam betalingsknop';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6f1ad8444a503e36d821da11b4b1fe57'] = 'Naam van de betalingsselectieknop op jouw afrekenpagina';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_46310871a02a521ecfdfe034d1fd0085'] = 'Vaste omschrijving';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0b9f4e7ca03c57b2d6943e035e6c996e'] = 'Minimaal 2, maximaal 15 tekens. Je kunt een vaste waarde opgeven die naar de banken die de betaling verwerken wordt gestuurd. Als de rekening van de consument dit ondersteunt, kan deze waarde worden weergegeven op de bankspecificatie van de consument. Belangrijke opmerking: het hier instellen van een waarde is verplicht om de betaalmethode Pledg te gebruiken.';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_55e58b9f475a7a98a03b777f4e0a2ec7'] = 'Selectie betalingsmethode voor omleiden';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_df2a60fbc299477de52630ae7fe6e477'] = 'Elke betalingsmethode geïdentificeerd door een knop. Zodra de klant op een knop klikt, wordt deze omgeleid naar een merkspecifieke betalingspagina';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6ef52d9cbb060e8e35b86085db5536cb'] = 'Vernieuw lijst met beschikbare betalingsmethoden';

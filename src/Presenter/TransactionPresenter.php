@@ -122,7 +122,7 @@ class TransactionPresenter implements PresenterInterface
                     } elseif (empty($captures->getCaptures()) && !$payment->getStatusOutput()->getIsAuthorized() && self::STATUS_PAYMENT_CAPTURED === $payment->getStatus()) {
                         $totalCaptured = $payment->getPaymentOutput()->getAcquiredAmount()->getAmount();
                     }
-                    $capturableAmount = !$paymentDetails->getStatusOutput()->getIsAuthorized() ? 0 : Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - $totalCaptured + $totalPendingCapture, $currencyCode);
+                    $capturableAmount = !$paymentDetails->getStatusOutput()->getIsAuthorized() ? 0 : Tools::getRoundedAmountFromCents($payment->getPaymentOutput()->getAmountOfMoney()->getAmount() - $totalCaptured - $totalPendingCapture, $currencyCode);
                     if ($capturableAmount < 0) {
                         $capturableAmount = 0;
                     }

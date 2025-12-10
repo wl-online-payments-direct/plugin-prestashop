@@ -8,6 +8,12 @@
       border: none;
       width: 100%;
     }
+
+    @media (max-width: 767.98px) {
+      iframe {
+        height: 500px !important;
+      }
+    }
   }
 
   .worldlineop-htp-btn.disabled button {

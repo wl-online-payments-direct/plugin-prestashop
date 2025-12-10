@@ -108,7 +108,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         }
 
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
-        if (self::PRODUCT_ID_INTERSOLVE == $this->idProduct) {
+        if (self::PRODUCT_ID_INTERSOLVE == $this->idProduct || self::PRODUCT_ID_PLEDG == $this->idProduct) {
             $cardPaymentMethodSpecificInput->setAuthorizationMode(PaymentSettings::TRANSACTION_TYPE_IMMEDIATE);
         } else {
             $cardPaymentMethodSpecificInput->setAuthorizationMode(
@@ -190,9 +190,14 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         if (false !== $this->idProduct) {
             $mobilePaymentMethodSpecificInput->setPaymentProductId((int)$this->idProduct);
         }
-        $mobilePaymentMethodSpecificInput->setAuthorizationMode(
-            $this->settings->advancedSettings->paymentSettings->transactionType
-        );
+
+        if (self::PRODUCT_ID_PLEDG == $this->idProduct) {
+            $mobilePaymentMethodSpecificInput->setAuthorizationMode(PaymentSettings::TRANSACTION_TYPE_IMMEDIATE);
+        } else {
+            $mobilePaymentMethodSpecificInput->setAuthorizationMode(
+                $this->settings->advancedSettings->paymentSettings->transactionType
+            );
+        }
 
         $paymentProduct320SpecificInput = new MobilePaymentProduct320SpecificInput();
         $gPayThreeDSecure = new GPayThreeDSecure();
@@ -246,6 +251,19 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $orderReferences->setMerchantReference(
             $this->context->cart->id . '-' . $generator->generateString(7, self::REFERENCE_CHARS)
         );
+
+        $fixedSoftDescriptor = $this->settings->paymentMethodsSettings->fixedSoftDescriptor;
+        if ((int) $this->idProduct === self::PRODUCT_ID_PLEDG) {
+            $descriptor = empty($fixedSoftDescriptor)
+                ? substr($this->context->shop->name, 0, 15)
+                : $fixedSoftDescriptor;
+        } else {
+            $descriptor = (empty($fixedSoftDescriptor) || !empty($this->idProduct))
+                ? null
+                : $fixedSoftDescriptor;
+        }
+        $orderReferences->setDescriptor($descriptor);
+
         $order->setReferences($orderReferences);
         try {
             $productId = (int)$this->idProduct === self::MEALVOUCHER_PRODUCT_ID ? self::MEALVOUCHER_PRODUCT_ID : null;

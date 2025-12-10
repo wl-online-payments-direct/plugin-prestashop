@@ -147,6 +147,30 @@
             </div>
           </div>
         </div>
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+              <span>
+                {l s='Fixed soft descriptor' mod='worldlineop'}
+              </span>
+          </label>
+          <div class="col-lg-9">
+            <div class="fixed-width-xxl">
+              <input type="text"
+                     name="worldlineopPaymentMethodsSettings[fixedSoftDescriptor]"
+                     id="worldlineopPaymentMethodsSettings_fixedSoftDescriptor"
+                     class="input fixed-width-xxl"
+                     value="{$data.paymentMethodsSettings.fixedSoftDescriptor|escape:'htmlall':'UTF-8'}"
+                     maxlength="15"
+                     minlength="2">
+            </div>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s='Minimum 2, maximum 15 characters. You can specify a fixed value that will be sent to the banks handling the payment. If the consumer\'s bank is supporting that, this value can be displayed on the consumer\'s bank slip. Important note : setting a value here is mandatory in order to use Pledg payment method.' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
         <!-- /Redirect CTA -->
         <!-- Display Payment Options -->
         <div class="form-group js-worldlineop-display-redirect-pm-block">

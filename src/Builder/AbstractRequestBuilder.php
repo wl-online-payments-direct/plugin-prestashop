@@ -53,6 +53,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     const PRODUCT_ID_INTERSOLVE = 5700;
     const PRODUCT_ID_MEALVOUCHER = 5402;
     const PRODUCT_ID_CVCO = 5403;
+    const PRODUCT_ID_PLEDG = 5300;
 
     const PHONE_NUMBER_MAX_CHARS = 15;
 
@@ -139,7 +140,9 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         if (false !== $this->idProduct) {
             $redirectPaymentMethodSpecificInput->setPaymentProductId($this->idProduct);
         }
-        if ($this->idProduct == self::PRODUCT_ID_MEALVOUCHER || (int) $this->idProduct === self::PRODUCT_ID_CVCO) {
+        if ($this->idProduct == self::PRODUCT_ID_MEALVOUCHER
+            || (int) $this->idProduct === self::PRODUCT_ID_CVCO
+            || (int) $this->idProduct === self::PRODUCT_ID_PLEDG) {
             $redirectPaymentMethodSpecificInput->setRequiresApproval(false);
         } else {
             $redirectPaymentMethodSpecificInput->setRequiresApproval(

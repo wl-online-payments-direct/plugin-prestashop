@@ -141,6 +141,8 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'Wir empfehlen, dass Sie Bilder mit einer Höhe von maximal 20 px und einer Länge von 120 px verwenden';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Titel der Schaltfläche zum Bezahlen ';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6f1ad8444a503e36d821da11b4b1fe57'] = 'Titel der Schaltfläche zur Zahlungsauswahl auf Ihrer Checkout-Seite';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_46310871a02a521ecfdfe034d1fd0085'] = 'Festl. Descriptor';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0b9f4e7ca03c57b2d6943e035e6c996e'] = 'Mindestens 2, maximal 15 Zeichen. Sie können einen festen Wert angeben, der an die Banken gesendet wird, die die Zahlung abwickeln. Wenn die Bank des Verbrauchers dies unterstützt, kann dieser Wert auf dem Kontoauszug des Verbrauchers angezeigt werden. Wichtiger Hinweis: Die Festlegung eines Werts hier ist obligatorisch, um die Zahlungsart Pledg zu verwenden.';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_55e58b9f475a7a98a03b777f4e0a2ec7'] = 'Auswahl der Zahlungsmethode vor der Weiterleitung';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_df2a60fbc299477de52630ae7fe6e477'] = 'Jede Zahlungsmethode wird durch eine Schaltfläche erkannt. Beim Anklicken wird der Kunde auf die markenspezifische Zahlungsseite weitergeleitet';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6ef52d9cbb060e8e35b86085db5536cb'] = 'Liste der verfügbaren Zahlungsmethoden aktualisieren';

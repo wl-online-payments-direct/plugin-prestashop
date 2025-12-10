@@ -141,6 +141,8 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'Recomendamos utilizar imágenes con un tamaño máximo de 20 píxeles de altura por 120 píxeles de anchura';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Título del botón de pago';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6f1ad8444a503e36d821da11b4b1fe57'] = 'Título del botón de selección de pago situado en tu página de pago';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_46310871a02a521ecfdfe034d1fd0085'] = 'Descriptor fijo';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0b9f4e7ca03c57b2d6943e035e6c996e'] = 'Mínimo 2, máximo 15 caracteres. Puedes especificar un valor fijo que se enviará a los bancos que gestionan el pago. Si el banco del consumidor es compatible con esto, este valor puede mostrarse en el recibo bancario del consumidor. Nota importante: establecer un valor aquí es obligatorio para utilizar el método de pago Pledg.';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_55e58b9f475a7a98a03b777f4e0a2ec7'] = 'Selección del método de pago antes del redireccionamiento';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_df2a60fbc299477de52630ae7fe6e477'] = 'Cada método de pago está identificado por medio de un botón. Al hacer clic, se redirecciona al cliente para que haga el pago en la página de pago específica de la marca';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6ef52d9cbb060e8e35b86085db5536cb'] = 'Actualiza la lista de métodos de pago disponibles';

@@ -1,1 +1,22 @@
-#checkout-payment-step .worldlineop-htp.disabled iframe{display:none}#checkout-payment-step .worldlineop-htp iframe{border:none;width:100%}#checkout-payment-step .worldlineop-htp-btn.disabled button{display:none}#checkout-payment-step .worldlineop-token-htp-btn.disabled button{display:none}
+#checkout-payment-step .worldlineop-htp.disabled iframe {
+    display: none
+}
+
+#checkout-payment-step .worldlineop-htp iframe {
+    border: none;
+    width: 100%
+}
+
+@media (max-width: 767.98px) {
+    #checkout-payment-step .worldlineop-htp iframe {
+        height: 500px !important;
+    }
+}
+
+#checkout-payment-step .worldlineop-htp-btn.disabled button {
+    display: none
+}
+
+#checkout-payment-step .worldlineop-token-htp-btn.disabled button {
+    display: none
+}
