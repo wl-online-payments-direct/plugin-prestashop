@@ -183,6 +183,7 @@ class ShoppingCartPresenter implements PresenterInterface
                     'quantity' => 1,
                     'productCode' => $product['reference'] ?: $product['unique_id'],
                     'productName' => $product['name'],
+                    'productId' => $product['id_product'],
                     'productType' => !empty($this->productsType[$product['id_product']]) ? $this->productsType[$product['id_product']] : '',
                     'data' => $product,
                 ];

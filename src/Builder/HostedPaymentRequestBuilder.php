@@ -298,7 +298,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         }
         $shoppingCart = new ShoppingCart();
 
-        $items = [];
+        $items = $this->buildGroupedLineItems($shoppingCartPresented);
         foreach ($shoppingCartPresented['products'] as $product) {
             $item = new LineItem();
             $itemAmount = new AmountOfMoney();
@@ -325,7 +325,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $itemLineDetails->setTaxAmount((int) (string) $product['tax']);
             $itemLineDetails->setUnit('piece');
             $item->setOrderLineDetails($itemLineDetails);
-            $items[] = $item;
+            $items = $this->buildGroupedLineItems($shoppingCartPresented);
         }
         if ((int)$this->idProduct !== self::MEALVOUCHER_PRODUCT_ID) {
             $shippingItem = new LineItem();
@@ -351,5 +351,59 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         }
 
         return $order;
+    }
+
+    function buildGroupedLineItems(array $shoppingCartPresented): array
+    {
+        $itemsByGroupKey = [];
+
+        foreach ($shoppingCartPresented['products'] as $product) {
+            $productId = $product['productId'];
+            $price = (int)(string)$product['productPrice'];
+            $tax = (int)(string)$product['tax'];
+            $discount = (int)(string)$product['discountPrice'];
+
+            // Composite key to distinguish products with different pricing
+            $groupKey = "{$productId}_{$price}";
+
+            if (!isset($itemsByGroupKey[$groupKey])) {
+                // Create new LineItem
+                $item = new LineItem();
+                $itemAmount = new AmountOfMoney();
+                $itemAmount->setAmount((int)(string)$product['totalWithTax']);
+                $itemAmount->setCurrencyCode(
+                    Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency)
+                );
+                $item->setAmountOfMoney($itemAmount);
+
+                $itemLineDetails = new OrderLineDetails();
+                $itemLineDetails->setProductPrice($price);
+                $itemLineDetails->setDiscountAmount($discount);
+                $itemLineDetails->setProductCode($product['productCode']);
+                $itemLineDetails->setProductName($product['productName']);
+                $itemLineDetails->setProductType($product['productType']);
+                $itemLineDetails->setQuantity(1);
+                $itemLineDetails->setTaxAmount($tax);
+                $itemLineDetails->setUnit('piece');
+
+                $item->setOrderLineDetails($itemLineDetails);
+
+                $itemsByGroupKey[$groupKey] = $item;
+            } else {
+                // Update existing LineItem
+                $existingItem = $itemsByGroupKey[$groupKey];
+
+                $existingItem->getOrderLineDetails()->setQuantity(
+                    $existingItem->getOrderLineDetails()->getQuantity() + 1
+                );
+
+                $existingAmount = $existingItem->getAmountOfMoney()->getAmount();
+                $existingItem->getAmountOfMoney()->setAmount(
+                    $existingAmount + (int)(string)$product['totalWithTax']
+                );
+            }
+        }
+
+        return array_values($itemsByGroupKey);
     }
 }

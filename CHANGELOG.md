@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.19] - 2025-22-12
+### Improved
+- Group all identical items in shopping cart details
+### Fixed
+- Use the production URL for tokenizer.js file
+- Correctly display transaction details in order after a manual capture has been triggered.
+
 ## [1.4.18] - 2025-05-12
-### Added
-- Manage exemption for FR markets
+### Improved
+- Data mapping to flag correctly exemptions requests to 3-D Secure.
 
 ## [1.4.17] - 2025-01-12
 ### Added
