@@ -48,6 +48,11 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
     const GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN = 'HomeAndGarden';
     const GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS = 'GiftAndFlowers';
     const GIFT_CARD_PRODUCT_TYPE_NONE = 'none';
+    const TRANSACTION_RISK_ANALYSIS_EXEMPTION = 'transaction-risk-analysis';
+    const LOW_VALUE_EXEMPTION = 'low-value';
+
+    const NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED = 'no-challenge-requested-risk-analysis-performed';
+    const NO_CHALLENGE_REQUESTED = 'no-challenge-requested';
     const MEALVOUCHER_PRODUCT_ID = 5402;
 
     /**
@@ -154,9 +159,22 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             if (!$this->settings->advancedSettings->threeDSExempted) {
                 $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
             } elseif ($this->settings->advancedSettings->threeDSExempted) {
-                $this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros ?
-                    $paymentProduct130ThreeDSecure->setAcquirerExemption(true) :
+                if ($this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros) {
+                    $paymentProduct130ThreeDSecure->setAcquirerExemption($threeDSExemptedType === self::TRANSACTION_RISK_ANALYSIS_EXEMPTION);
+                    $threeDSecure->setSkipAuthentication(false);
+                    $threeDSecure->setExemptionRequest($threeDSExemptedType);
+                    $threeDSecure->setSkipSoftDecline(false);
+                    switch ($threeDSExemptedType) {
+                        case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
+                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
+                            break;
+                        case self::LOW_VALUE_EXEMPTION:
+                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                            break;
+                    }
+                } else {
                     $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
+                }
             }
             $paymentProduct130SpecificInput->setThreeDSecure($paymentProduct130ThreeDSecure);
             $cardPaymentMethodSpecificInput->setPaymentProduct130SpecificInput($paymentProduct130SpecificInput);
@@ -212,15 +230,22 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
                 $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
                 $gPayThreeDSecure->setSkipAuthentication(false);
             } elseif ($this->settings->advancedSettings->threeDSExempted) {
+                $gPayThreeDSecure->setSkipAuthentication(false);
                 $threeDSExemptionType = $this->settings->advancedSettings->threeDSExemptedType;
                 $threeDSExemptionValue = $this->settings->advancedSettings->threeDSExemptedValue;
                 $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(),
                     new \Currency($this->context->cart->id_currency));
+
                 if ($threeDSExemptionValue >= $orderTotalInEuros) {
-                    $gPayThreeDSecure->setSkipAuthentication(true);
                     $gPayThreeDSecure->setExemptionRequest($threeDSExemptionType);
-                } else {
-                    $gPayThreeDSecure->setSkipAuthentication(false);
+                    switch ($threeDSExemptionType) {
+                        case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
+                            $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
+                            break;
+                        case self::LOW_VALUE_EXEMPTION:
+                            $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                            break;
+                    }
                 }
             }
             $gPayRedirectionData = new RedirectionData();

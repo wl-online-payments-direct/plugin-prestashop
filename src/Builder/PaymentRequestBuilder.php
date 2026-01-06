@@ -27,6 +27,12 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class PaymentRequestBuilder extends AbstractRequestBuilder
 {
+    const TRANSACTION_RISK_ANALYSIS_EXEMPTION = 'transaction-risk-analysis';
+    const LOW_VALUE_EXEMPTION = 'low-value';
+
+    const NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED = 'no-challenge-requested-risk-analysis-performed';
+    const NO_CHALLENGE_REQUESTED = 'no-challenge-requested';
+
     /**
      * @return CardPaymentMethodSpecificInput
      *
@@ -86,10 +92,30 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
             if (!$this->settings->advancedSettings->threeDSExempted) {
                 $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
             } elseif ($this->settings->advancedSettings->threeDSExempted) {
-                $this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros ?
-                    $paymentProduct130ThreeDSecure->setAcquirerExemption(true) :
+                if ($this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros) {
+
+                    $threeDSExemptedType = $this->settings->advancedSettings->threeDSExemptedType;
+                    $paymentProduct130ThreeDSecure->setAcquirerExemption(
+                        $threeDSExemptedType === self::TRANSACTION_RISK_ANALYSIS_EXEMPTION
+                    );
+
+                    $threeDSecure->setSkipAuthentication(false);
+                    $threeDSecure->setExemptionRequest($threeDSExemptedType);
+                    $threeDSecure->setSkipSoftDecline(false);
+
+                    switch ($threeDSExemptedType) {
+                        case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
+                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
+                            break;
+                        case self::LOW_VALUE_EXEMPTION:
+                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                            break;
+                    }
+                } else {
                     $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
+                }
             }
+
             $paymentProduct130SpecificInput->setThreeDSecure($paymentProduct130ThreeDSecure);
             $cardPaymentMethodSpecificInput->setPaymentProduct130SpecificInput($paymentProduct130SpecificInput);
         }
