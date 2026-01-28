@@ -83,8 +83,8 @@ configuration:
     paymentFlowSettingsDisplayed: 0
     force3DsV2: 1
     switchEndpoint: 0
-    testEndpoint: 'https://payment.preprod.direct.ingenico.com'
-    prodEndpoint: 'https://payment.direct.ingenico.com'
+    testEndpoint: 'https://payment.preprod.direct.worldline-solutions.com'
+    prodEndpoint: 'https://payment.direct.worldline-solutions.com'
     logsEnabled: 0
     paymentSettings:
       transactionType: 'SALE'
