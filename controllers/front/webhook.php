@@ -88,8 +88,26 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         if ($cartId) {
             $cart = new Cart($cartId);
             if (Validate::isLoadedObject($cart)) {
+                // Initialize complete context for correct tax calculation
                 $currency = new Currency($cart->id_currency);
                 $this->context->currency = $currency;
+
+                // Load customer to ensure proper tax rules are applied
+                $customer = new Customer($cart->id_customer);
+                if (Validate::isLoadedObject($customer)) {
+                    $this->context->customer = $customer;
+                }
+
+                // Load cart to context to ensure tax calculation based on cart addresses
+                $this->context->cart = $cart;
+
+                // Load country from invoice address for tax calculation
+                if ($cart->id_address_invoice) {
+                    $invoiceAddress = new Address($cart->id_address_invoice);
+                    if (Validate::isLoadedObject($invoiceAddress)) {
+                        $this->context->country = new Country($invoiceAddress->id_country);
+                    }
+                }
             }
         }
 

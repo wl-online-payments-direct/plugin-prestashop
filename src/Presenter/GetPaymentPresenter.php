@@ -119,6 +119,26 @@ class GetPaymentPresenter implements PresenterInterface
             return $this->presentedData;
         }
         $idShop = $this->cart->id_shop;
+
+        // Initialize context for proper tax calculation (especially important for webhooks)
+        $context = \Context::getContext();
+        if (!isset($context->cart) || $context->cart->id != $this->cart->id) {
+            $context->cart = $this->cart;
+            $context->currency = new \Currency($this->cart->id_currency);
+
+            $customer = new \Customer($this->cart->id_customer);
+            if (\Validate::isLoadedObject($customer)) {
+                $context->customer = $customer;
+            }
+
+            if ($this->cart->id_address_invoice) {
+                $invoiceAddress = new \Address($this->cart->id_address_invoice);
+                if (\Validate::isLoadedObject($invoiceAddress)) {
+                    $context->country = new \Country($invoiceAddress->id_country);
+                }
+            }
+        }
+
         $settings = $this->settingsLoader->setContext($idShop);
         $this->merchantClientFactory->setSettings($settings);
         $idOrder = Order::getOrderByCartId($this->cart->id);
