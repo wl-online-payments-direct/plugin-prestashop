@@ -510,14 +510,22 @@
                   {l s='Please be aware that if fraud occurs on a transaction that has been granted an exemption, the liability falls on the merchant!' mod='worldlineop'}
                 </p>
               </div>
+                <div class="alert alert-warning wl-hidden-element js-worldlineop-tra-warning">
+                    <p class="text-info">
+                        {l s='Please ensure that Transaction Risk Analysis (TRA) is enabled with your acquirer before enabling this option. If not, all card transactions may be blocked.' mod='worldlineop'}
+                    </p>
+                </div>
+                {assign var=exType value=$data.advancedSettings.threeDSExemptedType|default:'no-challenge-request'}
               <label class="control-label col-lg-3 "
                      for="wlToggleButton">
                 <span class="label-tooltip"
                       data-toggle="tooltip"
                       data-html="true"
-                      data-original-title="{l s='The Low-Value exemption is suitable for transactions below the specified monetary threshold of 30 EUR, allowing these low-value transactions a change to bypass Strong Customer Authentication (SCA) and streamline the checkout process.' mod='worldlineop'}
-                      <br>{l s='On the other hand, the Transaction-Risk-Analysis exemption enables a dynamic risk assessment for your transactions. The card issuer and your acquirer will evaluate the transaction based on various risk factors, allowing transactions up to a limit of 100 EUR to qualify for exemption if they are deemed low risk.' mod='worldlineop'}
-                      <br>{l s='Make your selection carefully to optimize the balance between customer experience and security for your transactions.' mod='worldlineop'}">
+                      data-original-title="{l s='The No-Challenge Preference requests the card issuer not to apply Strong Customer Authentication (SCA). The issuer will approve or deny this request, and the transaction will proceed accordingly.' mod='worldlineop'}
+<br>{l s='The Low-Value exemption applies to transactions below the defined threshold (30 EUR), allowing these low-value payments to bypass SCA and speed up checkout.' mod='worldlineop'}
+<br>{l s='The Transaction Risk Analysis (TRA) exemption enables a dynamic risk assessment; the issuer and your acquirer will evaluate risk factors, allowing transactions up to 100 EUR to qualify for exemption if deemed low risk.' mod='worldlineop'}
+<br>{l s='Note that TRA typically requires a formal agreement with your acquirer; enable TRA only after such an agreement is in place. Otherwise, all card transactions may be blocked.' mod='worldlineop'}
+<br>{l s='Choose carefully to balance customer experience and security.' mod='worldlineop'}">
                   {l s='Exemption type' mod='worldlineop'}
                 </span>
               </label>
@@ -528,24 +536,31 @@
                         name="wlToggleButton"
                         data-toggle="dropdown">
                                     <span class="js-worldlineop-select-3ds-exemption-type-button-text"
-                                          value="{$data.advancedSettings.threeDSExemptedType|default:'low-value'|escape:'htmlall':'UTF-8'}">
-                                        {if $data.advancedSettings.threeDSExemptedType == 'low-value' || !$data.advancedSettings.threeDSExemptedType}
-                                          {l s='low-value (default)' mod='worldlineop'}
+                                          value="{$exType|escape:'htmlall':'UTF-8'}">
+                                        {if $exType == 'no-challenge-request'}
+                                            {l s='Preference: No challenge request' mod='worldlineop'}
+                                        {elseif $exType == 'low-value'}
+                                            {l s='Exemption: low-value' mod='worldlineop'}
+                                        {elseif $exType == 'transaction-risk-analysis'}
+                                            {l s='Exemption: Transaction risk analysis (acquirer)' mod='worldlineop'}
                                         {else}
-                                          {$data.advancedSettings.threeDSExemptedType|escape:'htmlall':'UTF-8'}
+                                            {$exType|escape:'htmlall':'UTF-8'}
                                         {/if}
                                     </span>
                   <i class="icon-caret-down"></i>
                 </button>
                 <input type="hidden" name="worldlineopAdvancedSettings[threeDSExemptedType]"
-                       value="{$data.advancedSettings.threeDSExemptedType|default:'low-value'|escape:'htmlall':'UTF-8'}"
+                       value="{$exType|escape:'htmlall':'UTF-8'}"
                        id="wl-selectedExemptedType">
                 <ul class="dropdown-menu exemption-types-list js-worldlineop-select-3ds-exemption-type-list">
+                    <li value="no-challenge-request">
+                        {l s='Preference: No challenge request' mod='worldlineop'}
+                    </li>
                   <li value="low-value">
-                    {l s='low-value (default)' mod='worldlineop'}
+                    {l s='Exemption: low-value' mod='worldlineop'}
                   </li>
                   <li value="transaction-risk-analysis">
-                    {l s='transaction-risk-analysis' mod='worldlineop'}
+                    {l s='Exemption: Transaction risk analysis (acquirer)' mod='worldlineop'}
                   </li>
                 </ul>
               </div>

@@ -51,6 +51,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
     const TRANSACTION_RISK_ANALYSIS_EXEMPTION = 'transaction-risk-analysis';
     const LOW_VALUE_EXEMPTION = 'low-value';
 
+    public const NO_CHALLENGE_REQUEST = 'no-challenge-request';
     const NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED = 'no-challenge-requested-risk-analysis-performed';
     const NO_CHALLENGE_REQUESTED = 'no-challenge-requested';
     const MEALVOUCHER_PRODUCT_ID = 5402;
@@ -134,17 +135,35 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         if (self::PRODUCT_ID_MAESTRO == $this->idProduct || true === $this->settings->advancedSettings->force3DsV2) {
             $threeDSecure->setSkipAuthentication(false);
         }
-        $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(), new \Currency($this->context->cart->id_currency));
+        $orderTotalInEuros = Tools::getAmountInEuros(
+            $this->context->cart->getOrderTotal(),
+            new \Currency($this->context->cart->id_currency)
+        );
         $threeDSExemptedValue = $this->settings->advancedSettings->threeDSExemptedValue;
-        $threeDSExemptedType = $this->settings->advancedSettings->threeDSExemptedType;
-        if (true === $this->settings->advancedSettings->threeDSExempted && $threeDSExemptedValue >= $orderTotalInEuros) {
-            $threeDSecure->setSkipAuthentication(true);
-            $threeDSecure->setExemptionRequest($threeDSExemptedType);
-            $threeDSecure->setSkipSoftDecline(false);
+        $threeDSExemptedType = (string) $this->settings->advancedSettings->threeDSExemptedType;
+
+        $is3dsOptionEnabled = (true === $this->settings->advancedSettings->threeDSExempted)
+            && ($threeDSExemptedValue >= $orderTotalInEuros);
+
+        $isNoChallengePreference = $is3dsOptionEnabled && ($threeDSExemptedType === self::NO_CHALLENGE_REQUEST);
+
+        if ($is3dsOptionEnabled) {
+            if ($isNoChallengePreference) {
+                // Preference: No challenge request (NOT an exemption request)
+                $threeDSecure->setSkipAuthentication(false);
+                $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+            } else {
+                // Existing exemption logic
+                $threeDSecure->setSkipAuthentication(true);
+                $threeDSecure->setExemptionRequest($threeDSExemptedType);
+                $threeDSecure->setSkipSoftDecline(false);
+            }
         }
+
         if (true === $this->settings->advancedSettings->enforce3DS) {
             $threeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
         }
+
         $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
 
         $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
@@ -160,17 +179,30 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
                 $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
             } elseif ($this->settings->advancedSettings->threeDSExempted) {
                 if ($this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros) {
-                    $paymentProduct130ThreeDSecure->setAcquirerExemption($threeDSExemptedType === self::TRANSACTION_RISK_ANALYSIS_EXEMPTION);
-                    $threeDSecure->setSkipAuthentication(false);
-                    $threeDSecure->setExemptionRequest($threeDSExemptedType);
-                    $threeDSecure->setSkipSoftDecline(false);
-                    switch ($threeDSExemptedType) {
-                        case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
-                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
-                            break;
-                        case self::LOW_VALUE_EXEMPTION:
-                            $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
-                            break;
+                    if ($threeDSExemptedType === self::NO_CHALLENGE_REQUEST) {
+                        $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
+
+                        $threeDSecure->setSkipAuthentication(false);
+                        $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                    } else {
+                        $paymentProduct130ThreeDSecure->setAcquirerExemption(
+                            $threeDSExemptedType === self::TRANSACTION_RISK_ANALYSIS_EXEMPTION
+                        );
+
+                        $threeDSecure->setSkipAuthentication(false);
+                        $threeDSecure->setExemptionRequest($threeDSExemptedType);
+                        $threeDSecure->setSkipSoftDecline(false);
+                        switch ($threeDSExemptedType) {
+                            case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
+                                $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
+                                break;
+                            case self::LOW_VALUE_EXEMPTION:
+                                $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                                break;
+                            default:
+                                $threeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                                break;
+                        }
                     }
                 } else {
                     $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
@@ -220,31 +252,49 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $paymentProduct320SpecificInput = new MobilePaymentProduct320SpecificInput();
         $gPayThreeDSecure = new GPayThreeDSecure();
 
+        // evaluate no-challenge preference (same gating as existing exemption logic)
+        $orderTotalInEuros = Tools::getAmountInEuros(
+            $this->context->cart->getOrderTotal(),
+            new \Currency($this->context->cart->id_currency)
+        );
+        $threeDSExemptionType = (string) $this->settings->advancedSettings->threeDSExemptedType;
+        $threeDSExemptionValue = $this->settings->advancedSettings->threeDSExemptedValue;
+        $isNoChallengePreference = (true === $this->settings->advancedSettings->threeDSExempted)
+            && ($threeDSExemptionValue >= $orderTotalInEuros)
+            && ($threeDSExemptionType === self::NO_CHALLENGE_REQUEST);
+
         if (!$this->settings->advancedSettings->force3DsV2) {
             $gPayThreeDSecure->setSkipAuthentication(true);
         } else {
-            if (!$this->settings->advancedSettings->enforce3DS && !$this->settings->advancedSettings->threeDSExempted) {
-                $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_NO_PREFERENCE);
+            if ($isNoChallengePreference) {
+                $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
                 $gPayThreeDSecure->setSkipAuthentication(false);
-            } elseif ($this->settings->advancedSettings->enforce3DS) {
-                $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
-                $gPayThreeDSecure->setSkipAuthentication(false);
-            } elseif ($this->settings->advancedSettings->threeDSExempted) {
-                $gPayThreeDSecure->setSkipAuthentication(false);
-                $threeDSExemptionType = $this->settings->advancedSettings->threeDSExemptedType;
-                $threeDSExemptionValue = $this->settings->advancedSettings->threeDSExemptedValue;
-                $orderTotalInEuros = Tools::getAmountInEuros($this->context->cart->getOrderTotal(),
-                    new \Currency($this->context->cart->id_currency));
+            } else {
+                if (
+                    !$this->settings->advancedSettings->enforce3DS
+                    && !$this->settings->advancedSettings->threeDSExempted
+                ) {
+                    $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_NO_PREFERENCE);
+                    $gPayThreeDSecure->setSkipAuthentication(false);
+                } elseif ($this->settings->advancedSettings->enforce3DS) {
+                    $gPayThreeDSecure->setChallengeIndicator(self::CHALLENGE_INDICATOR_REQUIRED);
+                    $gPayThreeDSecure->setSkipAuthentication(false);
+                } elseif ($this->settings->advancedSettings->threeDSExempted) {
+                    $gPayThreeDSecure->setSkipAuthentication(false);
 
-                if ($threeDSExemptionValue >= $orderTotalInEuros) {
-                    $gPayThreeDSecure->setExemptionRequest($threeDSExemptionType);
-                    switch ($threeDSExemptionType) {
-                        case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
-                            $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
-                            break;
-                        case self::LOW_VALUE_EXEMPTION:
-                            $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
-                            break;
+                    if ($threeDSExemptionValue >= $orderTotalInEuros) {
+                        $gPayThreeDSecure->setExemptionRequest($threeDSExemptionType);
+                        switch ($threeDSExemptionValue) {
+                            case self::TRANSACTION_RISK_ANALYSIS_EXEMPTION:
+                                $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED);
+                                break;
+                            case self::LOW_VALUE_EXEMPTION:
+                                $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                                break;
+                            default:
+                                $gPayThreeDSecure->setChallengeIndicator(self::NO_CHALLENGE_REQUESTED);
+                                break;
+                        }
                     }
                 }
             }
@@ -256,7 +306,6 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
         $paymentProduct320SpecificInput->setThreeDSecure($gPayThreeDSecure);
         $mobilePaymentMethodSpecificInput->setPaymentProduct320SpecificInput($paymentProduct320SpecificInput);
-
 
         return $mobilePaymentMethodSpecificInput;
     }

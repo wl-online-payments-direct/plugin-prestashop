@@ -7,10 +7,18 @@
     width: 100%
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
     #checkout-payment-step .worldlineop-htp iframe {
         height: 500px !important;
     }
+
+    body:has(input[data-module-name*="token"]:checked) #checkout-payment-step .worldlineop-htp iframe {
+        height: 90px !important;
+    }
+}
+
+label {
+    text-align: left;
 }
 
 #checkout-payment-step .worldlineop-htp-btn.disabled button {

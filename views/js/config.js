@@ -46,6 +46,7 @@ $(document).ready(function () {
         threeDSExemptionBlock: $('.js-worldlineop-3ds-exemption-block'),
         threeDSExemptionParams: $('.js-worldlineop-3ds-exemption-params'),
         threeDSExemptedTypeHiddenInput: $('#wl-selectedExemptedType'),
+          traWarning: $('.js-worldlineop-tra-warning'),
 
         endpointSwitchBlock: $('.js-worldlineop-switch-endpoint-block'),
         endpointSwitchSwitch: $('.js-worldlineop-switch-endpoint-switch'),
@@ -96,7 +97,8 @@ $(document).ready(function () {
         el.force3DSBlock.on('click', el.force3DSSwitch, this.toggle3DSBlock);
         this.toggle3DSBlock();
         this.setExemptionMessage();
-        el.iframePaymentDisplayBlock.on('click', el.iframePaymentDisplaySwitch, this.toggleIframePaymentDisplay);
+          this.toggleTRAWarn();
+          el.iframePaymentDisplayBlock.on('click', el.iframePaymentDisplaySwitch, this.toggleIframePaymentDisplay);
         this.toggleIframePaymentDisplay();
         el.refreshRedirectPaymentMethodsBtn.on('click', this.refreshRedirectPaymentMethods);
         el.refreshIframePaymentMethodsBtn.on('click', this.refreshIframePaymentMethods);
@@ -176,9 +178,14 @@ $(document).ready(function () {
         }
       },
       toggle3DSExemptionType: function (event) {
-        var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
+          var $li = $(event.target).closest('li');
+          var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
         var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
         var helpTextExemptionLimit100 = $('#js-worldlineop-select-3ds-exemption-limit-100');
+
+        if (!$li.length) {
+            return;
+        }
 
         if (exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
           exemptionTypeButtonTextEl[0].innerText = event.target.innerText;
@@ -189,13 +196,29 @@ $(document).ready(function () {
           WorldlineOP.showElement(helpTextExemptionLimit30);
           WorldlineOP.hideElement(helpTextExemptionLimit100);
         }
-        if (event.target.getAttribute('value') === 'transaction-risk-analysis') {
+        if (event.target.getAttribute('value') === 'transaction-risk-analysis'
+            || event.target.getAttribute('value') === 'no-challenge-request') {
           WorldlineOP.hideElement(helpTextExemptionLimit30);
           WorldlineOP.showElement(helpTextExemptionLimit100);
         }
 
         WorldlineOP.validate3DSExemptionValue(WorldlineOP.el.input3DSExemption[0], event);
+          WorldlineOP.toggleTRAWarn();
       },
+        toggleTRAWarn: function () {
+            var exemptionTypeButtonTextEl = $('.js-worldlineop-select-3ds-exemption-type-button-text');
+            if (!exemptionTypeButtonTextEl || !exemptionTypeButtonTextEl[0]) {
+                return;
+            }
+
+            var currentType = exemptionTypeButtonTextEl[0].getAttribute('value') || '';
+
+            if (currentType === 'transaction-risk-analysis') {
+                WorldlineOP.showElement(WorldlineOP.el.traWarning);
+            } else {
+                WorldlineOP.hideElement(WorldlineOP.el.traWarning);
+            }
+        },
       enter3DSExemptionValue: function (event) {
         if (this.value < 0) {
           this.value = 0;
@@ -208,16 +231,26 @@ $(document).ready(function () {
         var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
         var helpTextExemptionLimit100 = $('#js-worldlineop-select-3ds-exemption-limit-100');
 
-        if (exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
-          if (exemptionTypeButtonTextEl[0].getAttribute('value').includes('transaction-risk-analysis')) {
-            if (WorldlineOP.el.input3DSExemption && WorldlineOP.el.input3DSExemption[0] &&
-                WorldlineOP.el.input3DSExemption[0].getAttribute('value') &&
-                WorldlineOP.el.input3DSExemption[0].getAttribute('value') > 0) {
+          if (!exemptionTypeButtonTextEl || !exemptionTypeButtonTextEl[0]) {
+              return;
+          }
+
+          var currentType = exemptionTypeButtonTextEl[0].getAttribute('value') || '';
+
+          if (currentType === 'low-value') {
+              WorldlineOP.showElement(helpTextExemptionLimit30);
+              WorldlineOP.hideElement(helpTextExemptionLimit100);
+              return;
+          }
+
+          if (currentType === 'transaction-risk-analysis' || currentType === 'no-challenge-request') {
               WorldlineOP.hideElement(helpTextExemptionLimit30);
               WorldlineOP.showElement(helpTextExemptionLimit100);
-            }
+              return;
           }
-        }
+
+          WorldlineOP.showElement(helpTextExemptionLimit30);
+          WorldlineOP.hideElement(helpTextExemptionLimit100);
       },
       validate3DSExemptionValue: function (inputElement, event) {
         var helpTextExemptionLimit30 = $('#js-worldlineop-select-3ds-exemption-limit-30');
@@ -231,7 +264,7 @@ $(document).ready(function () {
         // setting value to be sent when form is submitted.
         if (WorldlineOP.el.threeDSExemptedTypeHiddenInput && WorldlineOP.el.threeDSExemptedTypeHiddenInput[0] && exemptionTypeButtonTextEl && exemptionTypeButtonTextEl[0]) {
           var exemptionTypeButtonValue = exemptionTypeButtonTextEl[0].getAttribute('value') !== '' ?
-              exemptionTypeButtonTextEl[0].getAttribute('value') : 'low-value';
+              exemptionTypeButtonTextEl[0].getAttribute('value') : 'no-challenge-request';
           isLimit30Selected = (exemptionTypeButtonValue === 'low-value');
           WorldlineOP.el.threeDSExemptedTypeHiddenInput[0].value = exemptionTypeButtonValue;
         }
