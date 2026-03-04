@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.23] - 2026-26-02
+### Updated
+- Branding of Pledg changed to Sofinco
+
 ## [1.4.22] - 2026-26-01
 ### Improved
 - Improve exemptions capabilities

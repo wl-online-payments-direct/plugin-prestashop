@@ -166,7 +166,7 @@
           </div>
           <div class="col-lg-9 col-lg-offset-3">
             <div class="help-block">
-              {l s='Minimum 2, maximum 15 characters. You can specify a fixed value that will be sent to the banks handling the payment. If the consumer\'s bank is supporting that, this value can be displayed on the consumer\'s bank slip. Important note : setting a value here is mandatory in order to use Pledg payment method.' mod='worldlineop'}
+              {l s='Minimum 2, maximum 15 characters. You can specify a fixed value that will be sent to the banks handling the payment. If the consumer\'s bank is supporting that, this value can be displayed on the consumer\'s bank slip. Important note : setting a value here is mandatory in order to use Sofinco payment method.' mod='worldlineop'}
               <span></span>
             </div>
           </div>
