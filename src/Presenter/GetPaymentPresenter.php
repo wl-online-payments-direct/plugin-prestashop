@@ -158,17 +158,17 @@ class GetPaymentPresenter implements PresenterInterface
         } else {
             return $this->presentedData;
         }
-        $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
-        $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::BOTH, null, null, false, true), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
-        if ($totalPrestaShop != $totalReceived) {
-            $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
-            $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
-        }
-
         if (Validate::isLoadedObject($order)) {
             $this->logger->debug('Order already exists', ['id_order' => $order->id]);
             $this->presentExistingOrder($order, $idOrderState, $paymentResponse);
         } else {
+            $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
+            $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::BOTH, null, null, false, true), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+            if ($totalPrestaShop != $totalReceived) {
+                $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
+                $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
+            }
+
             $this->logger->debug('Order does not exist', ['merchantReference' => $merchantReferenceFull]);
             if (in_array($paymentStatus, array_merge(self::STATUS_CANCELLED, self::STATUS_REJECTED))) {
                 $this->logger->debug('Cancellation or rejection without order');
