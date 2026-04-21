@@ -24,6 +24,7 @@ use WorldlineOP\PrestaShop\Logger\LoggerFactory;
 class WebhookEventPresenter implements PresenterInterface
 {
     const MEALVOUCHER_PRODUCT_ID = 5402;
+    const ILLICADO_PRODUCT_ID = 3112;
     const CVCO_PRODUCT_ID = 5403;
     const EVENTS_PAYMENT_AUTHORIZED = [
         'payment.pending_approval',
@@ -75,7 +76,9 @@ class WebhookEventPresenter implements PresenterInterface
         );
 
         if (in_array($event->getType(), $paymentEvents)) {
-            $this->logger->debug('Sleeeeep', ['time' => $settings->advancedSettings->paymentSettings->safetyDelay]);
+            $this->logger->debug(
+                sprintf('Putting webhook of type %s to sleep', $event->getType()),
+                ['time' => $settings->advancedSettings->paymentSettings->safetyDelay]);
             sleep($settings->advancedSettings->paymentSettings->safetyDelay);
         }
     }
@@ -124,7 +127,9 @@ class WebhookEventPresenter implements PresenterInterface
         $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null;
         $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null;
 
-        if ($paymentProductId === self::MEALVOUCHER_PRODUCT_ID || $paymentProductId === self::CVCO_PRODUCT_ID) {
+        if ($paymentProductId === self::MEALVOUCHER_PRODUCT_ID
+            || $paymentProductId === self::CVCO_PRODUCT_ID
+            || $paymentProductId === self::ILLICADO_PRODUCT_ID) {
             return $amountOfMoney && $acquiredAmount && ($amountOfMoney === $acquiredAmount);
         }
 

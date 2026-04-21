@@ -47,7 +47,7 @@ class GetPaymentPresenter implements PresenterInterface
 
     const STATUS_ACCEPTED = ['CAPTURED'];
     const STATUS_AUTHORIZED = ['PENDING_CAPTURE'];
-    const STATUS_PENDING = ['AUTHORIZATION_REQUESTED', 'CAPTURE_REQUESTED'];
+    const STATUS_PENDING = ['AUTHORIZATION_REQUESTED', 'CAPTURE_REQUESTED', 'PENDING_COMPLETION'];
     const STATUS_CANCELLED = ['CANCELLED'];
     const STATUS_REJECTED = ['REJECTED'];
 
@@ -158,17 +158,17 @@ class GetPaymentPresenter implements PresenterInterface
         } else {
             return $this->presentedData;
         }
+        $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
+        $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::BOTH, null, null, false, true), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+        if ($totalPrestaShop != $totalReceived) {
+            $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
+            $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
+        }
+
         if (Validate::isLoadedObject($order)) {
             $this->logger->debug('Order already exists', ['id_order' => $order->id]);
             $this->presentExistingOrder($order, $idOrderState, $paymentResponse);
         } else {
-            $totalReceived = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
-            $totalPrestaShop = Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::BOTH, null, null, false, true), $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
-            if ($totalPrestaShop != $totalReceived) {
-                $this->logger->error('Amounts received/calculated does not match', ['received' => $totalReceived, 'calculated' => $totalPrestaShop]);
-                $idOrderState = $settings->advancedSettings->paymentSettings->errorOrderStateId;
-            }
-
             $this->logger->debug('Order does not exist', ['merchantReference' => $merchantReferenceFull]);
             if (in_array($paymentStatus, array_merge(self::STATUS_CANCELLED, self::STATUS_REJECTED))) {
                 $this->logger->debug('Cancellation or rejection without order');
@@ -200,6 +200,24 @@ class GetPaymentPresenter implements PresenterInterface
         $currencyCode = $paymentOutput->getAmountOfMoney()->getCurrencyCode();
         $paymentSpecificOutput = $this->getPaymentSpecificOutput($paymentOutput->getPaymentMethod(), $paymentOutput);
         $productId = $paymentSpecificOutput->getPaymentProductId();
+
+        try {
+            $paymentDetails = $merchantClient->payments()->getPaymentDetails($paymentResponse->getId());
+            $operations = $paymentDetails->getOperations();
+            if (!empty($operations) && count($operations) > 1) {
+                $firstOperation = $operations[0];
+                $firstPayment = $merchantClient->payments()->getPayment($firstOperation->getId());
+                $firstPaymentOutput = $firstPayment->getPaymentOutput();
+                $firstSpecificOutput = $this->getPaymentSpecificOutput(
+                    $firstPaymentOutput->getPaymentMethod(),
+                    $firstPaymentOutput
+                );
+                $productId = $firstSpecificOutput->getPaymentProductId();
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error('Could not determine initiating payment product', ['message' => $e->getMessage()]);
+        }
+
         $paymentProductParams = new GetPaymentProductParams();
         $paymentProductParams->setCurrencyCode($currencyCode);
         $paymentProductParams->setCountryCode(
@@ -279,6 +297,19 @@ class GetPaymentPresenter implements PresenterInterface
         $transactionRepository = $this->module->getService('worldlineop.repository.transaction');
         /** @var \WorldlineopTransaction $transaction */
         $transaction = $transactionRepository->findByIdOrder($order->id);
+        $maxRetries = 8;
+        $retryCount = 0;
+        while (false === $transaction && $retryCount < $maxRetries) {
+            $retryCount++;
+            $this->logger->warning(sprintf(
+                'Transaction not found for order %d, webhook sleeping for 15 seconds (attempt %d/%d)',
+                $order->id,
+                $retryCount,
+                $maxRetries
+            ));
+            sleep(15);
+            $transaction = $transactionRepository->findByIdOrder($order->id);
+        }
         $merchantReference = strstr($paymentResponse->getId(), '_', true);
         if (false === $merchantReference) {
             $merchantReference = $paymentResponse->getId();
