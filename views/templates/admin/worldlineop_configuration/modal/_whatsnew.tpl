@@ -14,13 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.28
+  1.4.29
 </h1>
 <br>
 <ul>
-  <li>{l s='Add a retry mechanism for updating order status to Paid for captured webhooks' mod='worldlineop'}</li>
-  <li>{l s='Fixed: Remove CREATED operations from the operations display on the order details page' mod='worldlineop'}</li>
-  <li>{l s='Changed: Correct display of payment method name for split payment transactions' mod='worldlineop'}</li>
+  <li>{l s='Fixed one-cent payload total drift' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

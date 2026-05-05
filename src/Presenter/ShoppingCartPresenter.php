@@ -353,7 +353,10 @@ class ShoppingCartPresenter implements PresenterInterface
         if (abs($totalCalculated - $totalCart) < 0.001) {
             return;
         }
-        $diff = Tools::getRoundedAmount($totalCalculated - $totalCart, $this->cartCurrencyIso);
+
+        $factor = 10 ** Tools::getCurrencyDecimalByIso($this->cartCurrencyIso);
+        $diff = (int) round(($totalCalculated - $totalCart) * $factor) / $factor;
+
         $productRows[0]['totalWithTax'] -= $diff;
         $productRows[0]['productPrice'] -= $diff;
     }
