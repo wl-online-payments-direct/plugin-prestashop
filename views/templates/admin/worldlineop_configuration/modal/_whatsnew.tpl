@@ -14,11 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.29
+  1.4.30
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed one-cent payload total drift' mod='worldlineop'}</li>
+  <li>{l s='Fixed CB logo' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>
