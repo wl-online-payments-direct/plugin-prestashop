@@ -14,11 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.30
+  1.4.31
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed CB logo' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Add compatibility between PrestaShop <=1.7.5.2 and PS Checkout 7.4.4.1 (Remove PS shared decimal library)' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

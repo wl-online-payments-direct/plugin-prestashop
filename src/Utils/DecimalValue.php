@@ -18,19 +18,29 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class Decimal
+class DecimalValue
 {
-    public static function multiply($a, $b)
+    /** @var string */
+    private $value;
+
+    public function __construct($value)
     {
-        return new DecimalValue(bcmul((string) $a, (string) $b, 10));
+        $this->value = (string) $value;
     }
 
-    public static function divide($a, $b)
+    public function getIntegerPart()
     {
-        if (bccomp((string) $b, '0', 10) === 0) {
-            throw new \RuntimeException('Division by zero');
+        $dot = strpos($this->value, '.');
+
+        return $dot === false ? $this->value : substr($this->value, 0, $dot);
+    }
+
+    public function __toString()
+    {
+        if (strpos($this->value, '.') === false) {
+            return $this->value;
         }
 
-        return new DecimalValue(bcdiv((string) $a, (string) $b, 10));
+        return rtrim(rtrim($this->value, '0'), '.') ?: '0';
     }
 }

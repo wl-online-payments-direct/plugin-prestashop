@@ -16,8 +16,8 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use OnlinePayments\Sdk\ResponseException;
-use PrestaShop\Decimal\Number;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
+use WorldlineOP\PrestaShop\Utils\DecimalValue;
 
 /**
  * Class WorldlineopPaymentModuleFrontController
@@ -46,7 +46,7 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
 
         $cart = $this->context->cart;
         $hostedTokenizationId = Tools::getValue('hostedTokenizationId');
-        $totalCartPost = new Number(Tools::getValue('worldlineopTotalCartCents'));
+        $totalCartPost = new DecimalValue(Tools::getValue('worldlineopTotalCartCents'));
         $cartCurrencyCodePost = Tools::getValue('worldlineopCartCurrencyCode');
         $totalCart = \WorldlineOP\PrestaShop\Utils\Tools::getRoundedAmountInCents($cart->getOrderTotal(),
             \WorldlineOP\PrestaShop\Utils\Tools::getIsoCurrencyCodeById($cart->id_currency));
