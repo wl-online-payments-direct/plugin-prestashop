@@ -1,7 +1,11 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'In deze module biedt een 1-klik-integratie waarmee je kunt starten met het aanvaarden van betalingen met de API\'s van Worldline Direct (voorheen Ingenico-Ogone). Verhoog je inkomsten door je klanten wereldwijde en regionale betalingsmethoden te bieden waarmee je in heel Europa kunt verkopen.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Kan de Worldline-module niet installeren. Controleer de logboeken in de map \"logs\" van de module.';
@@ -272,7 +276,7 @@ $_MODULE['<{worldlineop}prestashop>_account_b10dd6ea1a32fb6f635fb218dde2b8d7'] =
 $_MODULE['<{worldlineop}prestashop>_account_708ce17caa0e0ddf0223b5ccf3b86ff2'] = 'Webhooks-sleutel Productie';
 $_MODULE['<{worldlineop}prestashop>_account_a85cd91c822649f170d1bcfdfc8b05db'] = 'Webhooks-geheim Productie';
 $_MODULE['<{worldlineop}prestashop>_account_829ad0dd56f780b533e5b7312c49ce1b'] = 'Configuratie van webhook-URL';
-$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = 'Webhooks zijn de primaire methode die uw winkel gebruikt om real-time betalingsmeldingen te ontvangen (bv. betaald, mislukt, terugbetaald), die essentieel zijn voor het aanmaken en bijwerken van uw bestellingen. Uitleg Automatische Modus: De plug-in verstuurt de webhook-URL van de winkel automatisch bij elk betalingsverzoek, wat de veiligste en meest betrouwbare optie is. Deze modus stelt u ook in staat om tot 4 extra URL\'s toe te voegen om meldingen naar externe diensten te sturen, zoals boekhouding of abonnementsbeheer. Let op: in deze modus worden alle webhook-URL\'s die in uw handelaarsportaal zijn geconfigureerd, genegeerd voor transacties afkomstig uit deze specifieke winkel. Uitleg Handmatige Modus: U dient de Webhook-URL van de winkel handmatig te kopiëren en in de webhook-configuratie van uw handelaarsportaal te plakken. Cruciaal voor multishop-gebruikers: deze URL is uniek voor elke winkel, en dit proces moet voor elke winkel worden herhaald.';
+$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = "Webhooks zijn de primaire methode die uw winkel gebruikt om real-time betalingsmeldingen te ontvangen (bv. betaald, mislukt, terugbetaald), die essentieel zijn voor het aanmaken en bijwerken van uw bestellingen. Uitleg Automatische Modus:\u{a0}De plug-in verstuurt de webhook-URL van de winkel automatisch bij elk betalingsverzoek, wat de veiligste en meest betrouwbare optie is. Deze modus stelt u ook in staat om tot 4 extra URL's toe te voegen om meldingen naar externe diensten te sturen, zoals boekhouding of abonnementsbeheer. Let op: in deze modus worden alle webhook-URL's die in uw handelaarsportaal zijn geconfigureerd,\u{a0}genegeerd\u{a0}voor transacties afkomstig uit deze specifieke winkel. Uitleg Handmatige Modus:\u{a0}U dient de Webhook-URL van de winkel handmatig te kopiëren en in de webhook-configuratie van uw handelaarsportaal te plakken.\u{a0}Cruciaal voor multishop-gebruikers: deze URL is uniek voor elke winkel, en dit proces moet voor elke winkel worden herhaald.";
 $_MODULE['<{worldlineop}prestashop>_account_be318d7806111428185ad35d86c12305'] = 'Automatisch (Aanbevolen)';
 $_MODULE['<{worldlineop}prestashop>_account_e1ba155a9f2e8c3be94020eef32a0301'] = 'Handmatig';
 $_MODULE['<{worldlineop}prestashop>_account_81df417c2942e97e8527167cacfd094a'] = 'Automatisch:';
@@ -312,3 +316,6 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8cac4
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_ba9b71b911d0ba9765d9409f3077349d'] = 'De aanmeldingsgegevens zijn geldig.';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8fbc4c2003133f0928383e6473bc4fe1'] = 'De geavanceerde instellingen zijn opgeslagen';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a6331e9bb9c1273817068ed5c1ebfa2'] = 'De instellingen voor betalingsmethoden zijn opgeslagen';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Pagina met betalingsbevestiging weergeven';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Door deze optie in te schakelen, zien uw klanten de Worldline-betaalbevestigingspagina';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Indien ingeschakeld, zien klanten een speciale bevestigingsscherm nadat de betaling is verwerkt, die de betaling bevestigt en belangrijke details verstrekt.';

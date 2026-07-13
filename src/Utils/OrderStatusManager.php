@@ -14,11 +14,11 @@
 
 namespace WorldlineOP\PrestaShop\Utils;
 
-use Configuration;
-use Language;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Monolog\Logger;
-use OrderState;
-use Validate;
 
 /**
  * Class OrderStatusManager
@@ -51,13 +51,13 @@ class OrderStatusManager
      */
     public function createOrderStatus($orderStatus, $moduleName)
     {
-        $orderState = new OrderState(Configuration::getGlobalValue($orderStatus['configKey']));
-        if (!Validate::isLoadedObject($orderState) || $orderState->deleted) {
+        $orderState = new \OrderState((int) \Configuration::getGlobalValue($orderStatus['configKey']));
+        if (!\Validate::isLoadedObject($orderState) || $orderState->deleted) {
             $this->logger->info(sprintf('Install order status %s', $orderStatus['configKey']));
             $orderState->hydrate($orderStatus);
             $orderState->name = [];
             $orderState->module_name = pSQL($moduleName);
-            $languages = Language::getLanguages(false);
+            $languages = \Language::getLanguages(false);
             $names = $orderStatus['names'];
             foreach ($languages as $language) {
                 $name = isset($names[$language['iso_code']]) ? $names[$language['iso_code']] : $names['en'];
@@ -69,7 +69,7 @@ class OrderStatusManager
                     $destination = _PS_ROOT_DIR_ . '/img/os/' . (int) $orderState->id . '.gif';
                     Tools::copy($source, $destination);
                 }
-                Configuration::updateGlobalValue($orderStatus['configKey'], (int) $orderState->id);
+                \Configuration::updateGlobalValue($orderStatus['configKey'], (int) $orderState->id);
             }
         } else {
             $this->logger->info(sprintf('Order status %s already exists', $orderStatus['configKey']));

@@ -14,14 +14,13 @@
 
 namespace WorldlineOP\PrestaShop\Utils;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Alcohol\ISO4217;
-use Currency;
-use Customer;
-use Language;
-use Mail;
 use Order;
 use Symfony\Component\Filesystem\Filesystem;
-use Validate;
 use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 
 /**
@@ -73,8 +72,8 @@ class Tools
      */
     public static function getIsoCurrencyCodeById($idCurrency)
     {
-        $currency = new Currency((int) $idCurrency);
-        if (!Validate::isLoadedObject($currency)) {
+        $currency = new \Currency((int) $idCurrency);
+        if (!\Validate::isLoadedObject($currency)) {
             return '';
         }
 
@@ -84,7 +83,7 @@ class Tools
     /**
      * @param string $isoCode
      *
-     * @return Currency|false
+     * @return \Currency|false
      */
     public static function getCurrencyByIsoCode($isoCode)
     {
@@ -94,8 +93,8 @@ class Tools
             ->from('currency')
             ->where('iso_code = "' . pSQL($isoCode) . '"');
 
-        $idCurrency = \Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($dbQuery);
-        $currency = new Currency((int) $idCurrency);
+        $idCurrency = \Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue($dbQuery);
+        $currency = new \Currency((int) $idCurrency);
 
         return \Validate::isLoadedObject($currency) ? $currency : false;
     }
@@ -134,7 +133,7 @@ class Tools
     public static function getAmountInCents($amount, $isoCurrency)
     {
         $pow = self::getCurrencyDecimalByIso($isoCurrency);
-        if (false === $pow) {
+        if (false === $pow) { // @phpstan-ignore-line
             return $amount;
         }
 
@@ -150,7 +149,7 @@ class Tools
     public static function getRoundedAmountInCents($amount, $isoCurrency)
     {
         $pow = self::getCurrencyDecimalByIso($isoCurrency);
-        if (false === $pow) {
+        if (false === $pow) { // @phpstan-ignore-line
             return $amount;
         }
 
@@ -166,11 +165,11 @@ class Tools
     public static function getRoundedAmountFromCents($amount, $isoCurrency)
     {
         $pow = self::getCurrencyDecimalByIso($isoCurrency);
-        if (false === $pow) {
+        if (false === $pow) { // @phpstan-ignore-line
             return $amount;
         }
 
-        return number_format((string) Decimal::divide((string) $amount, (string) pow(10, $pow)), $pow, '.', '');
+        return number_format((float) (string) Decimal::divide((string) $amount, (string) pow(10, $pow)), $pow, '.', '');
     }
 
     /**
@@ -182,7 +181,7 @@ class Tools
     public static function getRoundedAmount($amount, $isoCurrency)
     {
         $pow = self::getCurrencyDecimalByIso($isoCurrency);
-        if (false === $pow) {
+        if (false === $pow) { // @phpstan-ignore-line
             return $amount;
         }
 
@@ -199,17 +198,17 @@ class Tools
      */
     public static function sendPendingCaptureMail($idOrder)
     {
-        $order = new Order((int) $idOrder);
-        if (!Validate::isLoadedObject($order)) {
+        $order = new \Order((int) $idOrder);
+        if (!\Validate::isLoadedObject($order)) {
             return false;
         }
         $subjects = [
             'en' => 'Awaiting payment capture',
         ];
-        $language = new Language((int) $order->id_lang);
-        $customer = new Customer((int) $order->id_customer);
+        $language = new \Language((int) $order->id_lang);
+        $customer = new \Customer((int) $order->id_customer);
 
-        return Mail::send(
+        return \Mail::send(
             $order->id_lang,
             'pending_capture',
             isset($subjects[$language->iso_code]) ? $subjects[$language->iso_code] : $subjects['en'],
@@ -296,7 +295,9 @@ class Tools
 
     /**
      * @param string|null $env
+     *
      * @return void
+     *
      * @throws \PrestaShopException
      */
     public static function removeSymfonyCache($env = null)
@@ -304,7 +305,7 @@ class Tools
         if (null === $env) {
             $env = defined('_PS_ENV_') ? _PS_ENV_ : (defined('_PS_MODE_DEV_') && _PS_MODE_DEV_ ? 'dev' : 'prod');
         }
-        $dir = _PS_ROOT_DIR_ . '/var/cache/' . $env .'/';
+        $dir = _PS_ROOT_DIR_ . '/var/cache/' . $env . '/';
         register_shutdown_function(function () use ($dir) {
             $fs = new Filesystem();
             $fs->remove($dir);

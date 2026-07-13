@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Installer;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Monolog\Logger;
 use PrestaShopBundle\Install\SqlLoader;
 use Symfony\Component\Yaml\Parser;
@@ -131,13 +135,11 @@ class Installer
      */
     public function checkTechnicalRequirements()
     {
-        //@formatter:off
+        // @formatter:off
         if (extension_loaded('curl') == false) {
-            throw new \Exception(
-                $this->module->l('You need to enable the cURL extension to use this module.', 'Installer')
-            );
+            throw new \Exception($this->module->l('You need to enable the cURL extension to use this module.', 'Installer'));
         }
-        //@formatter:on
+        // @formatter:on
         $this->logger->info('Configuration meets technical requirements');
     }
 

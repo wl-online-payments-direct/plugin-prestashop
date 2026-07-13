@@ -14,13 +14,12 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use Configuration;
-use Context;
-use Country;
-use Currency;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
 
 /**
@@ -28,10 +27,10 @@ use WorldlineOP\PrestaShop\Repository\TokenRepository;
  */
 class StoredCardsPresenter implements PresenterInterface
 {
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     private $module;
 
-    /** @var Context */
+    /** @var \Context */
     private $context;
 
     /** @var MerchantClient */
@@ -43,14 +42,14 @@ class StoredCardsPresenter implements PresenterInterface
     /**
      * StoredCardsPresenter constructor.
      *
-     * @param Worldlineop $module
-     * @param Context $context
+     * @param \Worldlineop $module
+     * @param \Context $context
      * @param MerchantClient $merchantClient
      * @param TokenRepository $tokenRepository
      */
     public function __construct(
-        Worldlineop $module,
-        Context $context,
+        \Worldlineop $module,
+        \Context $context,
         MerchantClient $merchantClient,
         TokenRepository $tokenRepository
     ) {
@@ -80,11 +79,11 @@ class StoredCardsPresenter implements PresenterInterface
         if ($tokens) {
             foreach ($tokens as $token) {
                 $query = new GetPaymentProductParams();
-                $defaultCurrency = Currency::getDefaultCurrency();
-                $query->setCurrencyCode($defaultCurrency instanceof Currency ? $defaultCurrency->iso_code : 'EUR');
-                $query->setCountryCode(Country::getIsoById((int) Configuration::get('PS_COUNTRY_DEFAULT')));
+                $defaultCurrency = \Currency::getDefaultCurrency();
+                $query->setCurrencyCode($defaultCurrency instanceof \Currency ? $defaultCurrency->iso_code : 'EUR');
+                $query->setCountryCode(\Country::getIsoById((int) \Configuration::get('PS_COUNTRY_DEFAULT')));
                 try {
-                    $productDetails = $this->merchantClient->products()->getPaymentProduct($token->product_id, $query);
+                    $productDetails = $this->merchantClient->products()->getPaymentProduct((int) $token->product_id, $query);
                 } catch (\Exception $e) {
                     continue;
                 }

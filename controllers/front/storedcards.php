@@ -26,22 +26,16 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
     /** @var bool */
     protected $redirectStoredCards = false;
 
-    /** @var \Monolog\Logger */
-    private $logger;
-
     /**
      * @throws PrestaShopException
      */
     public function initContent()
     {
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
-        $loggerFactory = $this->module->getService('worldlineop.logger.factory');
-        $this->logger = $loggerFactory->setChannel('StoredCards');
         if ($this->redirectStoredCards) {
             $this->redirectWithNotifications($this->context->link->getModuleLink('worldlineop', 'storedcards', []));
         }
         parent::initContent();
-        /** @var \WorldlineOP\PrestaShop\Presenter\StoredCardsPresenter $storedCardsPresenter */
+        /** @var WorldlineOP\PrestaShop\Presenter\StoredCardsPresenter $storedCardsPresenter */
         $storedCardsPresenter = $this->module->getService('worldlineop.storedcards.presenter');
         $this->context->smarty->assign([
             'stored_cards' => $storedCardsPresenter->present(),
@@ -89,7 +83,7 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
 
             return false;
         }
-        /** @var \WorldlineOP\PrestaShop\Repository\TokenRepository $tokenRepository */
+        /** @var WorldlineOP\PrestaShop\Repository\TokenRepository $tokenRepository */
         $tokenRepository = $this->module->getService('worldlineop.repository.token');
         $storedCard = $tokenRepository->findById((int) $idStoreCard);
         if (false === $storedCard
@@ -101,7 +95,7 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
             return false;
         }
 
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         try {
             $this->module->logger->debug(
@@ -117,15 +111,14 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
             return false;
         }
         if ($delete) {
-            $this->module->logger->info('Deleted stored card:' .$storedCard->card_number);
+            $this->module->logger->info('Deleted stored card:' . $storedCard->card_number);
             $this->success[] = $this->module->l('Card deleted successfully.', 'storedcards');
             $this->redirectStoredCards = true;
 
             return true;
-        } else {
-            $this->errors[] = $this->module->l('Could not delete stored card.', 'storedcards');
-
-            return false;
         }
+        $this->errors[] = $this->module->l('Could not delete stored card.', 'storedcards');
+
+        return false;
     }
 }

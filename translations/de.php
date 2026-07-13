@@ -1,7 +1,11 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'Dieses Modul bietet eine 1-Klick-Integration für den Beginn der Annahme von Zahlungen mit den Worldline Direct APIs (früher Ingenico-Ogone). Steigern Sie Ihren Umsatz, indem Sie Ihren Kunden globale und regionale Zahlungsmethoden für den europaweiten Verkauf anbieten.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'Das Worldline-Modul konnte nicht installiert werden. Bitte prüfen Sie die Protokolle im Verzeichnis „logs“ des Moduls.';
@@ -272,7 +276,7 @@ $_MODULE['<{worldlineop}prestashop>_account_b10dd6ea1a32fb6f635fb218dde2b8d7'] =
 $_MODULE['<{worldlineop}prestashop>_account_708ce17caa0e0ddf0223b5ccf3b86ff2'] = 'Prod Webhooks-Schlüssel';
 $_MODULE['<{worldlineop}prestashop>_account_a85cd91c822649f170d1bcfdfc8b05db'] = 'Prod Webhooks-Geheimwort';
 $_MODULE['<{worldlineop}prestashop>_account_829ad0dd56f780b533e5b7312c49ce1b'] = 'Webhook-URL-Konfiguration';
-$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = 'Webhooks sind die primäre Methode, die Ihr Shop verwendet, um Echtzeit-Zahlungsbenachrichtigungen (z.B. bezahlt, fehlgeschlagen, erstattet) zu erhalten, die für die Erstellung und Aktualisierung Ihrer Bestellungen unerlässlich sind. Erklärung Automatischer Modus: Das Plugin sendet die Webhook-URL des Shops automatisch bei jeder Zahlungsanforderung, was die sicherste und zuverlässigste Option ist. Dieser Modus ermöglicht es Ihnen auch, bis zu 4 zusätzliche URLs hinzuzufügen, um Benachrichtigungen an externe Dienste wie Buchhaltung oder Abonnementverwaltung zu senden. Bitte beachten Sie, dass in diesem Modus alle in Ihrem Händlerportal konfigurierten Webhook-URLs für Transaktionen aus diesem speziellen Shop ignoriert werden. Erklärung Manueller Modus: Sie müssen die Webhook-URL des Shops manuell kopieren und in die Webhook-Konfiguration Ihres Händlerportals einfügen. Entscheidend für Multistore-Benutzer: Diese URL ist für jeden Shop einzigartig, und dieser Vorgang muss für jeden einzelnen wiederholt werden.';
+$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = "Webhooks sind die primäre Methode, die Ihr Shop verwendet, um Echtzeit-Zahlungsbenachrichtigungen (z.B. bezahlt, fehlgeschlagen, erstattet) zu erhalten, die für die Erstellung und Aktualisierung Ihrer Bestellungen unerlässlich sind. Erklärung Automatischer Modus:\u{a0}Das Plugin sendet die Webhook-URL des Shops automatisch bei jeder Zahlungsanforderung, was die sicherste und zuverlässigste Option ist. Dieser Modus ermöglicht es Ihnen auch, bis zu 4 zusätzliche URLs hinzuzufügen, um Benachrichtigungen an externe Dienste wie Buchhaltung oder Abonnementverwaltung zu senden. Bitte beachten Sie, dass in diesem Modus alle in Ihrem Händlerportal konfigurierten Webhook-URLs für Transaktionen aus diesem speziellen Shop\u{a0}ignoriert\u{a0}werden. Erklärung Manueller Modus:\u{a0}Sie müssen die Webhook-URL des Shops manuell kopieren und in die Webhook-Konfiguration Ihres Händlerportals einfügen.\u{a0}Entscheidend für Multistore-Benutzer: Diese URL ist für jeden Shop einzigartig, und dieser Vorgang muss für jeden einzelnen wiederholt werden.";
 $_MODULE['<{worldlineop}prestashop>_account_be318d7806111428185ad35d86c12305'] = 'Automatisch (Empfohlen)';
 $_MODULE['<{worldlineop}prestashop>_account_e1ba155a9f2e8c3be94020eef32a0301'] = 'Manuell';
 $_MODULE['<{worldlineop}prestashop>_account_81df417c2942e97e8527167cacfd094a'] = 'Automatisch:';
@@ -312,3 +316,6 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8cac4
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_ba9b71b911d0ba9765d9409f3077349d'] = 'Anmeldedaten für das Konto sind gültig.';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8fbc4c2003133f0928383e6473bc4fe1'] = 'Erweiterte Einstellungen erfolgreich gespeichert';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a6331e9bb9c1273817068ed5c1ebfa2'] = 'Einstellungen für Zahlungsmethoden erfolgreich gespeichert';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Zahlungsbestätigungsseite anzeigen';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Wenn Sie diese Option aktivieren, sehen Ihre Kunden die Worldline-Zahlungsbestätigungsseite';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Wenn aktiviert, sehen Kunden nach der Zahlungsabwicklung einen speziellen Bestätigungsbildschirm, der die Zahlung bestätigt und wichtige Details bereitstellt.';

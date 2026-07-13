@@ -101,6 +101,7 @@ configuration:
     threeDSExemptedType: ''
     threeDSExemptedValue: 0
     surchargingEnabled: 0
+    displayPaymentConfirmationPage: 1
     displayWhatsNew: 0
   paymentMethodsSettings:
     displayGenericOption: 1

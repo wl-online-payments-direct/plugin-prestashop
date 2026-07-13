@@ -25,11 +25,11 @@ class AdminWorldlineopLogsController extends ModuleAdminController
 
     public function processDownloadLogFile()
     {
-        /** @var \Monolog\Logger $logger */
+        /** @var Monolog\Logger $logger */
         $logger = $this->module->getService('worldlineop.logger');
         $handlers = $logger->getHandlers();
         foreach ($handlers as $handler) {
-            if ($handler instanceof \Monolog\Handler\RotatingFileHandler) {
+            if ($handler instanceof Monolog\Handler\RotatingFileHandler) {
                 $file = $handler->getUrl();
                 if (realpath($file)) {
                     header('Content-Description: File Transfer');

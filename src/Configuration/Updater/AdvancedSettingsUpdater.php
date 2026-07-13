@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Updater;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use WorldlineOP\PrestaShop\Configuration\Entity\AdvancedSettings;
 
@@ -22,7 +26,7 @@ use WorldlineOP\PrestaShop\Configuration\Entity\AdvancedSettings;
  */
 class AdvancedSettingsUpdater extends SettingsUpdater
 {
-    protected function serialize()
+    protected function serializeSettings()
     {
         $this->json = $this->serializer->serialize($this->settings->advancedSettings, 'json');
     }

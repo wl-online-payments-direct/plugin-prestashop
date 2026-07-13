@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\OptionsResolver;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -117,6 +121,7 @@ class AccountSettingsResolver extends AbstractSettingsResolver
                     if (is_array($value)) {
                         return array_filter(array_map('trim', $value));
                     }
+
                     return $value;
                 }
             );

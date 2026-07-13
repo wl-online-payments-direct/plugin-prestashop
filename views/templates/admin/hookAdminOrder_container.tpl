@@ -13,7 +13,7 @@
  *}
 
 <div id="worldlineop-admin-order-container">
-  {$html}
+  {$html nofilter}
 </div>
 {literal}
   <script type="text/javascript">

@@ -14,8 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use OrderState;
-use Worldlineop;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader;
@@ -26,8 +28,8 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class ModuleConfigurationPresenter implements PresenterInterface
 {
-    const PENDING_CRON = '*/30 * * * * wget -O /dev/null ';
-    const CAPTURE_CRON = '0 */6 * * * wget -O /dev/null ';
+    public const PENDING_CRON = '*/30 * * * * wget -O /dev/null ';
+    public const CAPTURE_CRON = '0 */6 * * * wget -O /dev/null ';
 
     /** @var string[] */
     private const HIDDEN_FIELDS = [
@@ -42,7 +44,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
         'testApiKey',
         'testApiSecret',
         'testWebhooksKey',
-        'testWebhooksSecret'
+        'testWebhooksSecret',
     ];
 
     private const PROD_FIELDS = [
@@ -50,22 +52,22 @@ class ModuleConfigurationPresenter implements PresenterInterface
         'prodApiKey',
         'prodApiSecret',
         'prodWebhooksKey',
-        'prodWebhooksSecret'
+        'prodWebhooksSecret',
     ];
 
     /** @var SettingsLoader */
     private $settingsLoader;
 
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     private $module;
 
     /**
      * ModuleConfigurationPresenter constructor.
      *
-     * @param Worldlineop $module
+     * @param \Worldlineop $module
      * @param SettingsLoader $settingsLoader
      */
-    public function __construct(Worldlineop $module, SettingsLoader $settingsLoader)
+    public function __construct(\Worldlineop $module, SettingsLoader $settingsLoader)
     {
         $this->module = $module;
         $this->settingsLoader = $settingsLoader;
@@ -112,7 +114,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
                 'SAFETY_DELAY_MIN' => PaymentSettings::SAFETY_DELAY_MIN,
                 'SAFETY_DELAY_MAX' => PaymentSettings::SAFETY_DELAY_MAX,
             ],
-            'statuses' => OrderState::getOrderStates(\Context::getContext()->employee->id_lang),
+            'statuses' => \OrderState::getOrderStates(\Context::getContext()->employee->id_lang),
             'defaultStatuses' => \Configuration::getMultiple([
                 'PS_OS_PAYMENT',
                 'WOP_PENDING_ORDER_STATUS_ID',
@@ -163,6 +165,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
 
     /**
      * @param array $settings
+     *
      * @return void
      */
     private function hideSecrets(array &$settings): void
@@ -182,6 +185,7 @@ class ModuleConfigurationPresenter implements PresenterInterface
      * Mask a secret field
      *
      * @param string $input
+     *
      * @return string
      */
     private function maskString(string $input): string

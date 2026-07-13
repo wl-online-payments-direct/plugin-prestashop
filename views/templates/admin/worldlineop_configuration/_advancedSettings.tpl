@@ -408,6 +408,40 @@
             </div>
           </div>
         </div>
+        <!-- Display payment confirmation page -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+            <span class="label-tooltip"
+                  data-toggle="tooltip"
+                  data-html="true"
+                  data-original-title="{l s='If enabled, customers will see a dedicated confirmation screen after payment is processed, confirming the payment and providing key details.' mod='worldlineop'}">
+            {l s='Display payment confirmation page' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[displayPaymentConfirmationPage]"
+                     id="worldlineopAdvancedSettings_displayPaymentConfirmationPage_on"
+                     {if $data.advancedSettings.displayPaymentConfirmationPage === true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_displayPaymentConfirmationPage_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[displayPaymentConfirmationPage]"
+                     id="worldlineopAdvancedSettings_displayPaymentConfirmationPage_off"
+                     {if $data.advancedSettings.displayPaymentConfirmationPage != true}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_displayPaymentConfirmationPage_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s='By enabling this option, your customers will see the Worldline payment confirmation page' mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
+        <!-- /Display payment confirmation page -->
         <!-- /Group cards -->
         <div class="form-group form-group-h2">
           <div class="col-lg-3"></div>

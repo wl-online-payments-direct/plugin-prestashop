@@ -42,20 +42,19 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.31';
+        $this->version = '1.4.33';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         parent::__construct();
         $this->bootstrap = true;
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => '1.7.8.99');
+        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => '1.7.8.99'];
         // @formatter:off
         $this->displayName = $this->l('Worldline Online Payments');
         $this->description = $this->l('This module offers a 1-click integration to start accepting payments and grow your revenues by offering your customers with global and regional payment methods to sell across Europe.');
         // @formatter:on
         $this->theme = Tools::version_compare(_PS_VERSION_, '1.7.7', '>=') ? 'new-theme' : 'legacy';
-        $this->serviceContainer = new ServiceContainer($this->name, $this->getLocalPath());
         $this->logger = $this->getService('worldlineop.logger');
     }
 
@@ -73,9 +72,9 @@ class Worldlineop extends PaymentModule
         }
         try {
             $installer->run();
-        } catch (\WorldlineOP\PrestaShop\Exception\ExceptionList $list) {
-            foreach ($list as $item) {
-                /** @var \WorldlineOP\PrestaShop\Exception\ExceptionList $e */
+        } catch (WorldlineOP\PrestaShop\Exception\ExceptionList $list) {
+            foreach ($list->getExceptions() as $item) {
+                /** @var \Exception $e */
                 $e = $item;
                 $installer->getLogger()->error(sprintf('%s - File: %s - Line: %s - Trace: %s', $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
 
@@ -101,6 +100,7 @@ class Worldlineop extends PaymentModule
             Configuration::deleteByName('WORLDLINEOP_ADVANCED_SETTINGS');
             Configuration::deleteByName('WORLDLINEOP_PAYMENT_METHODS_SETTINGS');
             ToolsWorldline::removeSymfonyCache();
+
             return true;
         }
 
@@ -111,8 +111,10 @@ class Worldlineop extends PaymentModule
     {
         if (parent::disable($force_all)) {
             ToolsWorldline::removeSymfonyCache();
+
             return true;
         }
+
         return false;
     }
 
@@ -123,6 +125,13 @@ class Worldlineop extends PaymentModule
      */
     public function getService($serviceName)
     {
+        if ($this->serviceContainer === null) {
+            $this->serviceContainer = new \PrestaShop\ModuleLibServiceContainer\DependencyInjection\ServiceContainer(
+                $this->name . str_replace('.', '', $this->version),
+                $this->getLocalPath()
+            );
+        }
+
         return $this->serviceContainer->getService($serviceName);
     }
 
@@ -131,6 +140,14 @@ class Worldlineop extends PaymentModule
      */
     public function getContent()
     {
+        $mboInstaller = new \Prestashop\ModuleLibMboInstaller\DependencyBuilder($this);
+        if (!$mboInstaller->areDependenciesMet()) {
+            $dependencies = $mboInstaller->handleDependencies();
+            $this->smarty->assign('dependencies', $dependencies);
+
+            return $this->display(__FILE__, 'views/templates/admin/dependency_builder.tpl');
+        }
+
         Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminWorldlineopConfiguration'));
     }
 
@@ -200,7 +217,7 @@ class Worldlineop extends PaymentModule
     public function hookPaymentOptions()
     {
         try {
-            /** @var \WorldlineOP\PrestaShop\Presenter\PaymentOptionsPresenter $paymentOptionsPresenter */
+            /** @var WorldlineOP\PrestaShop\Presenter\PaymentOptionsPresenter $paymentOptionsPresenter */
             $paymentOptionsPresenter = $this->getService('worldlineop.payment.presenter');
         } catch (Exception $e) {
             $this->logger->error('Error while presenting payment options', ['message' => $e->getMessage()]);
@@ -261,9 +278,9 @@ class Worldlineop extends PaymentModule
             return $this->displayError(sprintf($this->l('Please change shop context to shop ID %d'), $order->id_shop));
         }
         try {
-            /** @var \WorldlineOP\PrestaShop\Presenter\TransactionPresenter $transactionPresenter */
+            /** @var WorldlineOP\PrestaShop\Presenter\TransactionPresenter $transactionPresenter */
             $transactionPresenter = $this->getService('worldlineop.transaction.presenter');
-            /** @var \WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter $settingsPresenter */
+            /** @var WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter $settingsPresenter */
             $settingsPresenter = $this->getService('worldlineop.settings.presenter');
 
             $this->context->smarty->assign([
@@ -338,9 +355,9 @@ class Worldlineop extends PaymentModule
         if (!Validate::isLoadedObject($order)) {
             return '';
         }
-        /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
+        /** @var WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
         $transactionRepository = $this->getService('worldlineop.repository.transaction');
-        /** @var WorldlineopTransaction $transaction */
+        /** @var WorldlineopTransaction|false $transaction */
         $transaction = $transactionRepository->findByIdOrder($order->id);
         if (false === $transaction) {
             return '';
@@ -359,17 +376,17 @@ class Worldlineop extends PaymentModule
     /**
      * @param mixed[] $params
      *
-     * @return void
+     * @return string
      */
     public function hookDisplayAdminProductsExtra($params)
     {
         $idProduct = (int) $params['id_product'];
         $this->context->smarty->assign([
-            'worldlineopGCTypeNone' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE,
-            'worldlineopGCTypeFoodDrink' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK,
-            'worldlineopGCTypeHomeGarden' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN,
-            'worldlineopGCTypeGiftFlowers' => \WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS,
-            'worldlineopGCSelectedType' => \WorldlineOP\PrestaShop\Utils\Tools::getGiftCardTypeByIdProduct($idProduct),
+            'worldlineopGCTypeNone' => WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_NONE,
+            'worldlineopGCTypeFoodDrink' => WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK,
+            'worldlineopGCTypeHomeGarden' => WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN,
+            'worldlineopGCTypeGiftFlowers' => WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS,
+            'worldlineopGCSelectedType' => ToolsWorldline::getGiftCardTypeByIdProduct($idProduct),
         ]);
 
         return $this->display(dirname(__FILE__), 'views/templates/admin/hookDisplayAdminProductsExtra.tpl');

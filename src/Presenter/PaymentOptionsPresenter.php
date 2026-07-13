@@ -14,9 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use Configuration;
-use Context;
-use Language;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CalculateSurchargeRequest;
 use OnlinePayments\Sdk\Domain\CalculateSurchargeResponse;
@@ -24,7 +25,6 @@ use OnlinePayments\Sdk\Domain\CardSource;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use OnlinePayments\Sdk\ValidationException;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
@@ -35,26 +35,26 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class PaymentOptionsPresenter implements PresenterInterface
 {
-    const NO_SURCHARGE = 'NO_SURCHARGE';
-    const MEALVOUCHER_PRODUCT_ID = 5402;
+    public const NO_SURCHARGE = 'NO_SURCHARGE';
+    public const MEALVOUCHER_PRODUCT_ID = 5402;
 
     /** @var Settings */
     private $settings;
 
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     private $module;
 
-    /** @var Context */
+    /** @var \Context */
     private $context;
 
     /**
      * ModuleConfigurationPresenter constructor.
      *
-     * @param Worldlineop $module
+     * @param \Worldlineop $module
      * @param Settings $settings
-     * @param Context $context
+     * @param \Context $context
      */
-    public function __construct(Worldlineop $module, Settings $settings, Context $context)
+    public function __construct(\Worldlineop $module, Settings $settings, \Context $context)
     {
         $this->module = $module;
         $this->settings = $settings;
@@ -123,11 +123,11 @@ class PaymentOptionsPresenter implements PresenterInterface
             foreach ($tokens as $token) {
                 $logoPath = realpath($this->module->getLocalPath() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 $paymentOption = new PaymentOption();
-                //@formatter:off
+                // @formatter:off
                 $paymentOption
                     ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true, 'productId' => $token->product_id, 'tokenId' => $token->id]))
                     ->setCallToActionText(sprintf($this->module->l('Pay with my previously saved card %s', 'PaymentOptionsPresenter'), $token->card_number));
-                //@formatter:on
+                // @formatter:on
                 if (false !== realpath($logoPath)) {
                     $paymentOption->setLogo($this->module->getPathUri() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 }
@@ -138,11 +138,11 @@ class PaymentOptionsPresenter implements PresenterInterface
             $tokenIds = [];
             /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
             $merchantClient = $this->module->getService('worldlineop.sdk.client');
-            $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
+            $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
             foreach ($tokens as $token) {
                 $hostedTokenizationRequest = new CreateHostedTokenizationRequest();
                 $hostedTokenizationRequest->setAskConsumerConsent(true);
-                $hostedTokenizationRequest->setLocale(Language::getLocaleByIso($cartIsoLang));
+                $hostedTokenizationRequest->setLocale(\Language::getLocaleByIso($cartIsoLang));
                 $hostedTokenizationRequest->setVariant($paymentMethodsSettings->iframeTemplateFilename);
                 $hostedTokenizationRequest->setTokens($token->value);
                 try {
@@ -220,13 +220,13 @@ class PaymentOptionsPresenter implements PresenterInterface
 
                 $logoPath = realpath($this->module->getLocalPath() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 $paymentOption = new PaymentOption();
-                //@formatter:off
+                // @formatter:off
                 $paymentOption
                     ->setCallToActionText(sprintf($this->module->l('Pay with my previously saved card %s', 'PaymentOptionsPresenter'), $token->card_number))
                     ->setAdditionalInformation($this->context->smarty->fetch('module:worldlineop/views/templates/front/hostedTokenizationAdditionalInformation_1click.tpl'))
                     ->setBinary(true)
                     ->setModuleName('worldlineop-token-htp-' . $token->id_worldlineop_token);
-                //@formatter:on
+                // @formatter:on
                 if (false !== realpath($logoPath)) {
                     $paymentOption->setLogo($this->module->getPathUri() . sprintf('views/img/payment_logos/%s.svg', $token->product_id));
                 }
@@ -254,10 +254,10 @@ class PaymentOptionsPresenter implements PresenterInterface
         }
         /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
-        $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
+        $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
         $hostedTokenizationRequest = new CreateHostedTokenizationRequest();
         $hostedTokenizationRequest->setAskConsumerConsent(true);
-        $hostedTokenizationRequest->setLocale(str_replace('-', '_', Language::getLocaleByIso($cartIsoLang)));
+        $hostedTokenizationRequest->setLocale(str_replace('-', '_', \Language::getLocaleByIso($cartIsoLang)));
         $hostedTokenizationRequest->setVariant($paymentMethodsSettings->iframeTemplateFilename);
         try {
             $hostedTokenizationResponse = $merchantClient->hostedTokenization()
@@ -279,7 +279,7 @@ class PaymentOptionsPresenter implements PresenterInterface
             'surchargeEnabled' => $this->settings->advancedSettings->surchargingEnabled,
         ]);
 
-        $defaultIsoLang = Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'));
+        $defaultIsoLang = \Language::getIsoById((int) \Configuration::get('PS_LANG_DEFAULT'));
         $cta = $paymentMethodsSettings->iframeCallToAction;
         $paymentOption = new PaymentOption();
         $paymentOption
@@ -298,8 +298,8 @@ class PaymentOptionsPresenter implements PresenterInterface
     private function getGenericPaymentOption()
     {
         if (true === $this->settings->paymentMethodsSettings->displayGenericOption) {
-            $cartIsoLang = Language::getIsoById($this->context->cart->id_lang);
-            $defaultIsoLang = Language::getIsoById(Configuration::get('PS_LANG_DEFAULT'));
+            $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
+            $defaultIsoLang = \Language::getIsoById((int) \Configuration::get('PS_LANG_DEFAULT'));
             $cta = $this->settings->paymentMethodsSettings->redirectCallToAction;
             if ($this->settings->paymentMethodsSettings->genericLogoFilename) {
                 $logo = sprintf(
@@ -335,16 +335,16 @@ class PaymentOptionsPresenter implements PresenterInterface
                 continue;
             }
             $paymentOption = new PaymentOption();
-            //@formatter:off
+            // @formatter:off
             $paymentOption
                 ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true, 'productId' => $paymentMethod->productId]))
                 ->setLogo(sprintf($this->module->getPathUri() . 'views/img/payment_logos/%s.svg', $paymentMethod->productId))
                 ->setCallToActionText(sprintf($this->module->l('Pay with %s', 'PaymentOptionsPresenter'), $paymentMethod->identifier));
-            //@formatter:off
+            // @formatter:off
 
             $productId = $this->extractProductIdFromPaymentOption($paymentOption);
-            if ((int)$productId === self::MEALVOUCHER_PRODUCT_ID &&
-                (!$this->isEligibleForMealVoucher() || !$this->isCustomerDataValid())) {
+            if ((int) $productId === self::MEALVOUCHER_PRODUCT_ID
+                && (!$this->isEligibleForMealVoucher() || !$this->isCustomerDataValid())) {
                 continue;
             }
 
@@ -357,15 +357,18 @@ class PaymentOptionsPresenter implements PresenterInterface
     /**
      * @return bool
      */
-    private function isCustomerDataValid() {
+    private function isCustomerDataValid()
+    {
         return $this->context->customer->id && $this->context->customer->email;
     }
 
     /**
      * @param PaymentOption $paymentOption
+     *
      * @return mixed|null
      */
-    private function extractProductIdFromPaymentOption(PaymentOption $paymentOption) {
+    private function extractProductIdFromPaymentOption(PaymentOption $paymentOption)
+    {
         $urlParts = parse_url($paymentOption->getAction());
         parse_str($urlParts['query'], $queryParams);
 
@@ -394,10 +397,10 @@ class PaymentOptionsPresenter implements PresenterInterface
      */
     private function getEligibleProductTypes()
     {
-        return array(
+        return [
             HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK,
             HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN,
-            HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS
-        );
+            HostedPaymentRequestBuilder::GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS,
+        ];
     }
 }

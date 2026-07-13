@@ -63,12 +63,12 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
     /**
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
-     * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
+     * @throws PrestaShop\Decimal\Exception\DivisionByZeroException
      */
     public function displayAjaxRunCron()
     {
-        $secureKey = \Tools::getValue('secure_key');
-        if ($secureKey !== \WorldlineOP\PrestaShop\Utils\Tools::hash($this->module->getLocalPath())) {
+        $secureKey = Tools::getValue('secure_key');
+        if ($secureKey !== WorldlineOP\PrestaShop\Utils\Tools::hash($this->module->getLocalPath())) {
             header('HTTP/1.1 200 OK');
             exit;
         }
@@ -76,7 +76,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
         if ($this->verbose) {
             printf('<pre>');
         }
-        /** @var \WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader $settingsLoader */
+        /** @var WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader $settingsLoader */
         $settingsLoader = $this->module->getService('worldlineop.settings.loader');
         $shopsSettings = [];
         $restrictOSIds1 = [Configuration::getGlobalValue('PS_OS_CANCELED')];
@@ -118,14 +118,14 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             ->where('wt.id_order IS NOT NULL')
             ->having('o.id_order NOT IN(' . $subQuery1->build() . ') AND o.id_order IN(' . $subQuery2->build() . ')');
 
-        $rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($dbQuery);
+        $rows = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS($dbQuery);
         if (!$rows) {
             $this->printDebug('No orders eligible');
             exit;
         }
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
-        /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
+        /** @var WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
         $transactionRepository = $this->module->getService('worldlineop.repository.transaction');
         $rows = array_map(
             function ($array) {
@@ -145,7 +145,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             if (!isset($shopsSettings[$order->id_shop])) {
                 $shopsSettings[$order->id_shop] = $settingsLoader->setContext($order->id_shop);
             }
-            /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
+            /** @var WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
             $settings = $shopsSettings[$order->id_shop];
             if (PaymentSettings::TRANSACTION_TYPE_IMMEDIATE === $settings->advancedSettings->paymentSettings->transactionType
                 || 0 === $settings->advancedSettings->paymentSettings->captureDelay
@@ -166,7 +166,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
                 $this->printOrderDebug('Transaction is older than 32 days');
                 continue;
             }
-            /** @var WorldlineopTransaction $transaction */
+            /** @var WorldlineopTransaction|false $transaction */
             $transaction = $transactionRepository->findByIdOrder((int) $idOrder);
             if (false === $transaction) {
                 $this->printOrderDebug('Cannot find transaction');
@@ -193,7 +193,7 @@ class WorldlineopCronCaptureModuleFrontController extends ModuleFrontController
             }
             $amount = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getAmount();
             $currency = $paymentResponse->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode();
-            $pow = \WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($currency);
+            $pow = WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($currency);
             $this->printOrderDebug(sprintf(
                 'About to capture %s for transaction ID %s',
                 Decimal::divide((string) $amount, (string) pow(10, $pow)) . $currency,

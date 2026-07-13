@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Loader;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\Serializer\Serializer;
 use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\AdvancedSettings;

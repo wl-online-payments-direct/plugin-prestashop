@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Exception;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class ExceptionList
  */
@@ -28,6 +32,14 @@ class ExceptionList extends \Exception
     public function setExceptions($exceptions)
     {
         $this->exceptions = $exceptions;
+    }
+
+    /**
+     * @return \Exception[]
+     */
+    public function getExceptions()
+    {
+        return $this->exceptions;
     }
 
     /**

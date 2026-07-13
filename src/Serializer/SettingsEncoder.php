@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Serializer;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**

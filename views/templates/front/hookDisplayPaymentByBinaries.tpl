@@ -25,8 +25,8 @@
 {if isset($tokenHTP)}
   {foreach $tokenHTP as $htp}
     <!-- Token HTP -->
-    <div class="js-payment-binary js-payment-worldlineop-token-htp-{$htp.id} worldlineop-token-htp-btn">
-      <button id="js-worldlineop-token-btn-submit-{$htp.id}" type="submit" disabled="disabled" class="btn btn-primary center-block">
+    <div class="js-payment-binary js-payment-worldlineop-token-htp-{$htp.id|escape:'html':'UTF-8'} worldlineop-token-htp-btn">
+      <button id="js-worldlineop-token-btn-submit-{$htp.id|escape:'html':'UTF-8'}" type="submit" disabled="disabled" class="btn btn-primary center-block">
         {l s='Place order' mod='worldlineop'}
       </button>
     </div>

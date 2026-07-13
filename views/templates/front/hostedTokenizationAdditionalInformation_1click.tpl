@@ -18,24 +18,24 @@
     <ul>
       <li>
         {l s='Initial total:' mod='worldlineop'}
-        {$tokenSurcharge.amountWithoutSurcharge} {$tokenSurcharge.currencyIso}
+        {$tokenSurcharge.amountWithoutSurcharge|escape:'html':'UTF-8'} {$tokenSurcharge.currencyIso|escape:'html':'UTF-8'}
       </li>
       <li>
         {l s='Surcharge amount:' mod='worldlineop'}
-        {$tokenSurcharge.surchargeAmount} {$tokenSurcharge.currencyIso}
+        {$tokenSurcharge.surchargeAmount|escape:'html':'UTF-8'} {$tokenSurcharge.currencyIso|escape:'html':'UTF-8'}
       </li>
       <li>
         <b>
           {l s='Total amount with surcharge:' mod='worldlineop'}
-          {$tokenSurcharge.amountWithSurcharge} {$tokenSurcharge.currencyIso}
+          {$tokenSurcharge.amountWithSurcharge|escape:'html':'UTF-8'} {$tokenSurcharge.currencyIso|escape:'html':'UTF-8'}
         </b>
       </li>
     </ul>
   </div>
 {/if}
 
-<div class="js-worldlineop-1click-container-{$tokenId}">
-  <div id="js-worldlineop-1click-{$tokenId}" class="js-worldlineop-htp worldlineop-htp"></div>
+<div class="js-worldlineop-1click-container-{$tokenId|escape:'html':'UTF-8'}">
+  <div id="js-worldlineop-1click-{$tokenId|escape:'html':'UTF-8'}" class="js-worldlineop-htp worldlineop-htp"></div>
 
   <div class="js-worldlineop-generic-error alert alert-danger" style="display: none">
     {l s='An error occurred while processing the payment.' mod='worldlineop'}
@@ -53,8 +53,8 @@
   hostedTokenizationObj = new htpPrototype(document);
 
   hostedTokenizationObj.elems = {
-    iframeContainer: document.querySelector('.js-worldlineop-1click-container-{$tokenId}'),
-    payBtnId: 'js-worldlineop-token-btn-submit-{$tokenId}',
+    iframeContainer: document.querySelector('.js-worldlineop-1click-container-{$tokenId|escape:'javascript':'UTF-8'}'),
+    payBtnId: 'js-worldlineop-token-btn-submit-{$tokenId|escape:'javascript':'UTF-8'}',
   };
   hostedTokenizationObj.urls = {
     htp: "{$hostedTokenizationPageUrl|escape:'javascript':'UTF-8'|replace:'&amp;':'&'}",

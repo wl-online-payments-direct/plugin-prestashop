@@ -25,17 +25,17 @@
         <div class="stored-card">
           <div class="card-content">
             <div class="card-brand">
-              <span>{$stored_card.card_brand}</span>
-              <img src="{$stored_card.logo_url}" alt="{$stored_card.card_brand}" />
+              <span>{$stored_card.card_brand|escape:'html':'UTF-8'}</span>
+              <img src="{$stored_card.logo_url|escape:'html':'UTF-8'}" alt="{$stored_card.card_brand|escape:'html':'UTF-8'}" />
             </div>
-            <img alt="Chip" src="{$stored_cards.img_path}icons/card-chip.png">
+            <img alt="Chip" src="{$stored_cards.img_path|escape:'html':'UTF-8'}icons/card-chip.png">
             <div class="card-details">
-              <span>{$stored_card.card_number}</span>
-              <span>{$stored_card.expiry_date}</span>
+              <span>{$stored_card.card_number|escape:'html':'UTF-8'}</span>
+              <span>{$stored_card.expiry_date|escape:'html':'UTF-8'}</span>
             </div>
           </div>
           <div class="card-action">
-            <a href="{$link->getModuleLink('worldlineop', 'storedcards', ['delete' => 1, 'token' => $token, 'id_token' => $stored_card.id])}">
+            <a href="{$link->getModuleLink('worldlineop', 'storedcards', ['delete' => 1, 'token' => $token, 'id_token' => $stored_card.id])|escape:'html':'UTF-8'}">
               <span class="material-icons">delete</span>
               {l s='Delete' mod='worldlineop'}
             </a>

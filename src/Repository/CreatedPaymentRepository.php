@@ -14,33 +14,15 @@
 
 namespace WorldlineOP\PrestaShop\Repository;
 
-use Db;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class CreatedPaymentRepository
  */
 class CreatedPaymentRepository
 {
-    /** @var Db */
-    private $db;
-
-    /** @var array */
-    private $cache;
-
-    /**
-     * CreatedPaymentRepository constructor.
-     *
-     * @param Db $db
-     */
-    public function __construct(Db $db = null)
-    {
-        if (null === $db) {
-            $this->db = Db::getInstance();
-        } else {
-            $this->db = $db;
-        }
-    }
-
     /**
      * @param string $returnMac
      * @param string $paymentId

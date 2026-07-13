@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\CaptureOutput;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificOutput;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificOutput;
@@ -25,7 +29,6 @@ use OnlinePayments\Sdk\Domain\RefundMobileMethodSpecificOutput;
 use OnlinePayments\Sdk\Domain\RefundOutput;
 use OnlinePayments\Sdk\Domain\RefundRedirectMethodSpecificOutput;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
@@ -34,15 +37,12 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class TransactionPresenter implements PresenterInterface
 {
-    const STATUS_PAYMENT_CREATED = 'CREATED';
-    const STATUS_REFUND_REQUESTED = 'REFUND_REQUESTED';
-    const STATUS_CAPTURE_REQUESTED = 'CAPTURE_REQUESTED';
-    const STATUS_PAYMENT_CAPTURED = 'CAPTURED';
-    const STATUS_PAYMENT_REFUNDED = 'REFUNDED';
-    const STATUS_PAYMENT_REJECTED = 'REJECTED';
-
-    /** @var Worldlineop */
-    private $module;
+    public const STATUS_PAYMENT_CREATED = 'CREATED';
+    public const STATUS_REFUND_REQUESTED = 'REFUND_REQUESTED';
+    public const STATUS_CAPTURE_REQUESTED = 'CAPTURE_REQUESTED';
+    public const STATUS_PAYMENT_CAPTURED = 'CAPTURED';
+    public const STATUS_PAYMENT_REFUNDED = 'REFUNDED';
+    public const STATUS_PAYMENT_REJECTED = 'REJECTED';
 
     /** @var TransactionRepository */
     private $transactionRepository;
@@ -51,11 +51,9 @@ class TransactionPresenter implements PresenterInterface
     private $merchantClient;
 
     public function __construct(
-        Worldlineop $module,
         TransactionRepository $transactionRepository,
         MerchantClient $merchantClient
     ) {
-        $this->module = $module;
         $this->transactionRepository = $transactionRepository;
         $this->merchantClient = $merchantClient;
     }
@@ -70,12 +68,12 @@ class TransactionPresenter implements PresenterInterface
      */
     public function present($idOrder = false)
     {
-        /** @var \WorldlineopTransaction $transaction */
+        /** @var \WorldlineopTransaction|false $transaction */
         $transaction = $this->transactionRepository->findByIdOrder($idOrder);
         if (false === $transaction) {
             throw new \Exception('Cannot find Worldline transaction');
         }
-        $transactionData = array();
+        $transactionData = [];
 
         try {
             $paymentDetails = $this->merchantClient->payments()->getPaymentDetails($transaction->reference);
@@ -83,14 +81,14 @@ class TransactionPresenter implements PresenterInterface
             throw new \Exception('Could not retrieve transaction details');
         }
 
-        if ($paymentDetails) {
+        if ($paymentDetails) { // @phpstan-ignore-line
             foreach ($paymentDetails->getOperations() as $paymentDetail) {
-                if (!in_array($paymentDetail->getStatus(), array(
+                if (!in_array($paymentDetail->getStatus(), [
                     self::STATUS_PAYMENT_CREATED,
                     self::STATUS_PAYMENT_REFUNDED,
                     self::STATUS_REFUND_REQUESTED,
-                    self::STATUS_PAYMENT_REJECTED
-                ))) {
+                    self::STATUS_PAYMENT_REJECTED,
+                ])) {
                     try {
                         $payment = $this->merchantClient->payments()->getPayment($paymentDetail->getId());
                     } catch (\Exception $e) {
@@ -186,11 +184,11 @@ class TransactionPresenter implements PresenterInterface
                         $exemptionType = $threeDSecureResults->getAppliedExemption();
                     }
 
-                    $order = new \Order((int)$idOrder);
+                    $order = new \Order((int) $idOrder);
                     $psOrderAmountMatch = true;
                     if ($order->total_paid_tax_incl) {
-                        $worldlineAmount = (int)$payment->getPaymentOutput()->getAmountOfMoney()->getAmount();
-                        $psAmount = (int)Tools::getRoundedAmountInCents($order->total_paid_tax_incl, $payment->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
+                        $worldlineAmount = (int) $payment->getPaymentOutput()->getAmountOfMoney()->getAmount();
+                        $psAmount = (int) Tools::getRoundedAmountInCents($order->total_paid_tax_incl, $payment->getPaymentOutput()->getAmountOfMoney()->getCurrencyCode());
                         $psOrderAmountMatch = ($worldlineAmount === $psAmount);
                     }
 
@@ -207,7 +205,7 @@ class TransactionPresenter implements PresenterInterface
                         'payment' => [
                             'amount' => Tools::getRoundedAmountFromCents(
                                 $paymentDetail->getAmountOfMoney()->getAmount(), $currencyCode),
-                            'hasSurcharge' => !($surchargeAmount === 0),
+                            'hasSurcharge' => null !== $surcharge,
                             'surchargeAmount' => $surchargeAmount,
                             'amountWithoutSurcharge' => Tools::getRoundedAmountFromCents(
                                 $payment->getPaymentOutput()->getAmountOfMoney()->getAmount(), $currencyCode),
@@ -217,7 +215,7 @@ class TransactionPresenter implements PresenterInterface
                             'id' => $paymentDetail->getId(),
                             'status' => $paymentDetail->getStatus(),
                             'productId' => $paymentSpecificOutput->getPaymentProductId(),
-                            'fraudResult' => !empty($paymentSpecificOutput->getFraudResults()) ?
+                            'fraudResult' => !empty($paymentSpecificOutput->getFraudResults()) ? // @phpstan-ignore-line
                                 $paymentSpecificOutput->getFraudResults()->getFraudServiceResult() : '',
                             'liability' => $liability,
                             'exemptionType' => $exemptionType,

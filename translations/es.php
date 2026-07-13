@@ -1,7 +1,11 @@
 <?php
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{worldlineop}prestashop>worldlineop_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>worldlineop_a9928cf14ad15878c88657a133832f4b'] = 'Este módulo ofrece una integración en un clic para empezar a aceptar pagos con las API directas de Worldline (anteriormente, Ingenico-Ogone). Al ofrecer a tus clientes métodos de pago globales y regionales, podrás vender por toda Europa, lo que te permitirá aumentar los ingresos.';
 $_MODULE['<{worldlineop}prestashop>worldlineop_075f0536a116532328b0e4ef53747f1a'] = 'No se ha podido instalar el módulo de Worldline. Comprueba los registros en el directorio “logs” del módulo.';
@@ -15,8 +19,8 @@ $_MODULE['<{worldlineop}prestashop>accountvalidationdata_fa3de8312cd8697ec5913b9
 $_MODULE['<{worldlineop}prestashop>accountvalidationdata_c033940de435ebbb8a415fccc62e3a41'] = 'Introduce una clave de webhooks de prueba válida';
 $_MODULE['<{worldlineop}prestashop>accountvalidationdata_9c3edc431ff8160f75b10c6ebad339e9'] = 'Introduce un secreto de webhooks de prueba válido';
 $_MODULE['<{worldlineop}prestashop>accountvalidationdata_704dabcaf410d4b0b591c4d0bf84f044'] = 'Introduce una clave de la API de producción válida';
-$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_7f11141dcf0805c283ec31580c13c6f0'] = 'Introduce un nombre de archivo válido para la plantilla de iframes (p. ej., Nombredearchivo.html)';
-$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_807287a94a5b9c2acad32e32fa7966f9'] = 'Introduce un nombre de archivo válido para la plantilla de iframes (p. ej., Nombredearchivo.html)';
+$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_7f11141dcf0805c283ec31580c13c6f0'] = "Introduce un nombre de archivo válido para la plantilla de iframes (p.\u{a0}ej., Nombredearchivo.html)";
+$_MODULE['<{worldlineop}prestashop>paymentmethodsvalidationdata_807287a94a5b9c2acad32e32fa7966f9'] = "Introduce un nombre de archivo válido para la plantilla de iframes (p.\u{a0}ej., Nombredearchivo.html)";
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_c8df548b33fb6e1d0286dd93a3c40c32'] = 'El valor del punto final de prueba debe ser una dirección URL http válida';
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_49e6ebea55684182973cfe5e3043c950'] = 'El host del punto final de prueba no pudo resolverse';
 $_MODULE['<{worldlineop}prestashop>advancedsettingsvalidationdata_bb661e59143135e047a2432693532996'] = 'El valor del punto final de producción debe ser una dirección URL http válida';
@@ -155,7 +159,7 @@ $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ffaaab40fc54c578836d4
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_91412465ea9169dfd901dd5e7c96dd99'] = 'Cargar';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_0a7aa3e6a43a0a1406e4169ae2be963a'] = 'Restaurar logotipo predeterminado';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_254ad5cf512e99709dbcb70646ed7b6d'] = 'Aquí puedes cargar un logotipo nuevo (los únicos tipos de archivo admitidos para los logotipos son .png, .gif y .jpg)';
-$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = 'Recomendamos utilizar imágenes con un tamaño máximo de 20 píxeles de altura por 120 píxeles de anchura';
+$_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_ff76e4c4c9abdc7de325c97912ffb8cd'] = "Recomendamos utilizar imágenes con un tamaño máximo de 20\u{a0}píxeles de altura por 120\u{a0}píxeles de anchura";
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_3c8990c77ed9e1634b5cdd133c6e0993'] = 'Título del botón de pago';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_6f1ad8444a503e36d821da11b4b1fe57'] = 'Título del botón de selección de pago situado en tu página de pago';
 $_MODULE['<{worldlineop}prestashop>_paymentmethodssettings_46310871a02a521ecfdfe034d1fd0085'] = 'Descriptor fijo';
@@ -198,7 +202,7 @@ $_MODULE['<{worldlineop}prestashop>_advancedsettings_628b7db04235f228d40adc67141
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_44fdec47036f482b68b748f9d786801b'] = 'días';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_ab7e50ec4b34b206207018988d0603b6'] = 'Número de días antes de activar una captura automática de pago';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_5be544d8d5807eb5580f3d765d8c0546'] = 'Trabajo cronológico de captura';
-$_MODULE['<{worldlineop}prestashop>_advancedsettings_5b2126f4af19b13fb4005ccfd5feb780'] = 'Ejemplo de comando cronológico para ejecutar un proceso de captura 4 veces al día:';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_5b2126f4af19b13fb4005ccfd5feb780'] = "Ejemplo de comando cronológico para ejecutar un proceso de captura 4\u{a0}veces al día:";
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_d414ec4b3cc0a2692667b4d8a0d10cc2'] = 'Habilitar registro avanzado';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_93cba07454f06a4a960172bbd6e2a435'] = 'Sí';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
@@ -272,7 +276,7 @@ $_MODULE['<{worldlineop}prestashop>_account_b10dd6ea1a32fb6f635fb218dde2b8d7'] =
 $_MODULE['<{worldlineop}prestashop>_account_708ce17caa0e0ddf0223b5ccf3b86ff2'] = 'Clave de webhooks de producción';
 $_MODULE['<{worldlineop}prestashop>_account_a85cd91c822649f170d1bcfdfc8b05db'] = 'Secreto de webhooks de producción';
 $_MODULE['<{worldlineop}prestashop>_account_829ad0dd56f780b533e5b7312c49ce1b'] = 'Configuración de la URL del Webhook';
-$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = 'Los webhooks son el método principal que utiliza tu tienda para recibir notificaciones de pago en tiempo real (p. ej., pagado, fallido, reembolsado), que son esenciales para crear y actualizar tus pedidos. Explicación del Modo Automático: El plugin envía automáticamente la URL del webhook de la tienda con cada solicitud de pago, lo cual es la opción más segura y fiable. Este modo también te permite añadir hasta 4 URL adicionales para enviar notificaciones a servicios externos, como contabilidad o gestión de suscripciones. Ten en cuenta que en este modo, cualquier URL de webhook configurada en tu portal de comerciante será ignorada para las transacciones originadas en esta tienda. Explicación del Modo Manual: Deberás copiar manualmente la URL del Webhook de la tienda y pegarla en la configuración de webhooks de tu portal de comerciante. Crucial para los usuarios de multitienda, esta URL es única para cada tienda, y este proceso debe repetirse para cada una de ellas.';
+$_MODULE['<{worldlineop}prestashop>_account_0d30f3f1862985637a538db80de47b64'] = "Los webhooks son el método principal que utiliza tu tienda para recibir notificaciones de pago en tiempo real (p. ej., pagado, fallido, reembolsado), que son esenciales para crear y actualizar tus pedidos. Explicación del Modo Automático:\u{a0}El plugin envía automáticamente la URL del webhook de la tienda con cada solicitud de pago, lo cual es la opción más segura y fiable. Este modo también te permite añadir hasta 4 URL adicionales para enviar notificaciones a servicios externos, como contabilidad o gestión de suscripciones. Ten en cuenta que en este modo, cualquier URL de webhook configurada en tu portal de comerciante será\u{a0}ignorada\u{a0}para las transacciones originadas en esta tienda. Explicación del Modo Manual:\u{a0}Deberás copiar manualmente la URL del Webhook de la tienda y pegarla en la configuración de webhooks de tu portal de comerciante.\u{a0}Crucial para los usuarios de multitienda, esta URL es única para cada tienda, y este proceso debe repetirse para cada una de ellas.";
 $_MODULE['<{worldlineop}prestashop>_account_be318d7806111428185ad35d86c12305'] = 'Automático (Recomendado)';
 $_MODULE['<{worldlineop}prestashop>_account_e1ba155a9f2e8c3be94020eef32a0301'] = 'Manual';
 $_MODULE['<{worldlineop}prestashop>_account_81df417c2942e97e8527167cacfd094a'] = 'Automático:';
@@ -312,3 +316,6 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8cac4
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_ba9b71b911d0ba9765d9409f3077349d'] = 'Las credenciales de la cuenta son válidas.';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_8fbc4c2003133f0928383e6473bc4fe1'] = 'La configuración avanzada se ha guardado correctamente';
 $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a6331e9bb9c1273817068ed5c1ebfa2'] = 'La configuración de los métodos de pago se ha guardado correctamente';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Mostrar la página de confirmación de pago';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Al habilitar esta opción, sus clientes verán la página de confirmación de pago de Worldline';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Si está habilitado, los clientes verán una pantalla de confirmación dedicada después de procesar el pago, confirmando el pago y proporcionando detalles clave.';

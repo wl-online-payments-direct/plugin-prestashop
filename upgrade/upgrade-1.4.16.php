@@ -11,7 +11,6 @@
  * @copyright 2021 Worldline Online Payments
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -36,7 +35,7 @@ function upgrade_module_1_4_16($module)
     $logger->info('Upgrade to v1.4.16 started');
 
     Shop::setContext(Shop::CONTEXT_ALL);
-    if (Configuration::hasContext(PAYMENT_METHODS_SETTINGS_COLUMN_NAME, null, Shop::getContext())) {
+    if (Configuration::hasContext(PAYMENT_METHODS_SETTINGS_COLUMN_NAME, 0, Shop::getContext())) {
         try {
             update_payment_methods_settings_1_4_16();
             $logger->info('Updated payment methods settings for all shops');

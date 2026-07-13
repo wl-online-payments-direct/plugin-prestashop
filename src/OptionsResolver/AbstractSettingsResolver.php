@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\OptionsResolver;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**

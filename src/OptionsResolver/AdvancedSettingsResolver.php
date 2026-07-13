@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\OptionsResolver;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,6 +58,7 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
                 'threeDSExemptedValue',
                 'enforce3DS',
                 'surchargingEnabled',
+                'displayPaymentConfirmationPage',
                 'displayWhatsNew',
             ])
             ->setNormalizer(
@@ -166,6 +171,12 @@ class AdvancedSettingsResolver extends AbstractSettingsResolver
             )
             ->setNormalizer(
                 'surchargingEnabled',
+                function (Options $options, $value) {
+                    return (bool) $value;
+                }
+            )
+            ->setNormalizer(
+                'displayPaymentConfirmationPage',
                 function (Options $options, $value) {
                     return (bool) $value;
                 }

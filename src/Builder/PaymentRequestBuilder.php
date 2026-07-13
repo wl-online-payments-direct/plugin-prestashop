@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\MobilePaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\PaymentProduct130SpecificInput;
@@ -27,11 +31,11 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class PaymentRequestBuilder extends AbstractRequestBuilder
 {
-    const TRANSACTION_RISK_ANALYSIS_EXEMPTION = 'transaction-risk-analysis';
-    const LOW_VALUE_EXEMPTION = 'low-value';
+    public const TRANSACTION_RISK_ANALYSIS_EXEMPTION = 'transaction-risk-analysis';
+    public const LOW_VALUE_EXEMPTION = 'low-value';
 
-    const NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED = 'no-challenge-requested-risk-analysis-performed';
-    const NO_CHALLENGE_REQUESTED = 'no-challenge-requested';
+    public const NO_CHALLENGE_REQUESTED_RISK_ANALYSIS_PERFORMED = 'no-challenge-requested-risk-analysis-performed';
+    public const NO_CHALLENGE_REQUESTED = 'no-challenge-requested';
     public const NO_CHALLENGE_REQUEST = 'no-challenge-request';
 
     /**
@@ -105,7 +109,6 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
                 $paymentProduct130ThreeDSecure->setAcquirerExemption(false);
             } elseif ($this->settings->advancedSettings->threeDSExempted) {
                 if ($this->settings->advancedSettings->threeDSExemptedValue >= $orderTotalInEuros) {
-
                     $threeDSExemptedType = (string) $this->settings->advancedSettings->threeDSExemptedType;
 
                     if ($threeDSExemptedType === self::NO_CHALLENGE_REQUEST) {

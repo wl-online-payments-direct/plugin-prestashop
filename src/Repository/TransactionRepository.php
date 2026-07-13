@@ -14,37 +14,19 @@
 
 namespace WorldlineOP\PrestaShop\Repository;
 
-use Db;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class TransactionRepository
  */
 class TransactionRepository
 {
-    /** @var Db */
-    private $db;
-
-    /** @var array */
-    private $cache;
-
-    /**
-     * TransactionRepository constructor.
-     *
-     * @param Db $db
-     */
-    public function __construct(Db $db = null)
-    {
-        if (null === $db) {
-            $this->db = Db::getInstance();
-        } else {
-            $this->db = $db;
-        }
-    }
-
     /**
      * @param int $idOrder
      *
-     * @return false|\ObjectModel
+     * @return false|\WorldlineopTransaction
      *
      * @throws \PrestaShopException
      */
@@ -53,6 +35,7 @@ class TransactionRepository
         $collection = new \PrestaShopCollection('WorldlineopTransaction');
         $collection->where('id_order', '=', (int) $idOrder);
 
+        /** @var \WorldlineopTransaction|false $transaction */
         $transaction = $collection->getFirst();
 
         return $transaction;

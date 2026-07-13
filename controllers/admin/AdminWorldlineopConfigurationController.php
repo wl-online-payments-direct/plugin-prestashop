@@ -29,9 +29,9 @@ use WorldlineOP\PrestaShop\Exception\ExceptionList;
  */
 class AdminWorldlineopConfigurationController extends ModuleAdminController
 {
-    const TAB_ACCOUNT = 'account';
-    const TAB_ADVANCED_SETTINGS = 'advancedSettings';
-    const TAB_PAYMENT_METHODS = 'paymentMethods';
+    public const TAB_ACCOUNT = 'account';
+    public const TAB_ADVANCED_SETTINGS = 'advancedSettings';
+    public const TAB_PAYMENT_METHODS = 'paymentMethods';
 
     /** @var Worldlineop */
     public $module;
@@ -61,7 +61,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     {
         parent::setMedia($isNewTheme);
         $this->context->controller->addCSS([$this->module->getLocalPath() . '/views/css/config.css']);
-        /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
+        /** @var Settings $settings */
         $settings = $this->module->getService('worldlineop.settings');
         // @formatter:off
         Media::addJsDef([
@@ -94,7 +94,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     public function initContent()
     {
         $this->setModals();
-        /** @var \WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter $presenter */
+        /** @var WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter $presenter */
         $presenter = $this->module->getService('worldlineop.settings.presenter');
         $data = empty($this->postedData)
             ? $presenter->present()
@@ -129,7 +129,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
 
     public function saveAccount()
     {
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater $updater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater $updater */
         $updater = $this->module->getService('worldlineop.settings.account.updater');
         $form = Tools::getValue('worldlineopAccountSettings');
 
@@ -161,12 +161,12 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     public function testCredentials()
     {
         $form = Tools::getValue('worldlineopAccountSettings');
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater $accountUpdater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\AccountSettingsUpdater $accountUpdater */
         $accountUpdater = $this->module->getService('worldlineop.settings.account.updater');
         $form = $accountUpdater->forceResolve($form);
         $accountTested = new AccountSettings();
         $accountTested = $accountUpdater->forceDenormalize($form, $accountTested);
-        /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $savedSettings */
+        /** @var Settings $savedSettings */
         $savedSettings = $this->module->getService('worldlineop.settings');
         $settings = new Settings();
         $settings->accountSettings = $accountTested;
@@ -195,13 +195,12 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
             // @formatter:on
 
             return false;
-        } else {
-            // @formatter:off
-            $this->confirmations[] = $this->module->l('Account credentials are valid.', 'AdminWorldlineopConfigurationController');
-            // @formatter:on
-
-            return true;
         }
+        // @formatter:off
+        $this->confirmations[] = $this->module->l('Account credentials are valid.', 'AdminWorldlineopConfigurationController');
+        // @formatter:on
+
+        return true;
     }
 
     /**
@@ -209,9 +208,9 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
      */
     public function updatePaymentMethods()
     {
-        /** @var \WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $getProductsService */
+        /** @var WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $getProductsService */
         $getProductsService = $this->module->getService('worldlineop.settings.get_products');
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater $updater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater $updater */
         $updater = $this->module->getService('worldlineop.settings.payment_methods.updater');
         try {
             $iframeProducts = $getProductsService->request('iframe');
@@ -228,7 +227,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     public function processSaveAdvancedSettingsForm()
     {
         $this->activeTab = self::TAB_ADVANCED_SETTINGS;
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $updater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $updater */
         $updater = $this->module->getService('worldlineop.settings.advanced_settings.updater');
         $form = Tools::getValue('worldlineopAdvancedSettings');
         try {
@@ -246,7 +245,7 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     public function processSavePaymentMethodsSettingsForm()
     {
         $this->activeTab = self::TAB_PAYMENT_METHODS;
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater $updater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\PaymentMethodsSettingsUpdater $updater */
         $updater = $this->module->getService('worldlineop.settings.payment_methods.updater');
         $form = Tools::getValue('worldlineopPaymentMethodsSettings');
         try {

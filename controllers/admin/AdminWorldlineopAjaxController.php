@@ -25,7 +25,7 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
     /** @var Worldlineop */
     public $module;
 
-    /** @var \Monolog\Logger */
+    /** @var Monolog\Logger */
     public $logger;
 
     /**
@@ -36,7 +36,7 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
     public function __construct()
     {
         parent::__construct();
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
+        /** @var WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('Ajax');
     }
@@ -53,8 +53,9 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
     public function ajaxProcessGetPaymentProducts()
     {
         $paymentType = Tools::getValue('type');
-        /** @var \WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $productRequest */
+        /** @var WorldlineOP\PrestaShop\Configuration\Product\GetProductsRequest $productRequest */
         $productRequest = $this->module->getService('worldlineop.settings.get_products');
+        $paymentMethods = [];
         try {
             $paymentMethods = $productRequest->request($paymentType);
         } catch (Exception $e) {
@@ -85,7 +86,7 @@ class AdminWorldlineopAjaxController extends ModuleAdminController
 
     public function ajaxProcessHideWhatsNew()
     {
-        /** @var \WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $updater */
+        /** @var WorldlineOP\PrestaShop\Configuration\Updater\AdvancedSettingsUpdater $updater */
         $updater = $this->module->getService('worldlineop.settings.advanced_settings.updater');
         try {
             $updater->update(['displayWhatsNew' => false]);

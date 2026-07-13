@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Validation;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Regex;
 use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
@@ -30,7 +34,7 @@ class AccountValidationData extends AbstractValidationData
      */
     public function getValidationData($array)
     {
-        //@formatter:off
+        // @formatter:off
         $constraints = [
             'environment' => new Choice(['choices' => [AccountSettings::ACCOUNT_MODE_TEST, AccountSettings::ACCOUNT_MODE_PROD], 'message' => $this->module->l('The environment value is not valid', 'AccountValidationData')]),
             'testApiKey' => [
@@ -52,7 +56,7 @@ class AccountValidationData extends AbstractValidationData
                 new Regex(['pattern' => '/^[a-f0-9\-]+$/i', 'message' => $this->module->l('Please enter a valid prod Webhooks secret', 'AccountValidationData')]),
             ],
         ];
-        //@formatter:on
+        // @formatter:on
 
         $arrayToValidate = array_intersect_key($array, $constraints);
         $validationConstraints = array_intersect_key($constraints, $array);

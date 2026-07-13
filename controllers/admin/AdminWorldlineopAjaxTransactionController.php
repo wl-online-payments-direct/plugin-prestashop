@@ -46,10 +46,10 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]));
         }
 
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
-        $pow = \WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($transaction['currencyCode']);
+        $pow = WorldlineOP\PrestaShop\Utils\Tools::getCurrencyDecimalByIso($transaction['currencyCode']);
         $capturePaymentRequest = new CapturePaymentRequest();
         $capturePaymentRequest->setAmount((int) Decimal::multiply((string) $transaction['amountToCapture'], (string) pow(10, $pow))->getIntegerPart());
         try {
@@ -93,12 +93,12 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
                 'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
             ]));
         }
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
         $refundRequest = new RefundRequest();
         $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setAmount(\WorldlineOP\PrestaShop\Utils\Tools::getAmountInCents($transaction['amountToRefund'], $transaction['currencyCode']));
+        $amountOfMoney->setAmount(WorldlineOP\PrestaShop\Utils\Tools::getAmountInCents($transaction['amountToRefund'], $transaction['currencyCode']));
         $amountOfMoney->setCurrencyCode($transaction['currencyCode']);
         $refundRequest->setAmountOfMoney($amountOfMoney);
         try {
@@ -143,7 +143,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]));
         }
 
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
 
         try {

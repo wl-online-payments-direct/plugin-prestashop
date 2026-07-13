@@ -14,19 +14,23 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class PaymentSettings
  */
 class PaymentSettings
 {
-    const TRANSACTION_TYPE_IMMEDIATE = 'SALE';
-    const TRANSACTION_TYPE_AUTH = 'FINAL_AUTHORIZATION';
-    const CAPTURE_DELAY_MIN = 0;
-    const CAPTURE_DELAY_MAX = 7;
-    const RETENTION_DELAY_MIN = 3;
-    const RETENTION_DELAY_MAX = 24;
-    const SAFETY_DELAY_MIN = 6;
-    const SAFETY_DELAY_MAX = 20;
+    public const TRANSACTION_TYPE_IMMEDIATE = 'SALE';
+    public const TRANSACTION_TYPE_AUTH = 'FINAL_AUTHORIZATION';
+    public const CAPTURE_DELAY_MIN = 0;
+    public const CAPTURE_DELAY_MAX = 7;
+    public const RETENTION_DELAY_MIN = 3;
+    public const RETENTION_DELAY_MAX = 24;
+    public const SAFETY_DELAY_MIN = 6;
+    public const SAFETY_DELAY_MAX = 20;
 
     /** @var string */
     public $transactionType;

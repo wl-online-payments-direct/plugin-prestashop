@@ -62,8 +62,8 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxRunCron()
     {
-        $secureKey = \Tools::getValue('secure_key');
-        if ($secureKey !== \WorldlineOP\PrestaShop\Utils\Tools::hash($this->module->getLocalPath())) {
+        $secureKey = Tools::getValue('secure_key');
+        if ($secureKey !== WorldlineOP\PrestaShop\Utils\Tools::hash($this->module->getLocalPath())) {
             header('HTTP/1.1 200 OK');
             exit;
         }
@@ -72,7 +72,7 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
             printf('<pre>');
         }
         $shops = Shop::getShops(false, null, true);
-        /** @var \WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader $settingsLoader */
+        /** @var WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader $settingsLoader */
         $settingsLoader = $this->module->getService('worldlineop.settings.loader');
         $shopSettings = [];
         $pendingStateIds = [];
@@ -98,14 +98,13 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
             ->where('o.module = "' . pSQL($this->module->name) . '"')
             ->where('o.current_state IN (' . pSQL($implode) . ')');
 
-        $rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($dbQuery);
+        $rows = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS($dbQuery);
         if (!$rows) {
             $this->printDebug('No orders eligible');
             exit;
         }
-        /** @var \OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
+        /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
-        /** @var \WorldlineOP\PrestaShop\Repository\TransactionRepository $transactionRepository */
         $rows = array_map(
             function ($array) {
                 return $array['id_order'];
@@ -122,7 +121,7 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
                 $this->printOrderDebug('Cannot load order');
                 continue;
             }
-            /** @var \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
+            /** @var WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
             $settings = $shopSettings[$order->id_shop];
             if ($order->current_state != $settings->advancedSettings->paymentSettings->pendingOrderStateId) {
                 $this->printOrderDebug('Shop does not match status');
@@ -135,18 +134,17 @@ class WorldlineopCronPendingModuleFrontController extends ModuleFrontController
             $interval = $datetime1->diff($datetime2);
             if ($interval->format('%h') > $settings->advancedSettings->paymentSettings->retentionHours) {
                 $this->printOrderDebug('Order is about to be cancelled');
-                $orderHistory = new \OrderHistory();
+                $orderHistory = new OrderHistory();
                 $orderHistory->id_order = (int) $idOrder;
                 try {
-                    $orderHistory->changeIdOrderState(Configuration::get('PS_OS_CANCELED'), $idOrder);
+                    $orderHistory->changeIdOrderState((int) Configuration::get('PS_OS_CANCELED'), (int) $idOrder);
                     $orderHistory->addWithemail();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->printOrderDebug('Order could not be cancelled');
                 }
                 continue;
-            } else {
-                $this->printOrderDebug('Order is not elligible yet.');
             }
+            $this->printOrderDebug('Order is not elligible yet.');
         }
 
         if ($this->verbose) {

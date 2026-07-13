@@ -14,15 +14,19 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class Settings
  */
 class Settings
 {
-    const DEFAULT_SDK_ENDPOINT_TEST = 'https://payment.preprod.direct.worldline-solutions.com';
-    const DEFAULT_SDK_ENDPOINT_PROD = 'https://payment.direct.worldline-solutions.com';
+    public const DEFAULT_SDK_ENDPOINT_TEST = 'https://payment.preprod.direct.worldline-solutions.com';
+    public const DEFAULT_SDK_ENDPOINT_PROD = 'https://payment.direct.worldline-solutions.com';
 
-    const DEFAULT_SUBDOMAIN = 'https://payment.';
+    public const DEFAULT_SUBDOMAIN = 'https://payment.';
 
     /** @var AccountSettings */
     public $accountSettings;
@@ -58,6 +62,9 @@ class Settings
             $endpoint = $this->advancedSettings->prodEndpoint ?: self::DEFAULT_SDK_ENDPOINT_PROD;
         }
         $this->credentials->endpoint = rtrim($endpoint, '/');
+        if (null === $this->advancedSettings->displayPaymentConfirmationPage) {
+            $this->advancedSettings->displayPaymentConfirmationPage = true;
+        }
         if (false === $this->advancedSettings->force3DsV2) {
             $this->advancedSettings->enforce3DS = false;
             $this->advancedSettings->threeDSExempted = false;

@@ -14,14 +14,18 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class PaymentMethodsSettings
  */
 class PaymentMethodsSettings
 {
-    const PAYMENT_METHOD_CARD = 'card';
-    const PAYMENT_METHOD_REDIRECT = 'redirect';
-    const PAYMENT_METHOD_MOBILE = 'mobile';
+    public const PAYMENT_METHOD_CARD = 'card';
+    public const PAYMENT_METHOD_REDIRECT = 'redirect';
+    public const PAYMENT_METHOD_MOBILE = 'mobile';
     public const DEFAULT_GENERIC_LOGO_FILENAME = 'worldlineop_symbol.svg';
     public const DEFAULT_IFRAME_LOGO_FILENAME = 'cb_visa_mc_amex.svg';
 

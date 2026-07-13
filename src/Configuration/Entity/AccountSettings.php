@@ -14,18 +14,22 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class AccountSettings
  */
 class AccountSettings
 {
-    const ACCOUNT_MODE_TEST = 'test';
-    const ACCOUNT_MODE_PROD = 'prod';
-    const API_KEY_LENGTH_MAX = 99;
-    const API_KEY_LENGTH_MIN = 1;
-    const SECRET_KEY_LENGTH = 48;
-    const WEBHOOKS_KEY_LENGTH = 30;
-    const WEBHOOKS_SECRET_LENGTH = 36;
+    public const ACCOUNT_MODE_TEST = 'test';
+    public const ACCOUNT_MODE_PROD = 'prod';
+    public const API_KEY_LENGTH_MAX = 99;
+    public const API_KEY_LENGTH_MIN = 1;
+    public const SECRET_KEY_LENGTH = 48;
+    public const WEBHOOKS_KEY_LENGTH = 30;
+    public const WEBHOOKS_SECRET_LENGTH = 36;
 
     /** @var string */
     public $environment;

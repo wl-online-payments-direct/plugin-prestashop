@@ -14,9 +14,12 @@
 
 namespace WorldlineOP\PrestaShop\Sdk;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\CommunicatorConfiguration;
 use OnlinePayments\Sdk\Domain\ShoppingCartExtension;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 
 /**
@@ -27,16 +30,16 @@ class CommunicatorConfigurationFactory
     /** @var Settings */
     private $settings;
 
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     private $module;
 
     /**
      * CommunicatorConfigurationFactory constructor.
      *
      * @param Settings $settings
-     * @param Worldlineop $module
+     * @param \Worldlineop $module
      */
-    public function __construct(Settings $settings, Worldlineop $module)
+    public function __construct(Settings $settings, \Worldlineop $module)
     {
         $this->settings = $settings;
         $this->module = $module;

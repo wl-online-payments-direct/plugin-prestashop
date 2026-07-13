@@ -22,15 +22,15 @@ class Decimal
 {
     public static function multiply($a, $b)
     {
-        return new DecimalValue(bcmul((string) $a, (string) $b, 10));
+        return new DecimalValue(bcmul((string) $a, (string) $b, 10)); // @phpstan-ignore-line
     }
 
     public static function divide($a, $b)
     {
-        if (bccomp((string) $b, '0', 10) === 0) {
+        if (bccomp((string) $b, '0', 10) === 0) { // @phpstan-ignore-line
             throw new \RuntimeException('Division by zero');
         }
 
-        return new DecimalValue(bcdiv((string) $a, (string) $b, 10));
+        return new DecimalValue(bcdiv((string) $a, (string) $b, 10)); // @phpstan-ignore-line
     }
 }

@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Updater;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use WorldlineOP\PrestaShop\Configuration\Entity\AccountSettings;
 
 /**
@@ -28,7 +32,7 @@ class AccountSettingsUpdater extends SettingsUpdater
         'prodWebhooksSecret',
     ];
 
-    protected function serialize()
+    protected function serializeSettings()
     {
         $this->json = $this->serializer->serialize($this->settings->accountSettings, 'json');
     }

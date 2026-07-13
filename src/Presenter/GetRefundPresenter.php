@@ -14,11 +14,11 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use Cart;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\RefundResponse;
-use Order;
-use Validate;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Logger\LoggerFactory;
 use WorldlineOP\PrestaShop\Repository\TransactionRepository;
 use WorldlineOP\PrestaShop\Utils\Tools;
@@ -28,7 +28,7 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class GetRefundPresenter implements PresenterInterface
 {
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     private $module;
 
     /** @var \Monolog\Logger */
@@ -40,11 +40,11 @@ class GetRefundPresenter implements PresenterInterface
     /**
      * GetRefundPresenter constructor.
      *
-     * @param Worldlineop $module
+     * @param \Worldlineop $module
      * @param LoggerFactory $loggerFactory
      */
     public function __construct(
-        Worldlineop $module,
+        \Worldlineop $module,
         LoggerFactory $loggerFactory
     ) {
         $this->module = $module;
@@ -53,8 +53,8 @@ class GetRefundPresenter implements PresenterInterface
     }
 
     /**
-     * @param RefundResponse $refundResponse
-     * @param int $idShop
+     * @param RefundResponse|false $refundResponse
+     * @param int|false $idShop
      *
      * @return TransactionPresented
      *
@@ -63,10 +63,13 @@ class GetRefundPresenter implements PresenterInterface
      */
     public function present($refundResponse = false, $idShop = false)
     {
+        if (false === $refundResponse) {
+            return $this->presentedData;
+        }
         $merchantReferenceFull = $refundResponse->getRefundOutput()->getReferences()->getMerchantReference();
         $merchantReferenceParts = explode('-', $merchantReferenceFull);
-        $cart = new Cart((int) $merchantReferenceParts[0]);
-        if (!Validate::isLoadedObject($cart)) {
+        $cart = new \Cart((int) $merchantReferenceParts[0]);
+        if (!\Validate::isLoadedObject($cart)) {
             $this->logger->error('Cart cannot be loaded', ['merchantReference' => $merchantReferenceFull]);
 
             return $this->presentedData;
@@ -76,17 +79,22 @@ class GetRefundPresenter implements PresenterInterface
 
             return $this->presentedData;
         }
-        $idOrder = Order::getOrderByCartId($cart->id);
-        $order = new Order((int) $idOrder);
-        if (!Validate::isLoadedObject($order)) {
+        $idOrder = \Order::getOrderByCartId($cart->id);
+        $order = new \Order((int) $idOrder);
+        if (!\Validate::isLoadedObject($order)) {
             $this->logger->error('Cart cannot be loaded', ['merchantReference' => $merchantReferenceFull]);
 
             return $this->presentedData;
         }
         /** @var TransactionRepository $transactionRepository */
         $transactionRepository = $this->module->getService('worldlineop.repository.transaction');
-        /** @var \WorldlineopTransaction $transaction */
+        /** @var \WorldlineopTransaction|false $transaction */
         $transaction = $transactionRepository->findByIdOrder($order->id);
+        if (false === $transaction) {
+            $this->logger->error('Could not find transaction', ['merchantReference' => $merchantReferenceFull]);
+
+            return $this->presentedData;
+        }
         $merchantReference = strstr($refundResponse->getId(), '_', true);
         if (false === $merchantReference) {
             $merchantReference = $refundResponse->getId();
@@ -95,7 +103,7 @@ class GetRefundPresenter implements PresenterInterface
         if (false === $transactionReference) {
             $transactionReference = $transaction->reference;
         }
-        if (false === $transaction || ($transactionReference !== $merchantReference && false !== $merchantReference)) {
+        if ($transactionReference !== $merchantReference && false !== $merchantReference) {
             $this->logger->error('Could not find transaction', ['merchantReference' => $merchantReferenceFull]);
 
             return $this->presentedData;
@@ -103,7 +111,7 @@ class GetRefundPresenter implements PresenterInterface
 
         $this->presentedData->updateStatus = true;
         $this->presentedData->order['ids'] = Tools::getOrderIdsByIdCart($order->id_cart);
-        $this->presentedData->idOrderState = \Configuration::get('PS_OS_REFUND');
+        $this->presentedData->idOrderState = (int) \Configuration::get('PS_OS_REFUND');
         $this->presentedData->sendMail = \Configuration::getGlobalValue('WOP_AWAITING_CAPTURE_STATUS_ID') == \Configuration::get('PS_OS_REFUND');
         $this->presentedData->payments['hasPayments'] = $order->getOrderPayments();
         $this->presentedData->payments['merchantReference'] = $merchantReference;

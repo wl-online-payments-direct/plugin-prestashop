@@ -1,0 +1,35 @@
+{
+  "name": "worldline/prestashop-1.7",
+  "description": "Worldline GoPay module for Prestashop 1.7",
+  "version": "1.4.32",
+  "author": "Worldline GoPay",
+  "license": "AFL-3.0",
+  "config": {
+    "preferred-install": "dist",
+    "optimize-autoloader": true,
+    "prepend-autoloader": false,
+    "platform": {
+      "php": "7.4"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "ext-bcmath": "*",
+    "alcohol/iso4217": "^3.1",
+    "monolog/monolog": "^2.9",
+    "prestashop/decimal": "^1.5",
+    "prestashop/module-lib-mbo-installer": "^3.0",
+    "symfony/lock": "^3.4",
+    "symfony/options-resolver": "^4.4",
+    "symfony/property-access": "^4.4",
+    "symfony/serializer": "^4.4",
+    "symfony/validator": "^4.4",
+    "symfony/yaml": "^4.4",
+    "wl-online-payments-direct/sdk-php": ">=5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "WorldlineOP\\PrestaShop\\": "src/"
+    }
+  }
+}

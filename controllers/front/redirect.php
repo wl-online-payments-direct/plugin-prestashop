@@ -22,28 +22,28 @@ use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
  */
 class WorldlineopRedirectModuleFrontController extends ModuleFrontController
 {
-    const HC_STATUS_CANCELLED = 'CANCELLED_BY_CONSUMER';
-    const HC_STATUS_CREATED = 'PAYMENT_CREATED';
+    public const HC_STATUS_CANCELLED = 'CANCELLED_BY_CONSUMER';
+    public const HC_STATUS_CREATED = 'PAYMENT_CREATED';
 
-    const PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED = 'REJECTED';
+    public const PAYMENT_OUTPUT_STATUS_CATEGORY_REJECTED = 'REJECTED';
 
-    const PAYMENT_STATUS_UNSUCCESSFUL = 'UNSUCCESSFUL';
+    public const PAYMENT_STATUS_UNSUCCESSFUL = 'UNSUCCESSFUL';
 
-    const ACTIONS = ['redirectReturnHosted', 'redirectReturnIframe', 'redirectReturnInternalIframe'];
+    public const ACTIONS = ['redirectReturnHosted', 'redirectReturnIframe', 'redirectReturnInternalIframe'];
 
     /** @var Worldlineop */
     public $module;
 
-    /** @var \Monolog\Logger */
+    /** @var Monolog\Logger */
     public $logger;
 
-    /** @var \WorldlineOP\PrestaShop\Repository\HostedCheckoutRepository */
+    /** @var WorldlineOP\PrestaShop\Repository\HostedCheckoutRepository */
     private $hostedCheckoutRepository;
 
-    /** @var \WorldlineOP\PrestaShop\Repository\CreatedPaymentRepository */
+    /** @var WorldlineOP\PrestaShop\Repository\CreatedPaymentRepository */
     private $createdPaymentRepository;
 
-    /** @var \OnlinePayments\Sdk\Merchant\MerchantClient */
+    /** @var OnlinePayments\Sdk\Merchant\MerchantClient */
     private $merchantClient;
 
     /** @var CartChecksum */
@@ -108,7 +108,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxRedirectExternal()
     {
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
+        /** @var WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('RedirectExternal');
         $cart = $this->context->cart;
@@ -117,7 +117,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         if (false === $idToken) {
             $tokenValue = false;
         } else {
-            /** @var \WorldlineOP\PrestaShop\Repository\TokenRepository $tokenRepository */
+            /** @var WorldlineOP\PrestaShop\Repository\TokenRepository $tokenRepository */
             $tokenRepository = $this->module->getService('worldlineop.repository.token');
             $token = $tokenRepository->findById($idToken);
             if (false === $token
@@ -128,7 +128,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
             }
             $tokenValue = $token->value;
         }
-        if (false !== Order::getOrderByCartId($cart->id)) {
+        if (false !== Order::getIdByCartId($cart->id)) {
             Tools::redirect($this->context->link->getPageLink('order', null, null, ['step' => 3]));
         }
 
@@ -159,7 +159,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
             $hostedCheckout = new HostedCheckout();
         }
 
-        /** @var \WorldlineOP\PrestaShop\Builder\PaymentRequestDirector $hostedCheckoutDirector */
+        /** @var WorldlineOP\PrestaShop\Builder\PaymentRequestDirector $hostedCheckoutDirector */
         $hostedCheckoutDirector = $this->module->getService('worldlineop.hosted_payment_request.director');
         try {
             $hostedCheckoutRequest = $hostedCheckoutDirector->buildHostedPaymentRequest($idProduct, $tokenValue);
@@ -169,8 +169,8 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
             );
             $hostedCheckoutResponse = $this->merchantClient->hostedCheckout()
                 ->createHostedCheckout($hostedCheckoutRequest);
-        } catch (\OnlinePayments\Sdk\ValidationException $ve) {
-            foreach ($ve->getResponse()->getErrors() as $error) {
+        } catch (OnlinePayments\Sdk\ValidationException $ve) {
+            foreach ($ve->getErrors() as $error) {
                 $this->logger->error(
                     'Request validation error',
                     ['error' => json_decode($error->toJson(), true)]
@@ -226,7 +226,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxRedirectReturnHosted()
     {
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
+        /** @var WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('Redirect');
 
@@ -241,7 +241,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         }
 
         try {
-            /** @var \OnlinePayments\Sdk\Domain\GetHostedCheckoutResponse $hostedCheckoutResponse */
+            /** @var OnlinePayments\Sdk\Domain\GetHostedCheckoutResponse $hostedCheckoutResponse */
             $hostedCheckoutResponse = $this->merchantClient->hostedCheckout()
                 ->getHostedCheckout($hostedCheckout->session_id);
         } catch (Exception $e) {
@@ -257,7 +257,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                 ->getPaymentStatusCategory()
             ) {
                 $this->hostedCheckoutRepository->delete($hostedCheckout);
-                if (($idOrder = Order::getOrderByCartId($hostedCheckout->id_cart)) !== false) {
+                if (($idOrder = Order::getIdByCartId($hostedCheckout->id_cart)) > 0) {
                     exit(json_encode([
                         'redirectUrl' => $this->context->link->getModuleLink(
                             $this->module->name,
@@ -265,9 +265,8 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
                             ['id_order' => (int) $idOrder]
                         ),
                     ]));
-                } else {
-                    $this->dieOrderStep3();
                 }
+                $this->dieOrderStep3();
             }
         }
 
@@ -278,12 +277,12 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         }
         $this->logger->debug('Get call');
         $paymentResponse = $hostedCheckoutResponse->getCreatedPaymentOutput()->getPayment();
-        /** @var \WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
+        /** @var WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
         $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
         try {
             $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
             $this->logger->debug('Presented data after GET call', ['data' => $presentedData]);
-            /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
+            /** @var WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
             $transactionResponseProcessor->process($presentedData);
         } catch (Exception $e) {
@@ -298,7 +297,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxRedirectReturnIframe()
     {
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
+        /** @var WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('RedirectIframe');
 
@@ -316,7 +315,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxRedirectReturnInternalIframe()
     {
-        /** @var \WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
+        /** @var WorldlineOP\PrestaShop\Logger\LoggerFactory $loggerFactory */
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('RedirectInternalIframe');
 
@@ -357,11 +356,11 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
             exit;
         }
         $this->logger->debug('Get call');
-        /** @var \WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
+        /** @var WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
         $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
         try {
             $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
-            /** @var \WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
+            /** @var WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
             $transactionResponseProcessor->process($presentedData);
         } catch (Exception $e) {
@@ -373,6 +372,8 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
 
     /**
      * @param bool $displayErrorMessage
+     *
+     * @return never
      */
     public function dieOrderStep3($displayErrorMessage = true)
     {
@@ -391,7 +392,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function dieIframeOrderConfirmation($cart, $customer)
     {
-        if (false !== Order::getOrderByCartId($cart->id)) {
+        if (false !== Order::getIdByCartId($cart->id)) {
             exit(json_encode([
                 'redirectUrl' => $this->context->link->getPageLink(
                     'order-confirmation',
@@ -415,7 +416,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
      */
     public function dieRedirectOrderConfirmation($cart, $hostedCheckout)
     {
-        if (false !== Order::getOrderByCartId($cart->id)) {
+        if (false !== Order::getIdByCartId($cart->id)) {
             $customer = new Customer((int) $cart->id_customer);
             exit(json_encode([
                 'redirectUrl' => $this->context->link->getPageLink(

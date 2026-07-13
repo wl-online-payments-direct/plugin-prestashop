@@ -14,8 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Builder;
 
-use Context;
-use Country;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\Address;
 use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
@@ -30,14 +32,13 @@ use OnlinePayments\Sdk\Domain\PersonalInformation;
 use OnlinePayments\Sdk\Domain\PersonalName;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\RedirectPaymentProduct3112SpecificInput;
 use OnlinePayments\Sdk\Domain\RedirectPaymentProduct5402SpecificInput;
 use OnlinePayments\Sdk\Domain\RedirectPaymentProduct5403SpecificInput;
-use OnlinePayments\Sdk\Domain\RedirectPaymentProduct3112SpecificInput;
 use OnlinePayments\Sdk\Domain\Shipping;
 use OnlinePayments\Sdk\Domain\SurchargeSpecificInput;
 use RandomLib\Factory;
 use SecurityLib\Strength;
-use Worldlineop;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethodsSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\PaymentSettings;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
@@ -50,36 +51,36 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
 {
-    const PRODUCT_ID_MAESTRO = 117;
-    const PRODUCT_ID_INTERSOLVE = 5700;
-    const PRODUCT_ID_MEALVOUCHER = 5402;
-    const PRODUCT_ID_CVCO = 5403;
-    const PRODUCT_ID_PLEDG = 5300;
-    const PRODUCT_ID_ILLICADO = 3112;
+    public const PRODUCT_ID_MAESTRO = 117;
+    public const PRODUCT_ID_INTERSOLVE = 5700;
+    public const PRODUCT_ID_MEALVOUCHER = 5402;
+    public const PRODUCT_ID_CVCO = 5403;
+    public const PRODUCT_ID_PLEDG = 5300;
+    public const PRODUCT_ID_ILLICADO = 3112;
 
-    const PHONE_NUMBER_MAX_CHARS = 15;
+    public const PHONE_NUMBER_MAX_CHARS = 15;
 
-    const REFERENCE_CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    public const REFERENCE_CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    const CARD_ON_FILE_REQUESTOR_FIRST = 'cardholderInitiated';
-    const CARD_ON_FILE_REQUESTOR_SUBSEQUENT = 'cardholderInitiated';
-    const CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST = 'first';
-    const CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT = 'subsequent';
+    public const CARD_ON_FILE_REQUESTOR_FIRST = 'cardholderInitiated';
+    public const CARD_ON_FILE_REQUESTOR_SUBSEQUENT = 'cardholderInitiated';
+    public const CARD_ON_FILE_SEQUENCE_INDICATOR_FIRST = 'first';
+    public const CARD_ON_FILE_SEQUENCE_INDICATOR_SUBSEQUENT = 'subsequent';
 
-    const CHALLENGE_INDICATOR_REQUIRED = 'challenge-required';
-    const CHALLENGE_INDICATOR_NO_PREFERENCE = 'no-preference';
+    public const CHALLENGE_INDICATOR_REQUIRED = 'challenge-required';
+    public const CHALLENGE_INDICATOR_NO_PREFERENCE = 'no-preference';
 
-    const SURCHARGE_ON_BEHALF_OF = 'on-behalf-of';
+    public const SURCHARGE_ON_BEHALF_OF = 'on-behalf-of';
 
-    const MAX_NUMBER_OF_ITEMS = 99;
+    public const MAX_NUMBER_OF_ITEMS = 99;
 
     /** @var Settings */
     protected $settings;
 
-    /** @var Worldlineop */
+    /** @var \Worldlineop */
     protected $module;
 
-    /** @var Context */
+    /** @var \Context */
     protected $context;
 
     /** @var ShoppingCartPresenter */
@@ -88,7 +89,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     /** @var string */
     protected $idProduct;
 
-    /** @var string */
+    /** @var string|false */
     protected $tokenValue;
 
     /** @var array|false */
@@ -98,14 +99,14 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
      * AbstractRequestBuilder constructor.
      *
      * @param Settings $settings
-     * @param Worldlineop $module
-     * @param Context $context
+     * @param \Worldlineop $module
+     * @param \Context $context
      * @param ShoppingCartPresenter $shoppingCartPresenter
      */
     public function __construct(
         Settings $settings,
-        Worldlineop $module,
-        Context $context,
+        \Worldlineop $module,
+        \Context $context,
         ShoppingCartPresenter $shoppingCartPresenter
     ) {
         $this->settings = $settings;
@@ -239,7 +240,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $contactDetails->setMobilePhoneNumber(substr(preg_replace('/[^0-9+]/', '', $customerAddress->phone_mobile), 0, self::PHONE_NUMBER_MAX_CHARS));
         $customer->setContactDetails($contactDetails);
         $billingAddress = new Address();
-        $billingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
+        $billingAddress->setCountryCode(\Country::getIsoById($customerAddress->id_country));
         $billingAddress->setCity($customerAddress->city);
         $billingAddress->setStreet($customerAddress->address1);
         $billingAddress->setAdditionalInfo($customerAddress->address2);
@@ -271,7 +272,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         $shipping = new Shipping();
         $customerAddress = new \Address((int) $this->context->cart->id_address_delivery);
         $shippingAddress = new AddressPersonal();
-        $shippingAddress->setCountryCode(Country::getIsoById($customerAddress->id_country));
+        $shippingAddress->setCountryCode(\Country::getIsoById($customerAddress->id_country));
         $shippingAddress->setCity($customerAddress->city);
         $shippingAddress->setStreet($customerAddress->address1);
         $shippingAddress->setAdditionalInfo($customerAddress->address2);
@@ -298,7 +299,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     public function buildFeedbacks()
     {
         $feedbacks = new Feedbacks();
-        $webhookMode = $this->settings->accountSettings->webhookMode ?? 'manual';
+        $webhookMode = $this->settings->accountSettings->webhookMode ?? 'manual'; // @phpstan-ignore-line
         if ($webhookMode !== 'automatic') {
             return $feedbacks;
         }
@@ -313,7 +314,7 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
         );
         $webhookUrls[] = $mainWebhookUrl;
 
-        $additionalWebhooks = $this->settings->accountSettings->additionalWebhookUrls ?? [];
+        $additionalWebhooks = $this->settings->accountSettings->additionalWebhookUrls ?? []; // @phpstan-ignore-line
         if (!empty($additionalWebhooks) && is_array($additionalWebhooks)) {
             $webhookUrls = array_merge($webhookUrls, $additionalWebhooks);
         }

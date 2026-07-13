@@ -14,9 +14,11 @@
 
 namespace WorldlineOP\PrestaShop\Utils;
 
-use Language;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Monolog\Logger;
-use Tab;
 
 /**
  * Class TabManager
@@ -51,18 +53,18 @@ class TabManager
      */
     public function createTab($moduleTab, $moduleName)
     {
-        if (Tab::getIdFromClassName($moduleTab['className'])) {
+        if (\Validate::isLoadedObject(\Tab::getInstanceFromClassName($moduleTab['className']))) {
             return;
         }
-        $tab = new Tab();
+        $tab = new \Tab();
         $tab->class_name = pSQL($moduleTab['className']);
         $tab->module = pSQL($moduleName);
         $tab->icon = '';
-        $tab->id_parent = (int) Tab::getIdFromClassName($moduleTab['parentClassName']);
+        $tab->id_parent = (int) \Tab::getInstanceFromClassName($moduleTab['parentClassName'])->id;
         $tab->active = true;
         $tab->name = [];
         $names = $moduleTab['names'];
-        foreach (Language::getLanguages() as $lang) {
+        foreach (\Language::getLanguages() as $lang) {
             $isoCode = $lang['iso_code'];
             $tabName = isset($names[$isoCode]) ? $names[$isoCode] : $names['en'];
             $tab->name[$lang['id_lang']] = pSQL($tabName);

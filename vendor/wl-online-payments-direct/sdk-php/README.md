@@ -5,8 +5,8 @@
 The PHP SDK helps you to communicate with the payment platform server API. Its primary features are:
 
 * convenient PHP wrapper around the API calls and responses:
-  * marshalls PHP request objects to HTTP requests
-  * unmarshalls HTTP responses to PHP response objects or PHP exceptions
+    * marshalls PHP request objects to HTTP requests
+    * unmarshalls HTTP responses to PHP response objects or PHP exceptions
 * handling of all the details concerning authentication
 * handling of required meta data
 
@@ -25,7 +25,8 @@ PHP 5.4 or above is required.
 
 ## Installation via Composer
 
-1. Initialize [Composer](https://getcomposer.org/download/) in your project, if this is not already done, by executing the following command:
+1. Initialize [Composer](https://getcomposer.org/download/) in your project, if this is not already done, by executing
+   the following command:
 
     ```
     composer init
@@ -44,13 +45,18 @@ PHP 5.4 or above is required.
 
 ## Manual installation
 
-1. Download the latest version of the PHP SDK from GitHub. Choose the `onlinepayments-sdk-php-x.y.z.tar.gz` file from the [releases](https://github.com/wl-online-payments-direct/sdk-php/releases) page, where `x.y.z` is the version number.
-2. Add the contents of the `tar.gz` file to your project. The content of the `/src` and `/lib` folders may be combined, if this is required by the project.
-3. Add all classes from the `/src` and `/lib` folders to your autoloader; all classes inside these folders are compliant with [PSR-4](http://www.php-fig.org/psr/psr-4/).
+1. Download the latest version of the PHP SDK from GitHub. Choose the `onlinepayments-sdk-php-x.y.z.tar.gz` file from
+   the [releases](https://github.com/wl-online-payments-direct/sdk-php/releases) page, where `x.y.z` is the version
+   number.
+2. Add the contents of the `tar.gz` file to your project. The content of the `/src` and `/lib` folders may be combined,
+   if this is required by the project.
+3. Add all classes from the `/src` and `/lib` folders to your autoloader; all classes inside these folders are compliant
+   with [PSR-4](http://www.php-fig.org/psr/psr-4/).
 
 ## Development and testing
 
 1. Install [Composer](https://getcomposer.org/download/)
 2. From the root of the sdk-php project, run `composer install`
 3. Copy `tests/config.json.dist` to `tests/config.json` and replace the template values by actual values
-4. From the root of the sdk-php project, `vendor/phpunit/phpunit/phpunit` (or just `phpunit` when it is already installed on your local machine)
+4. From the root of the sdk-php project, `vendor/phpunit/phpunit/phpunit` (or just `phpunit` when it is already
+   installed on your local machine)

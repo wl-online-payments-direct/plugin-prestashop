@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Serializer;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -43,10 +47,10 @@ class PaymentMethodsSettingsDenormalizer extends ObjectNormalizer
      * @throws \Symfony\Component\Serializer\Exception\ExtraAttributesException Occurs when the item doesn't have attribute to receive given data
      * @throws \Symfony\Component\Serializer\Exception\LogicException Occurs when the normalizer is not supposed to denormalize
      * @throws \Symfony\Component\Serializer\Exception\RuntimeException Occurs if the class cannot be instantiated
-     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface Occurs for all the other cases of errors
      */
     public function denormalize($data, $type, $format = null, array $context = [])
     {
+        /** @var PaymentMethodsSettings $obj */
         $obj = parent::denormalize($data, $type, $format, $context);
         if (isset($data['redirectPaymentMethods'])) {
             $array = [];

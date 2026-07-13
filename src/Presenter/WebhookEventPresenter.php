@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Domain\WebhooksEvent;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Logger\LoggerFactory;
@@ -23,19 +27,19 @@ use WorldlineOP\PrestaShop\Logger\LoggerFactory;
  */
 class WebhookEventPresenter implements PresenterInterface
 {
-    const MEALVOUCHER_PRODUCT_ID = 5402;
-    const ILLICADO_PRODUCT_ID = 3112;
-    const CVCO_PRODUCT_ID = 5403;
-    const EVENTS_PAYMENT_AUTHORIZED = [
+    public const MEALVOUCHER_PRODUCT_ID = 5402;
+    public const ILLICADO_PRODUCT_ID = 3112;
+    public const CVCO_PRODUCT_ID = 5403;
+    public const EVENTS_PAYMENT_AUTHORIZED = [
         'payment.pending_approval',
         'payment.pending_completion',
         'payment.pending_capture',
     ];
-    const EVENTS_PAYMENT_ACCEPTED = ['payment.captured'];
-    const EVENTS_PAYMENT_PENDING = ['payment.authorization_requested'];
-    const EVENTS_REFUNDED = ['payment.refunded'];
-    const EVENTS_PAYMENT_CANCELLED = ['payment.cancelled'];
-    const EVENTS_PAYMENT_REJECTED = ['payment.rejected'];
+    public const EVENTS_PAYMENT_ACCEPTED = ['payment.captured'];
+    public const EVENTS_PAYMENT_PENDING = ['payment.authorization_requested'];
+    public const EVENTS_REFUNDED = ['payment.refunded'];
+    public const EVENTS_PAYMENT_CANCELLED = ['payment.cancelled'];
+    public const EVENTS_PAYMENT_REJECTED = ['payment.rejected'];
 
     /** @var GetPaymentPresenter */
     private $paymentPresenter;
@@ -120,12 +124,12 @@ class WebhookEventPresenter implements PresenterInterface
      */
     private function shouldHandleEvent($event)
     {
-        $payment = $event->getPayment() ?: null;
-        $paymentOutput = $payment ? $payment->getPaymentOutput() : null;
-        $redirectMethodSpecificInput = $paymentOutput ? $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null;
-        $paymentProductId = $redirectMethodSpecificInput ? $redirectMethodSpecificInput->getPaymentProductId() : null;
-        $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null;
-        $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null;
+        $payment = $event->getPayment() ?: null; // @phpstan-ignore-line
+        $paymentOutput = $payment ? $payment->getPaymentOutput() : null; // @phpstan-ignore-line
+        $redirectMethodSpecificInput = $paymentOutput ? $paymentOutput->getRedirectPaymentMethodSpecificOutput() : null; // @phpstan-ignore-line
+        $paymentProductId = $redirectMethodSpecificInput ? $redirectMethodSpecificInput->getPaymentProductId() : null; // @phpstan-ignore-line
+        $amountOfMoney = $paymentOutput->getAmountOfMoney() ? $paymentOutput->getAmountOfMoney()->getAmount() : null; // @phpstan-ignore-line
+        $acquiredAmount = $paymentOutput->getAcquiredAmount() ? $paymentOutput->getAcquiredAmount()->getAmount() : null; // @phpstan-ignore-line
 
         if ($paymentProductId === self::MEALVOUCHER_PRODUCT_ID
             || $paymentProductId === self::CVCO_PRODUCT_ID

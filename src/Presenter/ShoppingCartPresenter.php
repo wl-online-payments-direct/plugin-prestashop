@@ -14,7 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Presenter;
 
-use Cart;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
@@ -23,7 +26,7 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class ShoppingCartPresenter implements PresenterInterface
 {
-    /** @var Cart */
+    /** @var \Cart */
     private $cart;
 
     /** @var mixed[] */
@@ -51,7 +54,7 @@ class ShoppingCartPresenter implements PresenterInterface
     private $cartCurrencyIso;
 
     /**
-     * @param Cart|false $cart
+     * @param \Cart|false $cart
      *
      * @return array
      *
@@ -96,13 +99,13 @@ class ShoppingCartPresenter implements PresenterInterface
             }
         }
         if ($freeShipping) {
-            $this->discountShippingWithoutTax = $this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING);
-            $this->discountShippingWithTax = $this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
-            $this->discountProductsWithTax = $this->cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS) - $this->discountShippingWithTax;
+            $this->discountShippingWithoutTax = $this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING);
+            $this->discountShippingWithTax = $this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING);
+            $this->discountProductsWithTax = $this->cart->getOrderTotal(true, \Cart::ONLY_DISCOUNTS) - $this->discountShippingWithTax;
         } else {
-            $this->discountProductsWithTax = $this->cart->getOrderTotal(true, Cart::ONLY_DISCOUNTS);
+            $this->discountProductsWithTax = $this->cart->getOrderTotal(true, \Cart::ONLY_DISCOUNTS);
         }
-        $this->orderDiscountPercent = ((100 * $this->discountProductsWithTax) / $this->cart->getOrderTotal(true, Cart::ONLY_PRODUCTS)) / 100;
+        $this->orderDiscountPercent = ((100 * $this->discountProductsWithTax) / $this->cart->getOrderTotal(true, \Cart::ONLY_PRODUCTS)) / 100;
     }
 
     /**
@@ -112,14 +115,14 @@ class ShoppingCartPresenter implements PresenterInterface
      */
     private function getShippingRow()
     {
-        $shippingWithTaxes = $this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING);
-        $shippingWithoutTaxes = $this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING);
+        $shippingWithTaxes = $this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING);
+        $shippingWithoutTaxes = $this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING);
 
         return [
-            'priceWithTax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
-            'priceWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
+            'priceWithTax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
+            'priceWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
             'discountPrice' => Tools::getRoundedAmountInCents($this->discountShippingWithoutTax, $this->cartCurrencyIso),
-            'priceDiscountedWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, Cart::ONLY_SHIPPING) - $this->discountShippingWithoutTax, $this->cartCurrencyIso),
+            'priceDiscountedWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING) - $this->discountShippingWithoutTax, $this->cartCurrencyIso),
             'tax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($shippingWithTaxes - $shippingWithoutTaxes, $this->cartCurrencyIso),
             'type' => $this->productsType['SHIPPING'],
         ];
@@ -205,8 +208,8 @@ class ShoppingCartPresenter implements PresenterInterface
         $productType = $this->getMergedProductType($this->products);
         $productName = $this->getMergedProductName($this->products);
 
-        return array(
-            array(
+        return [
+            [
                 'totalWithTax' => $amounts['productPrice'] + $amounts['tax'],
                 'productPrice' => $amounts['productPrice'],
                 'discountPrice' => $amounts['discountPrice'],
@@ -214,8 +217,8 @@ class ShoppingCartPresenter implements PresenterInterface
                 'quantity' => 1,
                 'productName' => $productName,
                 'productType' => $productType,
-                'productCode' => 'Merged item'
-            ));
+                'productCode' => 'Merged item',
+            ]];
     }
 
     /**
@@ -235,12 +238,12 @@ class ShoppingCartPresenter implements PresenterInterface
             $tax += Tools::getRoundedAmount($totalWithTax - $productPrice, $this->cartCurrencyIso);
         }
 
-        return array(
+        return [
             'discountPrice' => 0,
             'productPrice' => $productPrice,
             'tax' => $tax,
-            'totalWithTax' => $totalWithTax
-        );
+            'totalWithTax' => $totalWithTax,
+        ];
     }
 
     /**
@@ -248,6 +251,7 @@ class ShoppingCartPresenter implements PresenterInterface
      * - FoodAndDrink > HomeAndGarden > GiftAndFlowers
      *
      * @param array $products
+     *
      * @return string
      */
     private function getMergedProductType($products)
@@ -290,7 +294,7 @@ class ShoppingCartPresenter implements PresenterInterface
             if (!isset($typeCounts[$type])) {
                 $typeCounts[$type] = 0;
             }
-            $typeCounts[$type]++;
+            ++$typeCounts[$type];
             $names[] = $product['name'];
         }
 
@@ -349,7 +353,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $totalCalculated = array_sum(array_map(function ($row) {
             return $row['totalWithTax'];
         }, $productRows));
-        $totalCart = $this->cart->getOrderTotal() - $this->cart->getOrderTotal(true, Cart::ONLY_SHIPPING) + $this->discountShippingWithTax;
+        $totalCart = $this->cart->getOrderTotal() - $this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING) + $this->discountShippingWithTax;
         if (abs($totalCalculated - $totalCart) < 0.001) {
             return;
         }

@@ -14,33 +14,15 @@
 
 namespace WorldlineOP\PrestaShop\Repository;
 
-use Db;
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
 /**
  * Class TokenRepository
  */
 class TokenRepository
 {
-    /** @var Db */
-    private $db;
-
-    /** @var array */
-    private $cache;
-
-    /**
-     * TokenRepository constructor.
-     *
-     * @param Db $db
-     */
-    public function __construct(Db $db = null)
-    {
-        if (null === $db) {
-            $this->db = Db::getInstance();
-        } else {
-            $this->db = $db;
-        }
-    }
-
     /**
      * @param int $idToken
      *
@@ -53,6 +35,7 @@ class TokenRepository
         $collection = new \PrestaShopCollection('WorldlineopToken');
         $collection->where('id_worldlineop_token', '=', (int) $idToken);
 
+        /** @var \WorldlineopToken|false $token */
         $token = $collection->getFirst();
 
         return $token;
@@ -93,6 +76,7 @@ class TokenRepository
         $collection->where('id_customer', '=', (int) $idCustomer);
         $collection->where('value', '=', pSQL($tokenValue));
 
+        /** @var \WorldlineopToken|false $token */
         $token = $collection->getFirst();
 
         return $token;

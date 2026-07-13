@@ -14,6 +14,10 @@
 
 namespace WorldlineOP\PrestaShop\Sdk;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\Communicator;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;

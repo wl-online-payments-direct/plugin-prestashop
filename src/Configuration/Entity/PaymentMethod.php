@@ -14,13 +14,17 @@
 
 namespace WorldlineOP\PrestaShop\Configuration\Entity;
 
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
 /**
  * Class PaymentMethod
  */
 class PaymentMethod
 {
-    const PM_GROUP_CARDS = 'Cards';
-    const PM_TYPE_CARD = 'card';
+    public const PM_GROUP_CARDS = 'Cards';
+    public const PM_TYPE_CARD = 'card';
 
     /** @var bool */
     public $enabled;
