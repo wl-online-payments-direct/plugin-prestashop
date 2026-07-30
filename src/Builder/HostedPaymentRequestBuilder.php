@@ -355,7 +355,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
         if ((int) $this->idProduct !== self::MEALVOUCHER_PRODUCT_ID) {
             $shipping = $order->getShipping();
-            $shipping->setShippingCost((int) (string) $shoppingCartPresented['shipping']['priceWithoutTax']);
+            $shipping->setShippingCost((int) (string) $shoppingCartPresented['shipping']['priceDiscountedWithoutTax']);
             $shipping->setShippingCostTax((int) (string) $shoppingCartPresented['shipping']['tax']);
             $order->setShipping($shipping);
         }
@@ -363,33 +363,16 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $shoppingCart = new ShoppingCart();
 
         $items = $this->buildGroupedLineItems($shoppingCartPresented);
-        foreach ($shoppingCartPresented['products'] as $product) {
-            $item = new LineItem();
-            $itemAmount = new AmountOfMoney();
-            $amount = (int) (string) $product['totalWithTax'];
-            if ((int) $this->idProduct === self::MEALVOUCHER_PRODUCT_ID) {
-                // adding shipping price to the product price for meal vouchers
-                $amount += (int) (string) $shoppingCartPresented['shipping']['priceWithTax'];
-            }
-            $itemAmount->setAmount($amount);
-            $itemAmount->setCurrencyCode(Tools::getIsoCurrencyCodeById($shoppingCartPresented['cart']->id_currency));
-            $item->setAmountOfMoney($itemAmount);
-            $itemLineDetails = new OrderLineDetails();
-            $price = (int) (string) $product['productPrice'];
-            if ((int) $this->idProduct === self::MEALVOUCHER_PRODUCT_ID) {
-                // adding shipping price to the product price for meal vouchers
-                $price += (int) (string) $shoppingCartPresented['shipping']['priceWithTax'];
-            }
-            $itemLineDetails->setProductPrice($price);
-            $itemLineDetails->setDiscountAmount((int) (string) $product['discountPrice']);
-            $itemLineDetails->setProductCode($product['productCode']);
-            $itemLineDetails->setProductName($product['productName']);
-            $itemLineDetails->setProductType($product['productType']);
-            $itemLineDetails->setQuantity($product['quantity']);
-            $itemLineDetails->setTaxAmount((int) (string) $product['tax']);
-            $itemLineDetails->setUnit('piece');
-            $item->setOrderLineDetails($itemLineDetails);
-            $items = $this->buildGroupedLineItems($shoppingCartPresented);
+        if ((int) $this->idProduct === self::MEALVOUCHER_PRODUCT_ID && !empty($items)) {
+            $orderAmount = $order->getAmountOfMoney()->getAmount();
+            $shippingTax = (int) (string) $shoppingCartPresented['shipping']['tax'];
+
+            $mergedItem = $items[0];
+            $lineDetails = $mergedItem->getOrderLineDetails();
+            $taxAmount = $lineDetails->getTaxAmount() + $shippingTax;
+            $lineDetails->setTaxAmount($taxAmount);
+            $lineDetails->setProductPrice($orderAmount - $taxAmount);
+            $mergedItem->getAmountOfMoney()->setAmount($orderAmount);
         }
 
         $shoppingCart->setItems($items);

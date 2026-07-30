@@ -14,11 +14,12 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.33
+  1.4.34
 </h1>
 <br>
 <ul>
-  <li>{l s='Add showResultPage parameter' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Calculate shipping cost for free shipping voucher' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Payments with Mealvouchers method when shipping is not free' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>
