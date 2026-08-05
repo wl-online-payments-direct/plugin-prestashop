@@ -1,7 +1,7 @@
 {
   "name": "worldline/prestashop-1.7",
   "description": "Worldline GoPay module for Prestashop 1.7",
-  "version": "1.4.34",
+  "version": "1.4.35",
   "author": "Worldline GoPay",
   "license": "AFL-3.0",
   "config": {

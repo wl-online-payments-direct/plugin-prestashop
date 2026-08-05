@@ -123,7 +123,10 @@ class TransactionResponseProcessor
                     if (count($order->getOrderPayments()) > count($presentedData->payments['hasPayments'])) {
                         \Db::getInstance()->update(
                             'order_payment',
-                            ['transaction_id' => $presentedData->payments['merchantReference']],
+                            [
+                                'transaction_id' => $presentedData->payments['merchantReference'],
+                                'payment_method' => $order->payment,
+                            ],
                             'order_reference = "' . pSQL($order->reference) . '"'
                         );
                     }
