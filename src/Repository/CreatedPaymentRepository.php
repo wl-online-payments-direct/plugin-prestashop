@@ -44,24 +44,6 @@ class CreatedPaymentRepository
     }
 
     /**
-     * @param string $paymentId
-     *
-     * @return false|\ObjectModel
-     *
-     * @throws \PrestaShopException
-     */
-    public function findByPaymentId($paymentId)
-    {
-        $collection = new \PrestaShopCollection('CreatedPayment');
-        $collection
-            ->where('payment_id', '=', pSQL($paymentId));
-
-        $createdPayment = $collection->getFirst();
-
-        return $createdPayment;
-    }
-
-    /**
      * @param string $merchantReference
      *
      * @return false|\ObjectModel

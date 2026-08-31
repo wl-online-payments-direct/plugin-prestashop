@@ -32,6 +32,9 @@ $_MODULE['<{worldlineop}prestashop>paymentmethodssettingsupdater_40742c4d9a7b4af
 $_MODULE['<{worldlineop}prestashop>paymentmethodssettingsupdater_a5b77336d45235ff5107c069d87dd9d4'] = 'Logo kann nicht hochgeladen werden.';
 $_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_6294b8b61ea3540661e970803ddc382c'] = 'Bezahlen mit meiner zuvor gespeicherten Karte %s';
 $_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_35895cff7df70dab18783453e2bd241f'] = 'Bezahlen mit %s';
+$_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_a2465f4c7f50964ada143c76bc7ea32a'] = 'Bezahlen in Raten';
+$_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_5c2ddd84491205038da9434827513778'] = 'Bezahlen mit Kreditkarte';
+$_MODULE['<{worldlineop}prestashop>paymentoptionspresenter_d58fa741218d50e60318bb8c134d2ff9'] = 'Bezahlen mit Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>getpaymentpresenter_e1367be4f629d639b956301ad179146e'] = 'Worldline Online Payments';
 $_MODULE['<{worldlineop}prestashop>installer_3f501d96438cf202a1607f1caf6714f5'] = 'Sie müssen die cURL-Erweiterung aktivieren, um dieses Modul nutzen zu können.';
 $_MODULE['<{worldlineop}prestashop>hostedpaymentrequestbuilder_552a0d8c17d95d5dbdc0c28217024f5a'] = 'Versandkosten';

@@ -26,6 +26,7 @@ use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use OnlinePayments\Sdk\ValidationException;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
+use WorldlineOP\PrestaShop\Configuration\Entity\PaymentMethod;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
 use WorldlineOP\PrestaShop\Repository\TokenRepository;
 use WorldlineOP\PrestaShop\Utils\Tools;
@@ -37,6 +38,7 @@ class PaymentOptionsPresenter implements PresenterInterface
 {
     public const NO_SURCHARGE = 'NO_SURCHARGE';
     public const MEALVOUCHER_PRODUCT_ID = 5402;
+    public const PLEDG_PRODUCT_ID = 5300;
 
     /** @var Settings */
     private $settings;
@@ -279,11 +281,12 @@ class PaymentOptionsPresenter implements PresenterInterface
             'surchargeEnabled' => $this->settings->advancedSettings->surchargingEnabled,
         ]);
 
-        $defaultIsoLang = \Language::getIsoById((int) \Configuration::get('PS_LANG_DEFAULT'));
-        $cta = $paymentMethodsSettings->iframeCallToAction;
         $paymentOption = new PaymentOption();
         $paymentOption
-            ->setCallToActionText(isset($cta[$cartIsoLang]) ? $cta[$cartIsoLang] : $cta[$defaultIsoLang])
+            ->setCallToActionText($this->resolveConfiguredCallToAction(
+                $paymentMethodsSettings->iframeCallToAction,
+                $this->module->l('Pay with credit card', 'PaymentOptionsPresenter')
+            ))
             ->setAdditionalInformation($this->context->smarty->fetch('module:worldlineop/views/templates/front/hostedTokenizationAdditionalInformation.tpl'))
             ->setBinary(true)
             ->setLogo($this->module->getPathUri() . 'views/img/payment_logos/' . $this->settings->paymentMethodsSettings->iframeLogoFilename)
@@ -298,9 +301,6 @@ class PaymentOptionsPresenter implements PresenterInterface
     private function getGenericPaymentOption()
     {
         if (true === $this->settings->paymentMethodsSettings->displayGenericOption) {
-            $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
-            $defaultIsoLang = \Language::getIsoById((int) \Configuration::get('PS_LANG_DEFAULT'));
-            $cta = $this->settings->paymentMethodsSettings->redirectCallToAction;
             if ($this->settings->paymentMethodsSettings->genericLogoFilename) {
                 $logo = sprintf(
                     $this->module->getPathUri() . 'views/img/payment_logos/%s',
@@ -313,7 +313,10 @@ class PaymentOptionsPresenter implements PresenterInterface
             $paymentOption
                 ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true]))
                 ->setLogo($logo)
-                ->setCallToActionText(isset($cta[$cartIsoLang]) ? $cta[$cartIsoLang] : $cta[$defaultIsoLang]);
+                ->setCallToActionText($this->resolveConfiguredCallToAction(
+                    $this->settings->paymentMethodsSettings->redirectCallToAction,
+                    $this->module->l('Pay with Worldline Online Payments', 'PaymentOptionsPresenter')
+                ));
 
             return [$paymentOption];
         }
@@ -339,7 +342,7 @@ class PaymentOptionsPresenter implements PresenterInterface
             $paymentOption
                 ->setAction($this->context->link->getModuleLink($this->module->name, 'redirect', ['action' => 'redirectExternal', 'ajax' => true, 'productId' => $paymentMethod->productId]))
                 ->setLogo(sprintf($this->module->getPathUri() . 'views/img/payment_logos/%s.svg', $paymentMethod->productId))
-                ->setCallToActionText(sprintf($this->module->l('Pay with %s', 'PaymentOptionsPresenter'), $paymentMethod->identifier));
+                ->setCallToActionText($this->getCallToActionText($paymentMethod));
             // @formatter:off
 
             $productId = $this->extractProductIdFromPaymentOption($paymentOption);
@@ -360,6 +363,59 @@ class PaymentOptionsPresenter implements PresenterInterface
     private function isCustomerDataValid()
     {
         return $this->context->customer->id && $this->context->customer->email;
+    }
+
+    /**
+     * Checkout label taken from a call to action configured per language in the back office.
+     *
+     * The configured map only holds the languages that were installed when the settings were last saved,
+     * so it can miss the cart language and even the default one. Falling back to the module translation
+     * keeps the label localized instead of leaving it empty.
+     *
+     * @param string[]|null $cta
+     * @param string $fallback
+     *
+     * @return string
+     */
+    private function resolveConfiguredCallToAction($cta, $fallback)
+    {
+        if (!is_array($cta)) {
+            return $fallback;
+        }
+        $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
+        if (isset($cta[$cartIsoLang]) && '' !== $cta[$cartIsoLang]) {
+            return $cta[$cartIsoLang];
+        }
+        $defaultIsoLang = \Language::getIsoById((int) \Configuration::get('PS_LANG_DEFAULT'));
+        if (isset($cta[$defaultIsoLang]) && '' !== $cta[$defaultIsoLang]) {
+            return $cta[$defaultIsoLang];
+        }
+
+        return $fallback;
+    }
+
+    /**
+     * Checkout label for a redirect payment method.
+     *
+     * Some brands must be advertised to the shopper under a different name than the one the Worldline
+     * API returns and the back office displays. For those, the translated label replaces the whole call
+     * to action instead of being injected into "Pay with %s".
+     *
+     * @param PaymentMethod $paymentMethod
+     *
+     * @return string
+     */
+    private function getCallToActionText(PaymentMethod $paymentMethod)
+    {
+        switch ((int) $paymentMethod->productId) {
+            case self::PLEDG_PRODUCT_ID:
+                return $this->module->l('Pay in installments', 'PaymentOptionsPresenter');
+            default:
+                return sprintf(
+                    $this->module->l('Pay with %s', 'PaymentOptionsPresenter'),
+                    $paymentMethod->identifier
+                );
+        }
     }
 
     /**

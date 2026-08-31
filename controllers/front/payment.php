@@ -157,13 +157,21 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
                 'redirectUrl' => $merchantAction->getRedirectData()->getRedirectURL(),
             ];
         } else {
+            // No PSP redirect on this path, so there is no PSP RETURNMAC to bind the return to.
+            // Generate our own so the return endpoint can authorize the caller instead of trusting
+            // the paymentId alone. Hex only: the value goes through pSQL() on both write and lookup.
+            $createdPayment->returnmac = bin2hex(random_bytes(16));
             $return = [
                 'success' => true,
                 'needRedirect' => true,
                 'redirectUrl' => $this->context->link->getModuleLink(
                     $this->module->name,
                     'redirect',
-                    ['action' => 'redirectReturnInternalIframe', 'paymentId' => $createdPayment->payment_id]
+                    [
+                        'action' => 'redirectReturnInternalIframe',
+                        'paymentId' => $createdPayment->payment_id,
+                        'RETURNMAC' => $createdPayment->returnmac,
+                    ]
                 ),
             ];
         }

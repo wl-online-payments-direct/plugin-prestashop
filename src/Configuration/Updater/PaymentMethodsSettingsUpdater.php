@@ -40,7 +40,36 @@ class PaymentMethodsSettingsUpdater extends SettingsUpdater
      */
     protected function denormalize($array)
     {
+        $array = $this->mergeCallToActions($array);
         $this->serializer->denormalize($array, PaymentMethodsSettings::class, null, ['object_to_populate' => $this->settings->paymentMethodsSettings]);
+    }
+
+    /**
+     * Keeps the call to actions of the languages that are not rendered by the form.
+     *
+     * The back office form only builds inputs for the languages installed in the shop, so a submitted
+     * call to action map only holds those languages. Denormalization replaces the whole property, which
+     * would drop the values of every other language. Merging the submitted map over the stored one keeps
+     * them, while the submitted values still win for the languages that were rendered.
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    private function mergeCallToActions($array)
+    {
+        foreach (['redirectCallToAction', 'iframeCallToAction'] as $field) {
+            if (!isset($array[$field]) || !is_array($array[$field])) {
+                continue;
+            }
+            $storedCta = $this->settings->paymentMethodsSettings->{$field};
+            if (!is_array($storedCta)) {
+                continue;
+            }
+            $array[$field] = array_merge($storedCta, $array[$field]);
+        }
+
+        return $array;
     }
 
     /**

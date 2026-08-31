@@ -301,13 +301,7 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('RedirectIframe');
 
-        /** @var CreatedPayment $createdPayment */
-        $createdPayment = $this->createdPaymentRepository->findByReturnMacPaymentId(
-            Tools::getValue('RETURNMAC'),
-            Tools::getValue('paymentId')
-        );
-
-        $this->returnRedirectIframe($createdPayment);
+        $this->returnRedirectIframeByReturnMac();
     }
 
     /**
@@ -319,10 +313,26 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         $loggerFactory = $this->module->getService('worldlineop.logger.factory');
         $this->logger = $loggerFactory->setChannel('RedirectInternalIframe');
 
+        $this->returnRedirectIframeByReturnMac();
+    }
+
+    /**
+     * Resolves the created payment from the RETURNMAC + paymentId pair supplied by the request.
+     * Both values are required: the paymentId is not a secret, so it cannot authorize the caller
+     * on its own.
+     *
+     * @throws PrestaShopException
+     */
+    private function returnRedirectIframeByReturnMac()
+    {
+        $returnMac = Tools::getValue('RETURNMAC');
+        $paymentId = Tools::getValue('paymentId');
+        if (!is_string($returnMac) || !is_string($paymentId) || '' === $returnMac || '' === $paymentId) {
+            $this->dieOrderStep3();
+        }
+
         /** @var CreatedPayment $createdPayment */
-        $createdPayment = $this->createdPaymentRepository->findByPaymentId(
-            Tools::getValue('paymentId')
-        );
+        $createdPayment = $this->createdPaymentRepository->findByReturnMacPaymentId($returnMac, $paymentId);
 
         $this->returnRedirectIframe($createdPayment);
     }
