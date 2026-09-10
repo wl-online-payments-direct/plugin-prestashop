@@ -173,7 +173,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
 
         $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
-        $numberOfItems = min(count($shoppingCartPresented['products']), self::MAX_NUMBER_OF_ITEMS);
+        $numberOfItems = $this->countCartItems($shoppingCartPresented);
 
         if (true === $this->settings->advancedSettings->force3DsV2) {
             $paymentProduct130SpecificInput = new PaymentProduct130SpecificInput();
@@ -364,12 +364,16 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 
         $items = $this->buildGroupedLineItems($shoppingCartPresented);
         if ((int) $this->idProduct === self::MEALVOUCHER_PRODUCT_ID && !empty($items)) {
-            $orderAmount = $order->getAmountOfMoney()->getAmount();
+            $orderAmount = max(0, (int) (string) $order->getAmountOfMoney()->getAmount());
             $shippingTax = (int) (string) $shoppingCartPresented['shipping']['tax'];
 
             $mergedItem = $items[0];
             $lineDetails = $mergedItem->getOrderLineDetails();
-            $taxAmount = $lineDetails->getTaxAmount() + $shippingTax;
+            // Clamped into [0, orderAmount] so neither the tax nor the derived price can go negative.
+            $taxAmount = min(max(0, (int) $lineDetails->getTaxAmount() + $shippingTax), $orderAmount);
+            // productPrice below is the whole order amount less tax, so the quantity has to stay 1
+            // for amount == (productPrice + taxAmount) * quantity to hold.
+            $lineDetails->setQuantity(1);
             $lineDetails->setTaxAmount($taxAmount);
             $lineDetails->setProductPrice($orderAmount - $taxAmount);
             $mergedItem->getAmountOfMoney()->setAmount($orderAmount);
@@ -388,13 +392,18 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         $itemsByGroupKey = [];
 
         foreach ($shoppingCartPresented['products'] as $product) {
-            $productId = $product['productId'];
+            // Merged rows (meal voucher flow) carry no productId; the code is unique enough there.
+            $productId = isset($product['productId']) ? $product['productId'] : $product['productCode'];
+            $quantity = (int) $product['quantity'];
             $price = (int) (string) $product['productPrice'];
             $tax = (int) (string) $product['tax'];
             $discount = (int) (string) $product['discountPrice'];
 
             // Composite key to distinguish products with different pricing
-            $groupKey = "{$productId}_{$price}";
+            // The tax belongs in the key too: two rows of the same product can share a
+            // productPrice but carry a different unit tax, and merging them would break
+            // amount == (productPrice + taxAmount) * quantity.
+            $groupKey = "{$productId}_{$price}_{$tax}";
 
             if (!isset($itemsByGroupKey[$groupKey])) {
                 // Create new LineItem
@@ -412,7 +421,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
                 $itemLineDetails->setProductCode($product['productCode']);
                 $itemLineDetails->setProductName($product['productName']);
                 $itemLineDetails->setProductType($product['productType']);
-                $itemLineDetails->setQuantity(1);
+                $itemLineDetails->setQuantity($quantity);
                 $itemLineDetails->setTaxAmount($tax);
                 $itemLineDetails->setUnit('piece');
 
@@ -424,7 +433,7 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
                 $existingItem = $itemsByGroupKey[$groupKey];
 
                 $existingItem->getOrderLineDetails()->setQuantity(
-                    $existingItem->getOrderLineDetails()->getQuantity() + 1
+                    $existingItem->getOrderLineDetails()->getQuantity() + $quantity
                 );
 
                 $existingAmount = $existingItem->getAmountOfMoney()->getAmount();

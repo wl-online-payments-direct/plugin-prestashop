@@ -14,13 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.36
+  1.4.37
 </h1>
 <br>
 <ul>
-  <li>{l s='Changed: Regular maintenance updates to enhance the integrity and security of the integration' mod='worldlineop'}</li>
-  <li>{l s='Changed: Update the Sofinco payment method name on the checkout' mod='worldlineop'}</li>
-  <li>{l s='Fixed: Credit card and hosted checkout labels for non-default languages' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Fix rounding of shopping cart line items sent in the payment request' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

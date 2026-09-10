@@ -116,6 +116,24 @@ abstract class AbstractRequestBuilder implements PaymentRequestBuilderInterface
     }
 
     /**
+     * Total units in the cart, capped for the 3DS numberOfItems field. Counting the presented rows
+     * would report the number of cart lines instead, since a row now carries its own quantity.
+     *
+     * @param array $shoppingCartPresented
+     *
+     * @return int
+     */
+    protected function countCartItems(array $shoppingCartPresented)
+    {
+        $units = 0;
+        foreach ($shoppingCartPresented['products'] as $product) {
+            $units += (int) $product['quantity'];
+        }
+
+        return (int) min($units, self::MAX_NUMBER_OF_ITEMS);
+    }
+
+    /**
      * @param string|false $idProduct
      * @param string|false $tokenValue
      * @param array|false $ccForm

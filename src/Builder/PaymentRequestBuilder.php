@@ -100,7 +100,7 @@ class PaymentRequestBuilder extends AbstractRequestBuilder
             $paymentProduct130SpecificInput = new PaymentProduct130SpecificInput();
             $paymentProduct130ThreeDSecure = new PaymentProduct130SpecificThreeDSecure();
             $shoppingCartPresented = $this->shoppingCartPresenter->present($this->context->cart);
-            $numberOfItems = min(count($shoppingCartPresented['products']), self::MAX_NUMBER_OF_ITEMS);
+            $numberOfItems = $this->countCartItems($shoppingCartPresented);
 
             $paymentProduct130ThreeDSecure->setUsecase('single-amount');
             $paymentProduct130ThreeDSecure->setNumberOfItems($numberOfItems);

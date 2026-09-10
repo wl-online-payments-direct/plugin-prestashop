@@ -80,6 +80,7 @@ class ShoppingCartPresenter implements PresenterInterface
         $rows['cart'] = $cart;
         $this->applyProductDiscounts($rows['products']);
         $this->fixTotalsRounding($rows['products']);
+        $this->splitIntoUnitPricedRows($rows['products']);
         $this->formatPrices($rows['products']);
 
         return $rows;
@@ -105,7 +106,11 @@ class ShoppingCartPresenter implements PresenterInterface
         } else {
             $this->discountProductsWithTax = $this->cart->getOrderTotal(true, \Cart::ONLY_DISCOUNTS);
         }
-        $this->orderDiscountPercent = ((100 * $this->discountProductsWithTax) / $this->cart->getOrderTotal(true, \Cart::ONLY_PRODUCTS)) / 100;
+        $productsWithTax = $this->cart->getOrderTotal(true, \Cart::ONLY_PRODUCTS);
+        // A cart of nothing but free products totals zero; dividing by it aborts the payment request.
+        $this->orderDiscountPercent = $productsWithTax > 0
+            ? ((100 * $this->discountProductsWithTax) / $productsWithTax) / 100
+            : 0;
     }
 
     /**
@@ -174,26 +179,28 @@ class ShoppingCartPresenter implements PresenterInterface
     {
         $rows = [];
         foreach ($this->products as $product) {
-            $i = 0;
-            while ($i < $product['quantity']) {
-                $totalWithTax = Tools::getRoundedAmount($product['price_with_reduction'], $this->cartCurrencyIso);
-                $productPrice = Tools::getRoundedAmount($product['price_with_reduction_without_tax'], $this->cartCurrencyIso);
-                $row = [
-                    'totalWithTax' => $totalWithTax,
-                    'productPrice' => $productPrice,
-                    'discountPrice' => 0,
-                    'tax' => Tools::getRoundedAmount($totalWithTax - $productPrice, $this->cartCurrencyIso),
-                    'quantity' => 1,
-                    'productCode' => $product['reference'] ?: $product['unique_id'],
-                    'productName' => $product['name'],
-                    'productId' => $product['id_product'],
-                    'productType' => !empty($this->productsType[$product['id_product']]) ? $this->productsType[$product['id_product']] : '',
-                    'data' => $product,
-                ];
-
-                $rows[] = $row;
-                ++$i;
+            $quantity = (int) $product['quantity'];
+            if ($quantity < 1) {
+                continue;
             }
+
+            // The line total comes from PrestaShop itself: Cart::getProducts() fills 'total_wt'
+            // honouring PS_ROUND_TYPE, so it always agrees with the cart total. Rebuilding it from
+            // a rounded unit price instead makes every unit drift by up to half a minor unit, and
+            // the accumulated drift is what used to push a line item below zero.
+            $rows[] = [
+                'totalWithTax' => Tools::getRoundedAmount($product['total_wt'], $this->cartCurrencyIso),
+                'totalWithoutTax' => Tools::getRoundedAmount($product['total'], $this->cartCurrencyIso),
+                'productPrice' => 0,
+                'discountPrice' => 0,
+                'tax' => 0,
+                'quantity' => $quantity,
+                'productCode' => $product['reference'] ?: $product['unique_id'],
+                'productName' => $product['name'],
+                'productId' => $product['id_product'],
+                'productType' => !empty($this->productsType[$product['id_product']]) ? $this->productsType[$product['id_product']] : '',
+                'data' => $product,
+            ];
         }
 
         return $rows;
@@ -210,7 +217,10 @@ class ShoppingCartPresenter implements PresenterInterface
 
         return [
             [
-                'totalWithTax' => $amounts['productPrice'] + $amounts['tax'],
+                'totalWithTax' => $amounts['totalWithTax'],
+                // Carrying the tax-exclusive total lets the shared unit-price pass recompute this
+                // row like any other, so a rounding adjustment cannot desynchronise it.
+                'totalWithoutTax' => $amounts['productPrice'],
                 'productPrice' => $amounts['productPrice'],
                 'discountPrice' => $amounts['discountPrice'],
                 'tax' => $amounts['tax'],
@@ -233,9 +243,15 @@ class ShoppingCartPresenter implements PresenterInterface
         $totalWithTax = 0;
 
         foreach ($products as $product) {
-            $totalWithTax += Tools::getRoundedAmount($product['price_with_reduction'], $this->cartCurrencyIso);
-            $productPrice += Tools::getRoundedAmount($product['price_with_reduction_without_tax'], $this->cartCurrencyIso);
-            $tax += Tools::getRoundedAmount($totalWithTax - $productPrice, $this->cartCurrencyIso);
+            // Line totals, not unit prices: the unit price of a line with quantity 20 counted once,
+            // and the tax was accumulated from the running sums rather than from this product, so it
+            // grew as a prefix-sum cascade and could exceed the order amount outright.
+            $lineWithTax = Tools::getRoundedAmount($product['total_wt'], $this->cartCurrencyIso);
+            $lineWithoutTax = Tools::getRoundedAmount($product['total'], $this->cartCurrencyIso);
+
+            $totalWithTax += $lineWithTax;
+            $productPrice += $lineWithoutTax;
+            $tax += $lineWithTax - $lineWithoutTax;
         }
 
         return [
@@ -329,15 +345,26 @@ class ShoppingCartPresenter implements PresenterInterface
             return;
         }
         foreach ($productRows as &$productRow) {
+            // Merged rows (meal voucher flow) carry no source product; they are already cart-wide.
+            if (!isset($productRow['data'])) {
+                continue;
+            }
             $rate = $productRow['data']['rate'] / 100;
-            $unitPriceDiscountedWithoutTax = $productRow['data']['price_with_reduction_without_tax'] - ($productRow['data']['price_with_reduction_without_tax'] * $this->orderDiscountPercent);
+            $unitPriceWithoutTax = $productRow['data']['price_with_reduction_without_tax'];
+            $unitDiscountWithoutTax = $unitPriceWithoutTax * $this->orderDiscountPercent;
+            $unitPriceDiscountedWithoutTax = $unitPriceWithoutTax - $unitDiscountWithoutTax;
             $unitTaxAmountDiscounted = $unitPriceDiscountedWithoutTax * $rate;
-            $discountAmountWithoutTax = $productRow['data']['price_with_reduction_without_tax'] - $unitPriceDiscountedWithoutTax;
-            $totalPriceDiscountedWithTax = Tools::getRoundedAmount($productRow['productPrice'], $this->cartCurrencyIso) - Tools::getRoundedAmount($discountAmountWithoutTax, $this->cartCurrencyIso) + Tools::getRoundedAmount($unitTaxAmountDiscounted, $this->cartCurrencyIso);
 
-            $productRow['tax'] = Tools::getRoundedAmount($unitTaxAmountDiscounted, $this->cartCurrencyIso);
-            $productRow['discountPrice'] = Tools::getRoundedAmount($discountAmountWithoutTax, $this->cartCurrencyIso);
-            $productRow['totalWithTax'] = Tools::getRoundedAmount($totalPriceDiscountedWithTax, $this->cartCurrencyIso);
+            $productRow['discountPrice'] = Tools::getRoundedAmount($unitDiscountWithoutTax, $this->cartCurrencyIso);
+            // Multiply once at line level rather than summing a rounded per-unit figure.
+            $productRow['totalWithTax'] = Tools::getRoundedAmount(
+                ($unitPriceDiscountedWithoutTax + $unitTaxAmountDiscounted) * $productRow['quantity'],
+                $this->cartCurrencyIso
+            );
+            $productRow['totalWithoutTax'] = Tools::getRoundedAmount(
+                $unitPriceDiscountedWithoutTax * $productRow['quantity'],
+                $this->cartCurrencyIso
+            );
         }
     }
 
@@ -350,19 +377,171 @@ class ShoppingCartPresenter implements PresenterInterface
      */
     private function fixTotalsRounding(&$productRows)
     {
-        $totalCalculated = array_sum(array_map(function ($row) {
-            return $row['totalWithTax'];
-        }, $productRows));
+        if (empty($productRows)) {
+            return;
+        }
+        $factor = 10 ** Tools::getCurrencyDecimalByIso($this->cartCurrencyIso);
         $totalCart = $this->cart->getOrderTotal() - $this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING) + $this->discountShippingWithTax;
-        if (abs($totalCalculated - $totalCart) < 0.001) {
+
+        $lineTotals = [];
+        $totalCalculated = 0;
+        foreach ($productRows as $productRow) {
+            $lineTotal = (int) round($productRow['totalWithTax'] * $factor);
+            $lineTotals[] = $lineTotal;
+            $totalCalculated += $lineTotal;
+        }
+
+        $remainder = $totalCalculated - (int) round($totalCart * $factor);
+        if (0 === $remainder) {
             return;
         }
 
-        $factor = 10 ** Tools::getCurrencyDecimalByIso($this->cartCurrencyIso);
-        $diff = (int) round(($totalCalculated - $totalCart) * $factor) / $factor;
+        $this->spreadRoundingRemainder($lineTotals, $remainder);
 
-        $productRows[0]['totalWithTax'] -= $diff;
-        $productRows[0]['productPrice'] -= $diff;
+        foreach ($productRows as $index => &$productRow) {
+            $productRow['totalWithTax'] = $lineTotals[$index] / $factor;
+        }
+    }
+
+    /**
+     * Rewrites the line-level rows into rows that carry an integer unit price.
+     *
+     * The API requires amountOfMoney.amount == (productPrice + taxAmount) * quantity, with every
+     * value an integer in minor units. A line total is not always divisible by its quantity - 20
+     * pieces for 0.74 EUR would need 3.7 cents each - so such a line is emitted as two rows: some
+     * pieces one minor unit above the base price, the rest at the base price. That is the shape the
+     * module has always sent; the defect was that the whole remainder was loaded onto a single
+     * piece instead of being spread over as many pieces as it takes.
+     *
+     * @param array $productRows
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    private function splitIntoUnitPricedRows(&$productRows)
+    {
+        $factor = 10 ** Tools::getCurrencyDecimalByIso($this->cartCurrencyIso);
+        $split = [];
+        foreach ($productRows as $productRow) {
+            foreach ($this->buildUnitPricedRows($productRow, $factor) as $unitPricedRow) {
+                $split[] = $unitPricedRow;
+            }
+        }
+
+        $productRows = $split;
+    }
+
+    /**
+     * @param array $row
+     * @param int $factor
+     *
+     * @return array
+     */
+    private function buildUnitPricedRows(array $row, $factor)
+    {
+        if (!isset($row['totalWithoutTax'])) {
+            return [$row];
+        }
+
+        $lineWithTax = max(0, (int) round($row['totalWithTax'] * $factor));
+        // The remainder spread moves the tax-inclusive total only, so it can end up below the
+        // tax-exclusive one; clamping keeps the derived tax from turning negative, which the API
+        // rejects. A zero-rated line legitimately has both totals equal.
+        $lineWithoutTax = min(max(0, (int) round($row['totalWithoutTax'] * $factor)), $lineWithTax);
+        $quantity = max(1, (int) $row['quantity']);
+
+        // Integer division leaves a remainder of at most $quantity - 1 minor units, so the split
+        // below always yields whole-minor-unit prices and preserves the real quantity, whatever the
+        // line total is - including a free line, where every piece simply prices at zero.
+        $baseUnit = intdiv($lineWithTax, $quantity);
+        $higherCount = $lineWithTax - ($baseUnit * $quantity);
+
+        $groups = [];
+        if ($higherCount > 0) {
+            $groups[] = [$baseUnit + 1, $higherCount];
+        }
+        if ($quantity - $higherCount > 0) {
+            $groups[] = [$baseUnit, $quantity - $higherCount];
+        }
+
+        $rows = [];
+        foreach ($groups as $group) {
+            list($unitWithTax, $count) = $group;
+            $unitWithoutTax = $lineWithTax > 0
+                ? (int) round($unitWithTax * $lineWithoutTax / $lineWithTax)
+                : 0;
+            $rows[] = array_merge($row, [
+                'totalWithTax' => ($unitWithTax * $count) / $factor,
+                'productPrice' => $unitWithoutTax / $factor,
+                'tax' => ($unitWithTax - $unitWithoutTax) / $factor,
+                'quantity' => $count,
+            ]);
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Spreads the rounding remainder across the lines instead of letting a single line absorb all of
+     * it. Only the line amount is touched: productPrice is a per-unit field, and subtracting a
+     * line-wide remainder from it is what produced negative unit prices. No line is taken below
+     * zero, because the API rejects negative amounts.
+     *
+     * The remainder is handed out in equal shares rather than one minor unit at a time: on the
+     * merged (meal voucher) path a single line can have to absorb a whole cart discount, which is
+     * millions of minor units.
+     *
+     * @param int[] $lineTotals line totals in minor units, adjusted in place
+     * @param int $remainder in minor units; positive means the lines overshoot the cart total
+     *
+     * @return void
+     */
+    private function spreadRoundingRemainder(&$lineTotals, $remainder)
+    {
+        $count = count($lineTotals);
+        if ($remainder < 0) {
+            $this->addRoundingRemainder($lineTotals, -$remainder, $count);
+
+            return;
+        }
+
+        $pending = $remainder;
+        // Each pass either clears the remainder or empties at least one line, so it cannot run more
+        // times than there are lines.
+        while ($pending > 0) {
+            $share = max(1, intdiv($pending, $count));
+            $taken = 0;
+            for ($index = 0; $index < $count && $pending > 0; ++$index) {
+                $take = min($share, $pending, $lineTotals[$index]);
+                if ($take < 1) {
+                    continue;
+                }
+                $lineTotals[$index] -= $take;
+                $pending -= $take;
+                $taken += $take;
+            }
+            if ($taken < 1) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * @param int[] $lineTotals
+     * @param int $pending
+     * @param int $count
+     *
+     * @return void
+     */
+    private function addRoundingRemainder(&$lineTotals, $pending, $count)
+    {
+        // Nothing caps a line from above, so one pass is always enough.
+        $share = intdiv($pending, $count);
+        $extra = $pending % $count;
+        for ($index = 0; $index < $count; ++$index) {
+            $lineTotals[$index] += $share + ($index < $extra ? 1 : 0);
+        }
     }
 
     /**
