@@ -47,6 +47,19 @@ class AdvancedSettings
     /** @var PaymentSettings */
     public $paymentSettings;
 
+    /**
+     * Whether customers may save a card and pay with a previously saved one.
+     *
+     * Defaults to TRUE in PHP, not merely in the form: settings are loaded by deserializing the
+     * stored WORLDLINEOP_ADVANCED_SETTINGS JSON straight into this entity (SettingsLoader), and the
+     * options resolver only runs when the form is saved. A shop that upgrades has no such key in its
+     * stored JSON, so without this default the property would arrive null and every existing shop
+     * would silently lose card saving.
+     *
+     * @var bool
+     */
+    public $enableSavingCards = true;
+
     /** @var bool */
     public $groupCardPaymentOptions;
 

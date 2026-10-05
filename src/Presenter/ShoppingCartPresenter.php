@@ -126,7 +126,6 @@ class ShoppingCartPresenter implements PresenterInterface
         return [
             'priceWithTax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($this->cart->getOrderTotal(true, \Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
             'priceWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING), $this->cartCurrencyIso),
-            'discountPrice' => Tools::getRoundedAmountInCents($this->discountShippingWithoutTax, $this->cartCurrencyIso),
             'priceDiscountedWithoutTax' => Tools::getRoundedAmountInCents($this->cart->getOrderTotal(false, \Cart::ONLY_SHIPPING) - $this->discountShippingWithoutTax, $this->cartCurrencyIso),
             'tax' => $this->discountShippingWithoutTax ? 0 : Tools::getRoundedAmountInCents($shippingWithTaxes - $shippingWithoutTaxes, $this->cartCurrencyIso),
             'type' => $this->productsType['SHIPPING'],
@@ -192,7 +191,6 @@ class ShoppingCartPresenter implements PresenterInterface
                 'totalWithTax' => Tools::getRoundedAmount($product['total_wt'], $this->cartCurrencyIso),
                 'totalWithoutTax' => Tools::getRoundedAmount($product['total'], $this->cartCurrencyIso),
                 'productPrice' => 0,
-                'discountPrice' => 0,
                 'tax' => 0,
                 'quantity' => $quantity,
                 'productCode' => $product['reference'] ?: $product['unique_id'],
@@ -222,7 +220,6 @@ class ShoppingCartPresenter implements PresenterInterface
                 // row like any other, so a rounding adjustment cannot desynchronise it.
                 'totalWithoutTax' => $amounts['productPrice'],
                 'productPrice' => $amounts['productPrice'],
-                'discountPrice' => $amounts['discountPrice'],
                 'tax' => $amounts['tax'],
                 'quantity' => 1,
                 'productName' => $productName,
@@ -255,7 +252,6 @@ class ShoppingCartPresenter implements PresenterInterface
         }
 
         return [
-            'discountPrice' => 0,
             'productPrice' => $productPrice,
             'tax' => $tax,
             'totalWithTax' => $totalWithTax,
@@ -355,7 +351,6 @@ class ShoppingCartPresenter implements PresenterInterface
             $unitPriceDiscountedWithoutTax = $unitPriceWithoutTax - $unitDiscountWithoutTax;
             $unitTaxAmountDiscounted = $unitPriceDiscountedWithoutTax * $rate;
 
-            $productRow['discountPrice'] = Tools::getRoundedAmount($unitDiscountWithoutTax, $this->cartCurrencyIso);
             // Multiply once at line level rather than summing a rounded per-unit figure.
             $productRow['totalWithTax'] = Tools::getRoundedAmount(
                 ($unitPriceDiscountedWithoutTax + $unitTaxAmountDiscounted) * $productRow['quantity'],
@@ -554,7 +549,6 @@ class ShoppingCartPresenter implements PresenterInterface
         foreach ($productRows as &$productRow) {
             $productRow['totalWithTax'] = Tools::getAmountInCents($productRow['totalWithTax'], $this->cartCurrencyIso);
             $productRow['productPrice'] = Tools::getAmountInCents($productRow['productPrice'], $this->cartCurrencyIso);
-            $productRow['discountPrice'] = Tools::getAmountInCents($productRow['discountPrice'], $this->cartCurrencyIso);
             $productRow['tax'] = Tools::getAmountInCents($productRow['tax'], $this->cartCurrencyIso);
         }
     }

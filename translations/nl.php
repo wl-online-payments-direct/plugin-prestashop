@@ -322,3 +322,5 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a633
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Pagina met betalingsbevestiging weergeven';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Door deze optie in te schakelen, zien uw klanten de Worldline-betaalbevestigingspagina';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Indien ingeschakeld, zien klanten een speciale bevestigingsscherm nadat de betaling is verwerkt, die de betaling bevestigt en belangrijke details verstrekt.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_74130dec4c3c1c081009cdf704bde0a9'] = 'Kaarten opslaan inschakelen';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d9909c31706e7a057e925b5f9060f101'] = 'Wanneer ingeschakeld kunnen klanten hun kaart opslaan en betalen met hun eerder opgeslagen betaalmethode. Wanneer uitgeschakeld wordt de optie om hun kaart op te slaan niet weergegeven op de betaalpagina of in de creditcard iFrame.';

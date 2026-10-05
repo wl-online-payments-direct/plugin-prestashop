@@ -94,6 +94,7 @@ configuration:
       pendingOrderStateId: 0
       safetyDelay: 12
       errorOrderStateId: 0
+    enableSavingCards: 1
     groupCardPaymentOptions: 0
     omitOrderItemDetails: 0
     threeDSExempted: 0

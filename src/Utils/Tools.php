@@ -29,6 +29,68 @@ use WorldlineOP\PrestaShop\Builder\HostedPaymentRequestBuilder;
 class Tools
 {
     /**
+     * Whether this checkout may save a card, and offer previously saved ones.
+     *
+     * Two conditions, deliberately answered in one place so the three call sites cannot drift:
+     *
+     *  - the merchant's "Enable saving cards" setting, read as `false !==` rather than cast to bool.
+     *    The setting defaults to enabled and a shop that upgraded has no stored value at all, so an
+     *    absent value must read as allowed, not as disallowed;
+     *  - guest checkout, where a card is never saved whatever the setting says. PrestaShop still
+     *    creates a customer row for a guest (`is_guest = 1`), so the customer id alone cannot tell
+     *    the two apart.
+     *
+     * @param \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings
+     * @param \Context $context
+     *
+     * @return bool
+     */
+    public static function isCardSavingAllowed($settings, \Context $context)
+    {
+        if (false === $settings->advancedSettings->enableSavingCards) {
+            return false;
+        }
+
+        return !self::isGuestCheckout($context);
+    }
+
+    /**
+     * @param \Context $context
+     *
+     * @return bool
+     */
+    public static function isGuestCheckout(\Context $context)
+    {
+        return isset($context->customer) && (bool) $context->customer->is_guest;
+    }
+
+    /**
+     * The same decision for code that has a customer id but no usable Context.
+     *
+     * The hosted-checkout return and webhook routes persist a token from data carried in the
+     * response, and may run outside the shopper's session - so the guest flag has to come from the
+     * customer row named by that response, not from Context. A row that will not load is treated as
+     * not allowed: this is a safeguard, and refusing to persist is the safe direction.
+     *
+     * @param \WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings
+     * @param int $idCustomer
+     *
+     * @return bool
+     */
+    public static function isCardSavingAllowedForCustomer($settings, $idCustomer)
+    {
+        if (false === $settings->advancedSettings->enableSavingCards) {
+            return false;
+        }
+        $customer = new \Customer((int) $idCustomer);
+        if (!\Validate::isLoadedObject($customer)) {
+            return false;
+        }
+
+        return !(bool) $customer->is_guest;
+    }
+
+    /**
      * @param string $value
      *
      * @return string

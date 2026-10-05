@@ -42,7 +42,7 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.37';
+        $this->version = '1.4.38';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
@@ -257,6 +257,14 @@ class Worldlineop extends PaymentModule
      */
     public function hookCustomerAccount($params)
     {
+        // The stored-cards page is INDEPENDENT of "Enable saving cards": that setting governs the
+        // checkout flow, and the client's requirement is that a customer can still reach cards they
+        // saved earlier to view and delete them. Only guests are excluded, and only because a guest
+        // can never have saved one.
+        if (WorldlineOP\PrestaShop\Utils\Tools::isGuestCheckout($this->context)) {
+            return '';
+        }
+
         return $this->display(dirname(__FILE__), 'views/templates/front/hookCustomerAccount.tpl');
     }
 

@@ -14,11 +14,12 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.37
+  1.4.38
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed: Fix rounding of shopping cart line items sent in the payment request' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Voucher discounts being counted twice in payment validation' mod='worldlineop'}</li>
+  <li>{l s='Added: Enable/Disable save card option' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

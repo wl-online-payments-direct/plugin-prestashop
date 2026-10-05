@@ -322,3 +322,5 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a633
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Mostrar la página de confirmación de pago';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Al habilitar esta opción, sus clientes verán la página de confirmación de pago de Worldline';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Si está habilitado, los clientes verán una pantalla de confirmación dedicada después de procesar el pago, confirmando el pago y proporcionando detalles clave.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_74130dec4c3c1c081009cdf704bde0a9'] = 'Habilitar guardar tarjetas';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d9909c31706e7a057e925b5f9060f101'] = 'Cuando está habilitado, los clientes pueden guardar su tarjeta y pagar utilizando su método de pago guardado previamente. Cuando está deshabilitado, la opción de guardar su tarjeta no se mostrará en la página de pago ni en el iFrame de la tarjeta de crédito.';

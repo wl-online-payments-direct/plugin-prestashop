@@ -322,3 +322,5 @@ $_MODULE['<{worldlineop}prestashop>adminworldlineopconfigurationcontroller_1a633
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_371bb1ebd773a55e154076bf236ccac9'] = 'Zahlungsbestätigungsseite anzeigen';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_09cc6d756c0e69f2b2343f4a638b089f'] = 'Wenn Sie diese Option aktivieren, sehen Ihre Kunden die Worldline-Zahlungsbestätigungsseite';
 $_MODULE['<{worldlineop}prestashop>_advancedsettings_784be2cc8f1518051548166e76f47a38'] = 'Wenn aktiviert, sehen Kunden nach der Zahlungsabwicklung einen speziellen Bestätigungsbildschirm, der die Zahlung bestätigt und wichtige Details bereitstellt.';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_74130dec4c3c1c081009cdf704bde0a9'] = 'Karten speichern aktivieren';
+$_MODULE['<{worldlineop}prestashop>_advancedsettings_d9909c31706e7a057e925b5f9060f101'] = 'Wenn aktiviert, können Kunden ihre Karte speichern und mit ihrer zuvor gespeicherten Zahlungsmethode bezahlen. Wenn deaktiviert, wird die Option zum Speichern ihrer Karte nicht auf der Zahlungsseite oder im Kreditkarten-iFrame angezeigt.';

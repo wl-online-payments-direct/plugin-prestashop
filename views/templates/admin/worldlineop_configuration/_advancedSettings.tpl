@@ -346,6 +346,35 @@
           <h2 class="col-lg-3">{l s='Checkout Flow Modifications' mod='worldlineop'}</h2>
           <div class="col-lg-9"></div>
         </div>
+        <!-- Enable saving cards -->
+        <div class="form-group">
+          <label class="control-label col-lg-3 ">
+            {l s='Enable saving cards' mod='worldlineop'}
+          </label>
+          <div class="col-lg-9">
+            <span class="switch prestashop-switch fixed-width-sm">
+              <input type="radio"
+                     value="1"
+                     name="worldlineopAdvancedSettings[enableSavingCards]"
+                     id="worldlineopAdvancedSettings_enableSavingCards_on"
+                     {if $data.advancedSettings.enableSavingCards !== false}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_enableSavingCards_on">{l s='Yes' mod='worldlineop'}</label>
+              <input type="radio"
+                     value="0"
+                     name="worldlineopAdvancedSettings[enableSavingCards]"
+                     id="worldlineopAdvancedSettings_enableSavingCards_off"
+                     {if $data.advancedSettings.enableSavingCards === false}checked="checked"{/if}>
+              <label for="worldlineopAdvancedSettings_enableSavingCards_off">{l s='No' mod='worldlineop'}</label>
+              <a class="slide-button btn"></a>
+            </span>
+          </div>
+          <div class="col-lg-9 col-lg-offset-3">
+            <div class="help-block">
+              {l s="When enabled, customers can save their card and pay using their previously saved payment method. When disabled, the option to save their card won't be shown on the payment page or on the credit card iFrame." mod='worldlineop'}
+              <span></span>
+            </div>
+          </div>
+        </div>
         <!-- Group cards -->
         <div class="form-group">
           <label class="control-label col-lg-3 ">

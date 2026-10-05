@@ -31,6 +31,12 @@ class WorldlineopStoredCardsModuleFrontController extends ModuleFrontController
      */
     public function initContent()
     {
+        // Reachable whatever "Enable saving cards" says - the setting governs the checkout flow, not
+        // this page. A customer who saved a card while it was on must still be able to see and delete
+        // it after it is turned off.
+        if (WorldlineOP\PrestaShop\Utils\Tools::isGuestCheckout($this->context)) {
+            Tools::redirect($this->context->link->getPageLink('my-account'));
+        }
         if ($this->redirectStoredCards) {
             $this->redirectWithNotifications($this->context->link->getModuleLink('worldlineop', 'storedcards', []));
         }

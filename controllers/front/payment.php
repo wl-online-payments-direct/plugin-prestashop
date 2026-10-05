@@ -91,10 +91,16 @@ class WorldlineopPaymentModuleFrontController extends ModuleFrontController
         $tokenId = $hostedTokenizationResponse->getToken()->getId();
         $ccForm = Tools::getValue('ccForm');
 
+        // Safeguard: a token the platform returned is never written when saving is off or the
+        // shopper is a guest. The request already asked for no consent, so this only catches a
+        // token that came back anyway.
+        /** @var WorldlineOP\PrestaShop\Configuration\Entity\Settings $settings */
+        $settings = $this->module->getService('worldlineop.settings');
         if (false === $hostedTokenizationResponse->getToken()->getIsTemporary()
             && (self::TOKEN_STATUS_CREATED === $hostedTokenizationResponse->getTokenStatus()
                 || self::TOKEN_STATUS_UPDATED === $hostedTokenizationResponse->getTokenStatus()
             )
+            && WorldlineOP\PrestaShop\Utils\Tools::isCardSavingAllowed($settings, $this->context)
         ) {
             /** @var TokenRepository $tokenRepository */
             $tokenRepository = $this->module->getService('worldlineop.repository.token');

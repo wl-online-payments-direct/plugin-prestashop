@@ -47,6 +47,16 @@ use WorldlineOP\PrestaShop\Utils\Tools;
  */
 class HostedPaymentRequestBuilder extends AbstractRequestBuilder
 {
+    /**
+     * Hides the "Remember my card" checkbox on the hosted checkout page.
+     *
+     * Added to the vendored SDK rather than taken from it: the platform introduced this field in
+     * SDK 8.0 and the shipped tree is 4.6.0, so CardPaymentMethodSpecificInputForHostedCheckout
+     * carries the property locally. The platform's default when the field is omitted is to allow
+     * tokenization, so this value is only ever sent to switch saving OFF, never to switch it on.
+     */
+    public const TOKENIZATION_MODE_NONE = 'noTokenization';
+
     public const GIFT_CARD_PRODUCT_TYPE_FOOD_DRINK = 'FoodAndDrink';
     public const GIFT_CARD_PRODUCT_TYPE_HOME_GARDEN = 'HomeAndGarden';
     public const GIFT_CARD_PRODUCT_TYPE_GIFT_FLOWERS = 'GiftAndFlowers';
@@ -96,9 +106,21 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
         if (false !== $this->tokenValue) {
             $hostedCheckoutSpecificInput->setTokens($this->tokenValue);
         }
-        if (true === $this->settings->advancedSettings->groupCardPaymentOptions) {
+        $groupCards = true === $this->settings->advancedSettings->groupCardPaymentOptions;
+        $suppressTokenization = !Tools::isCardSavingAllowed($this->settings, $this->context);
+
+        // The object is built when EITHER feature needs it, not just for card grouping. Attaching it
+        // unconditionally would put an empty `cardPaymentMethodSpecificInput: {}` into the request of
+        // every shop that groups nothing and allows saving - the SDK serialises whatever child is
+        // set, and in that combination neither field carries a value.
+        if ($groupCards || $suppressTokenization) {
             $cardPaymentMethodSpecificInputForHC = new CardPaymentMethodSpecificInputForHostedCheckout();
-            $cardPaymentMethodSpecificInputForHC->setGroupCards(true);
+            if ($groupCards) {
+                $cardPaymentMethodSpecificInputForHC->setGroupCards(true);
+            }
+            if ($suppressTokenization) {
+                $cardPaymentMethodSpecificInputForHC->setTokenizationMode(self::TOKENIZATION_MODE_NONE);
+            }
             $hostedCheckoutSpecificInput->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInputForHC);
         }
 
@@ -397,7 +419,6 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
             $quantity = (int) $product['quantity'];
             $price = (int) (string) $product['productPrice'];
             $tax = (int) (string) $product['tax'];
-            $discount = (int) (string) $product['discountPrice'];
 
             // Composite key to distinguish products with different pricing
             // The tax belongs in the key too: two rows of the same product can share a
@@ -415,9 +436,13 @@ class HostedPaymentRequestBuilder extends AbstractRequestBuilder
                 );
                 $item->setAmountOfMoney($itemAmount);
 
+                // No discountAmount is reported. The platform validates
+                // amount == (productPrice + taxAmount - discountAmount) * quantity, and the prices
+                // presented here are already net of the cart rules, so reporting the discount on top
+                // of them would subtract it a second time and the whole request would be rejected
+                // with "Payment detail amounts validation failed".
                 $itemLineDetails = new OrderLineDetails();
                 $itemLineDetails->setProductPrice($price);
-                $itemLineDetails->setDiscountAmount($discount);
                 $itemLineDetails->setProductCode($product['productCode']);
                 $itemLineDetails->setProductName($product['productName']);
                 $itemLineDetails->setProductType($product['productType']);

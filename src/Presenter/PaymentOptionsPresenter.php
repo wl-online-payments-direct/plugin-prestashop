@@ -108,6 +108,13 @@ class PaymentOptionsPresenter implements PresenterInterface
      */
     private function getTokenPaymentOptions()
     {
+        // Saved cards are only offered when the merchant allows saving, and never to a guest - a
+        // guest must not reach a token, including one stored against the same customer row before
+        // this setting existed.
+        if (!Tools::isCardSavingAllowed($this->settings, $this->context)) {
+            return [];
+        }
+
         $paymentMethodsSettings = $this->settings->paymentMethodsSettings;
         /** @var TokenRepository $tokenRepository */
         $tokenRepository = $this->module->getService('worldlineop.repository.token');
@@ -143,7 +150,12 @@ class PaymentOptionsPresenter implements PresenterInterface
             $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
             foreach ($tokens as $token) {
                 $hostedTokenizationRequest = new CreateHostedTokenizationRequest();
-                $hostedTokenizationRequest->setAskConsumerConsent(true);
+                // This session renders a card the customer has ALREADY saved - the token is passed in
+                // below via setTokens(). Asking for consent to save it offers the customer something
+                // that has already happened, so it is never requested here, whatever the shop's
+                // "Enable saving cards" setting says. Consent belongs to the new-card session only,
+                // in getIframePaymentOption().
+                $hostedTokenizationRequest->setAskConsumerConsent(false);
                 $hostedTokenizationRequest->setLocale(\Language::getLocaleByIso($cartIsoLang));
                 $hostedTokenizationRequest->setVariant($paymentMethodsSettings->iframeTemplateFilename);
                 $hostedTokenizationRequest->setTokens($token->value);
@@ -258,7 +270,9 @@ class PaymentOptionsPresenter implements PresenterInterface
         $merchantClient = $this->module->getService('worldlineop.sdk.client');
         $cartIsoLang = \Language::getIsoById($this->context->cart->id_lang);
         $hostedTokenizationRequest = new CreateHostedTokenizationRequest();
-        $hostedTokenizationRequest->setAskConsumerConsent(true);
+        $hostedTokenizationRequest->setAskConsumerConsent(
+            Tools::isCardSavingAllowed($this->settings, $this->context)
+        );
         $hostedTokenizationRequest->setLocale(str_replace('-', '_', \Language::getLocaleByIso($cartIsoLang)));
         $hostedTokenizationRequest->setVariant($paymentMethodsSettings->iframeTemplateFilename);
         try {

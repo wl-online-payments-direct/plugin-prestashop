@@ -137,7 +137,15 @@ class TransactionResponseProcessor
                 }
             }
         }
-        if (isset($presentedData->token['needSave']) && $presentedData->token['needSave']) {
+        // Safeguard, mirroring the iframe route: never write a token when saving is off or the
+        // customer is a guest. This route can run outside the shopper's session, so the guest flag
+        // comes from the customer id the response carries.
+        $canSaveToken = isset($presentedData->cardDetails['idCustomer'])
+            && Tools::isCardSavingAllowedForCustomer(
+                $this->module->getService('worldlineop.settings'),
+                $presentedData->cardDetails['idCustomer']
+            );
+        if (isset($presentedData->token['needSave']) && $presentedData->token['needSave'] && $canSaveToken) {
             /** @var TokenRepository $tokenRepository */
             $tokenRepository = $this->module->getService('worldlineop.repository.token');
             $token = $tokenRepository->findByCustomerIdToken(
