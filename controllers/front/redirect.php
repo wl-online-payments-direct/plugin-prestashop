@@ -87,10 +87,14 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
 
         $this->context->smarty->assign([
             'img_path' => sprintf(__PS_BASE_URI__ . 'modules/%s/views/img/', $this->module->name),
-            'worldlineopRedirectController' => $this->context->link->getModuleLink(
-                $this->module->name,
-                'redirect',
-                ['action' => $action]
+            'worldlineopRedirectController' => str_replace(
+                '&amp;',
+                '&',
+                $this->context->link->getModuleLink(
+                    $this->module->name,
+                    'redirect',
+                    ['action' => $action]
+                )
             ),
             'returnMac' => Tools::getValue('RETURNMAC'),
             'hostedCheckoutId' => Tools::getValue('hostedCheckoutId'),

@@ -38,14 +38,19 @@ class SettingsLoader
     /** @var int|null */
     private $idShopGroup;
 
+    /** @var DefaultSettingsProvider */
+    private $defaultSettingsProvider;
+
     /**
      * SettingsLoader constructor.
      *
      * @param Serializer $serializer
+     * @param DefaultSettingsProvider $defaultSettingsProvider
      */
-    public function __construct(Serializer $serializer)
+    public function __construct(Serializer $serializer, DefaultSettingsProvider $defaultSettingsProvider)
     {
         $this->serializer = $serializer;
+        $this->defaultSettingsProvider = $defaultSettingsProvider;
         $this->idShop = null;
         $this->idShopGroup = null;
     }
@@ -55,9 +60,12 @@ class SettingsLoader
      */
     public function deserialize()
     {
-        $jsonAccount = \Configuration::get('WORLDLINEOP_ACCOUNT_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
-        $jsonAdvancedSettings = \Configuration::get('WORLDLINEOP_ADVANCED_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
-        $jsonPaymentMethodsSettings = \Configuration::get('WORLDLINEOP_PAYMENT_METHODS_SETTINGS', null, $this->idShopGroup, $this->idShop) ?: '[]';
+        $jsonAccount = \Configuration::get('WORLDLINEOP_ACCOUNT_SETTINGS', null, $this->idShopGroup, $this->idShop)
+            ?: json_encode($this->defaultSettingsProvider->getAccountSettings());
+        $jsonAdvancedSettings = \Configuration::get('WORLDLINEOP_ADVANCED_SETTINGS', null, $this->idShopGroup, $this->idShop)
+            ?: json_encode($this->defaultSettingsProvider->getAdvancedSettings());
+        $jsonPaymentMethodsSettings = \Configuration::get('WORLDLINEOP_PAYMENT_METHODS_SETTINGS', null, $this->idShopGroup, $this->idShop)
+            ?: json_encode($this->defaultSettingsProvider->getPaymentMethodsSettings());
 
         $accountSettings = $this->serializer->deserialize($jsonAccount, AccountSettings::class, 'json');
         $advancedSettings = $this->serializer->deserialize($jsonAdvancedSettings, AdvancedSettings::class, 'json');

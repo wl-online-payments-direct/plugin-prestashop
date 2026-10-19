@@ -42,7 +42,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]);
             // @formatter:on
             exit(json_encode([
-                'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
+                'result_html' => $this->module->renderAdminOrderContent((int) $transaction['idOrder']),
             ]));
         }
 
@@ -72,7 +72,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             }
         }
 
-        $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
+        $html = $this->module->renderAdminOrderContent((int) $transaction['idOrder']);
 
         exit(json_encode(['result_html' => $html, 'success' => true]));
     }
@@ -90,7 +90,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]);
             // @formatter:on
             exit(json_encode([
-                'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
+                'result_html' => $this->module->renderAdminOrderContent((int) $transaction['idOrder']),
             ]));
         }
         /** @var OnlinePayments\Sdk\Merchant\MerchantClient $merchantClient */
@@ -121,7 +121,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             }
         }
 
-        $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
+        $html = $this->module->renderAdminOrderContent((int) $transaction['idOrder']);
 
         exit(json_encode(['result_html' => $html, 'success' => true]));
     }
@@ -139,7 +139,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             ]);
             // @formatter:on
             exit(json_encode([
-                'result_html' => $this->module->hookAdminOrderCommon((int) $transaction['idOrder']),
+                'result_html' => $this->module->renderAdminOrderContent((int) $transaction['idOrder']),
             ]));
         }
 
@@ -160,7 +160,7 @@ class AdminWorldlineopAjaxTransactionController extends ModuleAdminController
             $this->context->smarty->assign('cancelConfirmation', true);
         }
 
-        $html = $this->module->hookAdminOrderCommon((int) $transaction['idOrder']);
+        $html = $this->module->renderAdminOrderContent((int) $transaction['idOrder']);
 
         exit(json_encode(['result_html' => $html, 'success' => true]));
     }

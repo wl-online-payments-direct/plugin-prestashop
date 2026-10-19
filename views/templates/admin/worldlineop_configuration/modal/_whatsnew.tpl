@@ -14,12 +14,14 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.38
+  1.4.39
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed: Voucher discounts being counted twice in payment validation' mod='worldlineop'}</li>
-  <li>{l s='Added: Enable/Disable save card option' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Issues regarding multistore' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Showing configuration fields when module is disabled' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Orders created by webhook without status and transaction' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Align PrestaShop module with marketplace standards and validation requirements' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>

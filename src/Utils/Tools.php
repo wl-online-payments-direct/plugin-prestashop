@@ -61,7 +61,7 @@ class Tools
      */
     public static function isGuestCheckout(\Context $context)
     {
-        return isset($context->customer) && (bool) $context->customer->is_guest;
+        return \Validate::isLoadedObject($context->customer) && $context->customer->is_guest;
     }
 
     /**

@@ -13,7 +13,11 @@
  *}
 
 <div id="worldlineop-admin-order-container">
-  {$html nofilter}
+  {if isset($worldlineopError)}
+    <div class="alert alert-danger">{$worldlineopError|escape:'htmlall':'UTF-8'}</div>
+  {else}
+    {include file="./hookAdminOrder_`$worldlineopTheme`.tpl"}
+  {/if}
 </div>
 {literal}
   <script type="text/javascript">

@@ -184,11 +184,11 @@ class ModuleConfigurationPresenter implements PresenterInterface
     /**
      * Mask a secret field
      *
-     * @param string $input
+     * @param string|null $input Null when the current shop has no saved account settings
      *
      * @return string
      */
-    private function maskString(string $input): string
+    private function maskString(?string $input): string
     {
         if (empty($input)) {
             return '';

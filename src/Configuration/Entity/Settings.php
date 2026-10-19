@@ -47,18 +47,18 @@ class Settings
     {
         $this->credentials = new \stdClass();
         if (AccountSettings::ACCOUNT_MODE_TEST === $this->accountSettings->environment) {
-            $this->credentials->pspid = $this->accountSettings->testPspid;
-            $this->credentials->apiKey = $this->accountSettings->testApiKey;
-            $this->credentials->apiSecret = $this->accountSettings->testApiSecret;
-            $this->credentials->webhooksKey = $this->accountSettings->testWebhooksKey;
-            $this->credentials->webhooksSecret = $this->accountSettings->testWebhooksSecret;
+            $this->credentials->pspid = (string) $this->accountSettings->testPspid;
+            $this->credentials->apiKey = (string) $this->accountSettings->testApiKey;
+            $this->credentials->apiSecret = (string) $this->accountSettings->testApiSecret;
+            $this->credentials->webhooksKey = (string) $this->accountSettings->testWebhooksKey;
+            $this->credentials->webhooksSecret = (string) $this->accountSettings->testWebhooksSecret;
             $endpoint = $this->advancedSettings->testEndpoint ?: self::DEFAULT_SDK_ENDPOINT_TEST;
         } else {
-            $this->credentials->pspid = $this->accountSettings->prodPspid;
-            $this->credentials->apiKey = $this->accountSettings->prodApiKey;
-            $this->credentials->apiSecret = $this->accountSettings->prodApiSecret;
-            $this->credentials->webhooksKey = $this->accountSettings->prodWebhooksKey;
-            $this->credentials->webhooksSecret = $this->accountSettings->prodWebhooksSecret;
+            $this->credentials->pspid = (string) $this->accountSettings->prodPspid;
+            $this->credentials->apiKey = (string) $this->accountSettings->prodApiKey;
+            $this->credentials->apiSecret = (string) $this->accountSettings->prodApiSecret;
+            $this->credentials->webhooksKey = (string) $this->accountSettings->prodWebhooksKey;
+            $this->credentials->webhooksSecret = (string) $this->accountSettings->prodWebhooksSecret;
             $endpoint = $this->advancedSettings->prodEndpoint ?: self::DEFAULT_SDK_ENDPOINT_PROD;
         }
         $this->credentials->endpoint = rtrim($endpoint, '/');

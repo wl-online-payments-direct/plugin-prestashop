@@ -143,17 +143,18 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
      */
     public function respondOK()
     {
-        // check if fastcgi_finish_request is callable
-        if (is_callable('fastcgi_finish_request')) {
-            /*
-             * This works in Nginx but the next approach not
-             */
-            session_write_close();
+        // Keep processing the webhook after the response is sent, even when the connection to the web server is gone
+        if (function_exists('ignore_user_abort')) {
+            ignore_user_abort(true);
+        }
+        session_write_close();
+        // Apache/FPM path: finish request early so webhook processing runs async
+        if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
 
             return;
         }
-        ignore_user_abort(true); // @phpstan-ignore-line
+        // Nginx fallback: flush output buffers and close connection
         ob_start();
         header('HTTP/1.1 200 OK');
         header('Content-Encoding: none');

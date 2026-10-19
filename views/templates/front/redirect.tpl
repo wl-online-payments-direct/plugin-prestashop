@@ -46,7 +46,7 @@
 {block name="javascript_bottom"}
   {$smarty.block.parent}
   <script>
-    const worldlineopRedirectController = "{$worldlineopRedirectController|escape:'javascript':'UTF-8'|replace:'&amp;':'&' nofilter}";
+    const worldlineopRedirectController = "{$worldlineopRedirectController|escape:'javascript':'UTF-8'}";
     const returnMac = "{$returnMac|escape:'javascript':'UTF-8'}";
     const hostedCheckoutId = "{$hostedCheckoutId|escape:'javascript':'UTF-8'}";
     const paymentId = "{$paymentId|escape:'javascript':'UTF-8'}";

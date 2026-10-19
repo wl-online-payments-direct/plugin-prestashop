@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.39] - 2026-14-10
+### Fixed
+- Issues regarding multistore
+- Showing configuration fields when module is disabled
+- Orders created by webhook without status and transaction
+- Align PrestaShop module with marketplace standards and validation requirements
+
 ## [1.4.38] - 2026-24-09
 ### Fixed
 - Voucher discounts being counted twice in payment validation when combined with quantity-based pricing

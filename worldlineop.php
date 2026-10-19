@@ -17,6 +17,7 @@ if (!defined('_PS_VERSION_')) {
 
 use Monolog\Logger;
 use PrestaShop\ModuleLibServiceContainer\DependencyInjection\ServiceContainer;
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use WorldlineOP\PrestaShop\Utils\Tools as ToolsWorldline;
 
 /**
@@ -42,7 +43,7 @@ class Worldlineop extends PaymentModule
 
         $this->name = 'worldlineop';
         $this->author = 'Worldline Online Payments';
-        $this->version = '1.4.38';
+        $this->version = '1.4.39';
         $this->tab = 'payments_gateways';
         $this->module_key = '089d13d0218de8085259e542483f4438';
         $this->currencies = true;
@@ -63,6 +64,12 @@ class Worldlineop extends PaymentModule
      */
     public function install()
     {
+        if (!extension_loaded('bcmath')) {
+            $this->_errors[] = $this->l('The PHP bcmath extension is required.');
+
+            return false;
+        }
+
         /** @var WorldlineOP\PrestaShop\Installer\Installer $installer */
         $installer = $this->getService('worldlineop.installer');
         if (false === parent::install()) {
@@ -74,7 +81,7 @@ class Worldlineop extends PaymentModule
             $installer->run();
         } catch (WorldlineOP\PrestaShop\Exception\ExceptionList $list) {
             foreach ($list->getExceptions() as $item) {
-                /** @var \Exception $e */
+                /** @var Exception $e */
                 $e = $item;
                 $installer->getLogger()->error(sprintf('%s - File: %s - Line: %s - Trace: %s', $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()));
 
@@ -126,7 +133,7 @@ class Worldlineop extends PaymentModule
     public function getService($serviceName)
     {
         if ($this->serviceContainer === null) {
-            $this->serviceContainer = new \PrestaShop\ModuleLibServiceContainer\DependencyInjection\ServiceContainer(
+            $this->serviceContainer = new ServiceContainer(
                 $this->name . str_replace('.', '', $this->version),
                 $this->getLocalPath()
             );
@@ -140,7 +147,7 @@ class Worldlineop extends PaymentModule
      */
     public function getContent()
     {
-        $mboInstaller = new \Prestashop\ModuleLibMboInstaller\DependencyBuilder($this);
+        $mboInstaller = new Prestashop\ModuleLibMboInstaller\DependencyBuilder($this);
         if (!$mboInstaller->areDependenciesMet()) {
             $dependencies = $mboInstaller->handleDependencies();
             $this->smarty->assign('dependencies', $dependencies);
@@ -203,16 +210,10 @@ class Worldlineop extends PaymentModule
             ]);
             $this->context->controller->addCSS($this->getPathUri() . 'views/css/admin_order.css');
         }
-        if (Tools::getValue('controller') == 'AdminWorldlineopConfiguration') {
-            $this->context->controller->addJS([
-                $this->getPathUri() . 'views/js/config.js',
-                $this->getPathUri() . 'views/js/jquery.custom-file-input.js',
-            ]);
-        }
     }
 
     /**
-     * @return array
+     * @return PaymentOption[]
      */
     public function hookPaymentOptions()
     {
@@ -261,7 +262,7 @@ class Worldlineop extends PaymentModule
         // checkout flow, and the client's requirement is that a customer can still reach cards they
         // saved earlier to view and delete them. Only guests are excluded, and only because a guest
         // can never have saved one.
-        if (WorldlineOP\PrestaShop\Utils\Tools::isGuestCheckout($this->context)) {
+        if (ToolsWorldline::isGuestCheckout($this->context)) {
             return '';
         }
 
@@ -269,9 +270,12 @@ class Worldlineop extends PaymentModule
     }
 
     /**
+     * Assigns the admin order (transaction panel) data to Smarty.
+     * On failure, the error message is assigned as worldlineopError instead.
+     *
      * @param int $idOrder
      *
-     * @return string
+     * @return void
      *
      * @throws Exception
      */
@@ -283,7 +287,9 @@ class Worldlineop extends PaymentModule
         }
 
         if ($order->id_shop != $this->context->shop->id || Shop::getContext() !== Shop::CONTEXT_SHOP) {
-            return $this->displayError(sprintf($this->l('Please change shop context to shop ID %d'), $order->id_shop));
+            $this->context->smarty->assign('worldlineopError', sprintf($this->l('Please change shop context to shop ID %d'), $order->id_shop));
+
+            return;
         }
         try {
             /** @var WorldlineOP\PrestaShop\Presenter\TransactionPresenter $transactionPresenter */
@@ -294,9 +300,29 @@ class Worldlineop extends PaymentModule
             $this->context->smarty->assign([
                 'transactionsData' => $transactionPresenter->present($idOrder),
                 'settingsData' => $settingsPresenter->present(),
+                'worldlineopTheme' => $this->theme,
             ]);
         } catch (Exception $e) {
-            return $this->displayError($e->getMessage());
+            $this->context->smarty->assign('worldlineopError', $e->getMessage());
+        }
+    }
+
+    /**
+     * Renders the admin order content (transaction panel) as HTML.
+     *
+     * @param int $idOrder
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function renderAdminOrderContent($idOrder)
+    {
+        $this->hookAdminOrderCommon($idOrder);
+
+        $error = $this->context->smarty->getTemplateVars('worldlineopError');
+        if (!empty($error)) {
+            return $this->displayError($error);
         }
 
         return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_' . $this->theme . '.tpl');
@@ -314,13 +340,10 @@ class Worldlineop extends PaymentModule
         }
 
         try {
-            $html = $this->hookAdminOrderCommon(Tools::getValue('id_order'));
+            $this->hookAdminOrderCommon(Tools::getValue('id_order'));
         } catch (Exception $e) {
             return '';
         }
-        $this->context->smarty->assign([
-            'html' => $html,
-        ]);
 
         return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_container.tpl');
     }
@@ -337,13 +360,10 @@ class Worldlineop extends PaymentModule
         }
 
         try {
-            $html = $this->hookAdminOrderCommon(Tools::getValue('id_order'));
+            $this->hookAdminOrderCommon(Tools::getValue('id_order'));
         } catch (Exception $e) {
             return '';
         }
-        $this->context->smarty->assign([
-            'html' => $html,
-        ]);
 
         return $this->display(dirname(__FILE__), 'views/templates/admin/hookAdminOrder_container.tpl');
     }

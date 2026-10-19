@@ -20,3 +20,4 @@ services:
       - '@worldlineop.settings.payment_methods.updater'
       - !php/const _PS_VERSION_
       - '@worldlineop.logger.factory'
+      - '@worldlineop.settings.defaults'

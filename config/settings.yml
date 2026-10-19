@@ -4,11 +4,16 @@ services:
     class: 'WorldlineOP\PrestaShop\Serializer\SettingsSerializer'
     public: true
 
+  worldlineop.settings.defaults:
+    class: 'WorldlineOP\PrestaShop\Configuration\Loader\DefaultSettingsProvider'
+    public: true
+
   worldlineop.settings.loader:
     class: 'WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader'
     public: true
     arguments:
       - '@=service("worldlineop.settings.serializer").getSerializer()'
+      - '@worldlineop.settings.defaults'
 
   worldlineop.settings.presenter:
     class: 'WorldlineOP\PrestaShop\Presenter\ModuleConfigurationPresenter'
@@ -22,6 +27,7 @@ services:
     public: true
     arguments:
       - '@=service("worldlineop.settings.serializer").getSerializer()'
+      - '@worldlineop.settings.defaults'
 
   worldlineop.settings:
     class: 'WorldlineOP\PrestaShop\Configuration\Loader\SettingsLoader'

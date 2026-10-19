@@ -61,6 +61,11 @@ class AdminWorldlineopConfigurationController extends ModuleAdminController
     {
         parent::setMedia($isNewTheme);
         $this->context->controller->addCSS([$this->module->getLocalPath() . '/views/css/config.css']);
+
+        $this->context->controller->addJS([
+            $this->module->getPathUri() . 'views/js/config.js?version=' . $this->module->version,
+            $this->module->getPathUri() . 'views/js/jquery.custom-file-input.js?version=' . $this->module->version,
+        ]);
         /** @var Settings $settings */
         $settings = $this->module->getService('worldlineop.settings');
         // @formatter:off
