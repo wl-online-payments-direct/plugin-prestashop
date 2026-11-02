@@ -68,6 +68,24 @@ class TransactionResponseProcessor
 
                     return;
                 }
+                // Another process (webhook or customer return) may have created the order while this one was waiting
+                // for the lock. Cart::orderExists() may already be cached as false for this request
+                // (FrontController::init), so the cache entry is cleared and the database is checked directly.
+                $idCart = (int) $presentedData->cardDetails['idCart'];
+                \Cache::clean('Cart::orderExists_' . $idCart);
+                $existingOrderId = (int) \Db::getInstance()->getValue(
+                    'SELECT `id_order` FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . $idCart,
+                    false
+                );
+                if ($existingOrderId) {
+                    $lock->release();
+                    $this->logger->debug(
+                        'Order already created by a concurrent process',
+                        ['id_cart' => $idCart, 'id_order' => $existingOrderId]
+                    );
+
+                    return;
+                }
                 $this->logger->debug('Validating order');
                 $this->module->validateOrder(
                     (int) $presentedData->cardDetails['idCart'],

@@ -14,14 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.39
+  1.4.40
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed: Issues regarding multistore' mod='worldlineop'}</li>
-  <li>{l s='Fixed: Showing configuration fields when module is disabled' mod='worldlineop'}</li>
-  <li>{l s='Fixed: Orders created by webhook without status and transaction' mod='worldlineop'}</li>
-  <li>{l s='Fixed: Align PrestaShop module with marketplace standards and validation requirements' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Prevent duplicate order creation and strengthen race condition locking' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>
