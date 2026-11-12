@@ -16,6 +16,7 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
+use WorldlineOP\PrestaShop\Processor\CartLock;
 
 /**
  * Class WorldlineopRedirectModuleFrontController
@@ -284,11 +285,19 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         /** @var WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
         $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
         try {
-            $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
-            $this->logger->debug('Presented data after GET call', ['data' => $presentedData]);
             /** @var WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
-            $transactionResponseProcessor->process($presentedData);
+            // Under the cart's lock, like the webhook, so the customer's return and the webhooks of the same cart are
+            // handled one at a time (see CartLock).
+            CartLock::run(
+                $this->module->name,
+                $cart->id,
+                function () use ($getPaymentPresenter, $paymentResponse, $cart, $transactionResponseProcessor) {
+                    $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
+                    $this->logger->debug('Presented data after GET call', ['data' => $presentedData]);
+                    $transactionResponseProcessor->process($presentedData);
+                }
+            );
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }
@@ -373,10 +382,18 @@ class WorldlineopRedirectModuleFrontController extends ModuleFrontController
         /** @var WorldlineOP\PrestaShop\Presenter\GetPaymentPresenter $getPaymentPresenter */
         $getPaymentPresenter = $this->module->getService('worldlineop.getpayment.presenter');
         try {
-            $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
             /** @var WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
-            $transactionResponseProcessor->process($presentedData);
+            // Under the cart's lock, like the webhook, so the customer's return and the webhooks of the same cart are
+            // handled one at a time (see CartLock).
+            CartLock::run(
+                $this->module->name,
+                $cart->id,
+                function () use ($getPaymentPresenter, $paymentResponse, $cart, $transactionResponseProcessor) {
+                    $presentedData = $getPaymentPresenter->present($paymentResponse, $cart->id_shop);
+                    $transactionResponseProcessor->process($presentedData);
+                }
+            );
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
         }

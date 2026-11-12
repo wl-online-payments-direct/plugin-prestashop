@@ -18,6 +18,7 @@ if (!defined('_PS_VERSION_')) {
 use OnlinePayments\Sdk\Webhooks\InMemorySecretKeyStore;
 use OnlinePayments\Sdk\Webhooks\WebhooksHelper;
 use WorldlineOP\PrestaShop\Configuration\Entity\Settings;
+use WorldlineOP\PrestaShop\Processor\CartLock;
 use WorldlineOP\PrestaShop\Utils\Tools;
 
 /**
@@ -115,10 +116,19 @@ class WorldlineopWebhookModuleFrontController extends ModuleFrontController
         $eventPresenter = $this->module->getService('worldlineop.event.presenter');
         try {
             $eventPresenter->handlePending($event, $settings);
-            $presentedData = $eventPresenter->present($event, $this->context->shop->id);
             /** @var WorldlineOP\PrestaShop\Processor\TransactionResponseProcessor $transactionResponseProcessor */
             $transactionResponseProcessor = $this->module->getService('worldlineop.processor.transaction');
-            $transactionResponseProcessor->process($presentedData);
+            $handleEvent = function () use ($eventPresenter, $event, $transactionResponseProcessor) {
+                $presentedData = $eventPresenter->present($event, $this->context->shop->id);
+                $transactionResponseProcessor->process($presentedData);
+            };
+            if ($cartId) {
+                // After the safety delay, under the cart's lock: another event of the same cart waits until this one has
+                // created or updated the order, then finds that order (see CartLock).
+                CartLock::run($this->module->name, (int) $cartId, $handleEvent);
+            } else {
+                $handleEvent();
+            }
         } catch (Exception $e) {
             $this->logger->error(
                 $e->getMessage(),

@@ -14,11 +14,11 @@
 
 <h1>
   {l s='What\'s new in version' mod='worldlineop'}
-  1.4.40
+  1.4.41
 </h1>
 <br>
 <ul>
-  <li>{l s='Fixed: Prevent duplicate order creation and strengthen race condition locking' mod='worldlineop'}</li>
+  <li>{l s='Fixed: Orders stuck in pending state by locking event handling per cart' mod='worldlineop'}</li>
 </ul>
 <br>
 <hr>
